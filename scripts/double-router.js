@@ -1,12 +1,12 @@
 const doubleRouter = extendContent(Router, "double-router", {
 	draw(tile){
 		Draw.rect(
-			Core.atlas.find("mindustorio-fake-double-router_" + tile.x % 2),
+			Core.atlas.find("routorio-double-router_" + tile.x % 2),
 			tile.drawx(),
 			tile.drawy());
 	},
 
 	generateIcons(){
-		return [Core.atlas.find("mindustorio-fake-double-router")];
+		return [Core.atlas.find("routorio-double-router")];
 	}
 });

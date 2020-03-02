@@ -1,7 +1,7 @@
 {
-	"name": "mindustorio-fake",
-	"displayName": "[orange]Mindus[red]torio[]",
+	"name": "routorio",
+	"displayName": "[gray]rout[red]orio[]",
 	"author": "DeltaNedas",
-	"description": "[orange]Deja vu\n[red]Deja vu[]",
-	"version": "1.1.0"
+	"description": "Reality-shattering [gray]router[] expansion mod.",
+	"version": "1.2.0"
 }

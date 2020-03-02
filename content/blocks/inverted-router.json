@@ -1,0 +1,9 @@
+{
+	"size": 1,
+	"buildCostMultiplier": 2,
+	"health": 45,
+	"speed": 0.03,
+	"displayedSpeed":  4.2,
+	"requirements": ["copper/3"],
+	"category": "distribution"
+}
