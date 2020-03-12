@@ -9,14 +9,20 @@ const snek = false;
 /* Clear router code do not eat */
 
 const def = {
+	load() {
+		this.super$load();
+		this.bottomRegion = Core.atlas.find("routorio-clear-router-bottom");
+		this.topRegion = Core.atlas.find("routorio-clear-router-top");
+	},
+
 	draw(tile){
 		const entity = tile.ent();
-		Draw.rect(Core.atlas.find("routorio-clear-router-bottom"), tile.drawx(), tile.drawy());
+		Draw.rect(this.bottomRegion, tile.drawx(), tile.drawy());
 		if (entity.items.total() != 0) {
 			Draw.rect(entity.items.first().icon(Cicon.full), tile.drawx(), tile.drawy());
 		}
 		Draw.color(colour);
-		Draw.rect(Core.atlas.find("routorio-clear-router-top"), tile.drawx(), tile.drawy());
+		Draw.rect(this.topRegion, tile.drawx(), tile.drawy());
 		Draw.color();
 	}
 }
