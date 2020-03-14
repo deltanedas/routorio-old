@@ -1,4 +1,3 @@
-print("inverted")
 const invertedRouter = extendContent(Conveyor, "inverted-router", {
 	draw(tile){
 		const entity = tile.entity;
@@ -10,7 +9,6 @@ const invertedRouter = extendContent(Conveyor, "inverted-router", {
 	drawLayer(tile){},
 
 	generateIcons(){
-		return [this.region];
+		return [Core.atlas.find(this.name)];
 	}
 });
-print("router")
