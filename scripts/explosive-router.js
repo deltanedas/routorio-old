@@ -16,6 +16,14 @@ const explosiveRouter = extendContent(Router, "explosive-router", {
 		}
 	},
 
+	onDestroyed(tile) {
+		this.super$onDestroyed(tile);
+
+		Sounds.explosionbig.at(tile);
+		this.snekDetected(tile);
+
+	},
+
 	/* Call when a snek is found and must be eliminated */
 	snekDetected(tile) {
 		Effects.shake(40, 16, tile.worldx(), tile.worldy());
