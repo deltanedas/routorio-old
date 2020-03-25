@@ -4,3 +4,4 @@ require("titanium-double-router");
 require("inverted-router");
 require("clear-router");
 require("explosive-router");
+require("combat-router");

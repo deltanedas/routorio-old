@@ -1,0 +1,39 @@
+{
+	"health": 640,
+	"size": 4,
+	"reload": 45,
+	"range": 300,
+	"rotatespeed": 10,
+	"maxAmmo": 20,
+	"shots": 15,
+	"burstSpacing": 5,
+	"inaccuracy": 5,
+	"xRand": 6,
+	"ammo": {
+		"copper": {
+			"type": "BasicBulletType",
+			"speed": 5,
+			"damage": 10,
+			"bulletWidth": 8,
+			"bulletHeight": 8,
+			"hitEffect": "blastExplosion",
+			"shootEffect": "shootSmall",
+			"smokeEffect": "coreLand",
+			"ammoMultiplier": 1,
+			"homingPower": 3,
+			"homingRange": 60,
+			"knockback": 0.15,
+			"hitShake": 0.25,
+			"drag": -0.01,
+			"bulletSprite": "router",
+			"frontColor": "#ffffff"
+		}
+	},
+	"requirements": [
+		"copper/30",
+		"lead/30",
+		"silicon/125"
+	],
+	"category": "turret",
+	"research": "swarmer"
+}
