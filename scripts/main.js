@@ -5,3 +5,5 @@ require("inverted-router");
 require("clear-router");
 require("explosive-router");
 require("combat-router");
+
+require("drone");

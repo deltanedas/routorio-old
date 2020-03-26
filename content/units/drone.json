@@ -1,21 +1,25 @@
 {
-	"health": 640,
-	"size": 4,
-	"reload": 45,
+	"type": "flyingUnit",
+	"speed": 0.1,
+	"flying": true,
+	"health": 300,
+	"engineSize": 4,
+	"engineOffset": 12,
+	"rotatespeed": 1,
+	"baseRotateSpeed": 0.3,
 	"range": 300,
-	"rotatespeed": 10,
-	"maxAmmo": 20,
-	"shots": 15,
-	"burstSpacing": 5,
-	"inaccuracy": 5,
-	"xRand": 6,
-	"ammo": {
-		"copper": {
+	"weapon": {
+		"name": "router-missiles",
+		"length": 1.5,
+		"reload": 45,
+		"shots": 5,
+		"spacing": 4,
+		"bullet": {
 			"type": "BasicBulletType",
 			"speed": 10,
 			"damage": 10,
-			"bulletWidth": 8,
-			"bulletHeight": 8,
+			"bulletWidth": 6,
+			"bulletHeight": 6,
 			"hitEffect": "blastExplosion",
 			"shootEffect": "shootSmall",
 			"smokeEffect": "coreLand",
@@ -28,12 +32,5 @@
 			"bulletSprite": "router",
 			"frontColor": "#ffffff"
 		}
-	},
-	"requirements": [
-		"copper/30",
-		"lead/30",
-		"silicon/125"
-	],
-	"category": "turret",
-	"research": "swarmer"
+	}
 }

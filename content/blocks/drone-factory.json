@@ -1,0 +1,22 @@
+{
+	"type": "UnitFactory",
+	"unitType": "drone",
+	"size": 6,
+	"produceTime": 1000,
+	"consumes": {
+		"power": 1,
+		"items": {
+			"items": [
+				"silicon/12"
+				"pyratite/6"
+			]
+		}
+	},
+	"requirements": [
+		"graphite/50",
+		"silicon/50",
+		"lead/30"
+	],
+	"category": "units",
+	"research": "dagger-factory"
+}
