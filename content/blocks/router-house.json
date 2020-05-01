@@ -1,0 +1,17 @@
+{
+	"type": "MechPad",
+	"mech": "sexy-router",
+	"size": 2,
+	"health": 200,
+	"consumes": {
+		"power": 150.01666666666667
+	},
+	"requirements": [
+		"silicon/100",
+		"copper/4",
+		"lead/2"
+	],
+	"category": "upgrade",
+	"research": "reverout-factory",
+	"buildTime": 120
+}

@@ -9,7 +9,7 @@ const rotors = [
 	-1, 1
 ];
 
-const drone = extendContent(UnitType, "drone", {
+const drone = extendContent(UnitType, "reverout", {
 	load() {
 		this.weapon.region = Core.atlas.find("clear");
 		this.region = Core.atlas.find(this.name);

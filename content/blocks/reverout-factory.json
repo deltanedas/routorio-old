@@ -1,6 +1,6 @@
 {
 	"type": "UnitFactory",
-	"unitType": "drone",
+	"unitType": "reverout",
 	"size": 6,
 	"produceTime": 1000,
 	"consumes": {
@@ -18,5 +18,5 @@
 		"lead/30"
 	],
 	"category": "units",
-	"research": "dagger-factory"
+	"research": "revenant-factory"
 }
