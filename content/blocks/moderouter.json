@@ -1,0 +1,10 @@
+{
+	"health": 180,
+	"category": "power",
+	"research": "arc-router",
+	"requirements": [
+		"titanium/20",
+		"copper/32",
+		"beryllium/10"
+	]
+}

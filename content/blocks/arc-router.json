@@ -1,0 +1,11 @@
+{
+	"category": "power",
+	"research": "arc",
+	"requirements": [
+		"copper/20",
+		"lead/30",
+		"titanium/15"
+		"silicon/15"
+	],
+	"buildCostMultiplier": 4
+}
