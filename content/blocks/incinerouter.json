@@ -1,0 +1,11 @@
+{
+	"type": "ItemVoid",
+	"category": "distribution",
+	"research": "incinerator",
+	"requirements": [
+		"lead/20",
+		"graphite/5",
+		"silicon/5"
+	],
+	"health": 90
+}
