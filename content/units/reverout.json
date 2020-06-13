@@ -1,5 +1,5 @@
 {
-	"type": "flyingUnit",
+	"type": "FlyingUnit",
 	"speed": 0.1,
 	"flying": true,
 	"health": 300,

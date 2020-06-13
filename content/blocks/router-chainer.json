@@ -1,0 +1,20 @@
+{
+	"size": 3,
+	"produceTime": 600,
+	"consumes": {
+		"power": 2,
+		"items": {
+			"items": [
+				"copper/30"
+				"graphite/12"
+			]
+		}
+	},
+	"requirements": [
+		"graphite/50",
+		"silicon/50",
+		"lead/30"
+	],
+	"category": "units",
+	"research": "crawler-factory"
+}

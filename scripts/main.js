@@ -1,4 +1,4 @@
-require("router");
+require("routorio/router");
 require("double-router");
 require("titanium-double-router");
 require("inverted-router");
@@ -9,3 +9,4 @@ require("arc-router");
 require("ubuntium-router");
 
 require("reverout");
+require("routerpede");
