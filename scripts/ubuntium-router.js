@@ -14,3 +14,5 @@ const ubu = extendContent(Router, "ubuntium-router", {
 		this.super$handleItem(item, tile, source);
 	}
 });
+
+module.exports = ubu;

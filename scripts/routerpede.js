@@ -121,3 +121,8 @@ routerpede.chainRadius = Vars.tilesize;
 const factory = extendContent(UnitFactory, "router-chainer", {
 });
 factory.unitType = routerpede;
+
+module.exports = {
+	routerpede: routerpede,
+	factory: factory
+};

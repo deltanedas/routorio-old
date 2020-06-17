@@ -1,10 +1,17 @@
-var alive = {};
+var lock = false;
 
 const titaniumDoubleRouter = extendContent(Router, "titanium-double-router", {
+	load() {
+		this.super$load();
+
+		this.regions = [];
+		for (var i = 0; i < 2; i++) {
+			this.regions[i] = Core.atlas.find(this.name + "_" + i);
+		}
+	},
+
 	draw(tile) {
-		Draw.rect(Core.atlas.find(this.name + "_" + tile.x % 2),
-			tile.drawx(),
-			tile.drawy());
+		Draw.rect(this.regions[tile.x % 2], tile.drawx(), tile.drawy());
 	},
 
 	generateIcons() {
@@ -13,12 +20,7 @@ const titaniumDoubleRouter = extendContent(Router, "titanium-double-router", {
 
 	calcOffset(tile) {
 		var x = tile.x;
-		if (x % 2 == 0) {
-			x++;
-		} else {
-			x--;
-		}
-		return x;
+		return x + ((x % 2) ? -1 : 1);
 	},
 
 	canPlaceOn(tile){
@@ -31,8 +33,6 @@ const titaniumDoubleRouter = extendContent(Router, "titanium-double-router", {
 		this.super$placed(tile);
 		const x = this.calcOffset(tile);
 		Call.setTile(Vars.world.tile(x, tile.y), this, tile.team, 0);
-		alive[x + "," + tile.y] = true;
-		alive[tile.x + "," + tile.y] = true;
 	},
 
 	removed(tile) {
@@ -40,10 +40,12 @@ const titaniumDoubleRouter = extendContent(Router, "titanium-double-router", {
 		const x = this.calcOffset(tile);
 		const key = tile.x + "," + tile.y;
 		/* Prevent trying to delete the other half infinitely */
-		if (alive[key]) {
-			alive[key] = false;
+		if (!lock) {
+			lock = true;
 			Call.setTile(Vars.world.tile(x, tile.y), Blocks.air, tile.team, 0);
+			lock = false;
 		}
-	},
-	chad: false
+	}
 });
+
+module.exports = titaniumDoubleRouter;

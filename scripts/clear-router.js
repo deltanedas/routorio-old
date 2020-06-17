@@ -53,3 +53,5 @@ if (snek) {
 	});
 }
 const clear = extendContent(Router, "clear-router", def);
+
+module.exports = clear;

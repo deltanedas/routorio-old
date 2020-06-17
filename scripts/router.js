@@ -21,3 +21,5 @@ const opRouter = extendContent(Router, "op-router", {
 		return [Core.atlas.find("routorio-distributor")]; // Vanilla distributor texture
 	}
 });
+
+module.exports = opRouter;

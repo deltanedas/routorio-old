@@ -171,11 +171,7 @@ arc = extendContent(Router, "arc-router", {
 		this.calculateRates(tile);
 	}
 });
-arc.hasPower = arc.outputsPower = arc.sync = true;
-arc.consumesPower = false;
 arc.flags = EnumSet.of(BlockFlag.producer);
-arc.baseExplosiveness = 25;
-arc.itemCapacity = 3;
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
 arc.entityType = prov(() => {
@@ -195,3 +191,9 @@ Blocks.plastaniumWall.description += Core.bundle.get("routorio-plastanium-wall-d
 Blocks.plastaniumWallLarge.description += Core.bundle.get("routorio-plastanium-wall-desc");
 Blocks.surgeWall.description += Core.bundle.get("routorio-surge-wall-desc");
 Blocks.surgeWallLarge.description += Core.bundle.get("routorio-surge-wall-desc");
+
+module.exports = {
+	rates: rates,
+	moderouter: mod,
+	arcRouter: arc
+};

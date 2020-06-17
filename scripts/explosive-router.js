@@ -35,3 +35,5 @@ const explosiveRouter = extendContent(Router, "explosive-router", {
 		Damage.damage(tile.worldx(), tile.worldy(), explosionRadius * Vars.tilesize, explosionDamage * 4);
 	}
 });
+
+module.exports = explosiveRouter;

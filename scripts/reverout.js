@@ -32,3 +32,5 @@ reverout.constructor = prov(() => extend(FlyingUnit, {
 		}
 	}
 }));
+
+module.exports = reverout;

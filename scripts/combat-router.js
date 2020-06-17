@@ -14,3 +14,5 @@ const combatRouter = extendContent(BurstTurret, "combat-router", {
 		}
 	}
 });
+
+module.exports = combatRouter;

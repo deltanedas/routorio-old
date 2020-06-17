@@ -10,3 +10,5 @@ const doubleRouter = extendContent(Router, "double-router", {
 		return [Core.atlas.find(this.name)];
 	}
 });
+
+module.exports = doubleRouter;

@@ -12,3 +12,5 @@ const invertedRouter = extendContent(Conveyor, "inverted-router", {
 		return [Core.atlas.find(this.name)];
 	}
 });
+
+module.exports = invertedRouter;
