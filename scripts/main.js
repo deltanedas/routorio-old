@@ -1,12 +1,20 @@
-require("routorio/router");
-require("double-router");
-require("titanium-double-router");
-require("inverted-router");
-require("clear-router");
-require("explosive-router");
-require("combat-router");
-require("arc-router");
-require("ubuntium-router");
+this.global.routorio = {};
+function add(names) {
+	for (var i in names) {
+		var name = names[i];
+		try {
+			this.global.routorio[name] = require(name);
+		} catch (e) {
+			Log.err("Failed to load routorio script {0}.js: {1}", name, e);
+		}
+	}
+}
 
-require("reverout");
-require("routerpede");
+// Blocks
+add(["router", "double-router", "titanium-double-router",
+	"inverted-router", "clear-router", "explosive-router",
+	"combat-router", "arc-router", "ubuntium-router",
+	"surge-router"]);
+
+// Units
+add(["reverout", "routerpede"]);

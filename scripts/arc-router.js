@@ -60,6 +60,18 @@ const rates = {
 		bonuses: {
 			arc: -0.02
 		}
+	},
+	// increase arcing and power dramatically
+	surge: {
+		apply: tile => adjacent(tile,
+			block => block.id == this.global.routorio["surge-router"].id
+				|| block instanceof SurgeWall),
+		bonuses: {
+			gen: 2
+		},
+		modifiers: {
+			arc: 1.6
+		}
 	}
 };
 
@@ -120,7 +132,7 @@ arc = extendContent(Router, "arc-router", {
 	consume(tile, item) {
 		const rates = tile.entity.rates;
 		if (Mathf.chance(rates.arc)) {
-			Lightning.create(Team.derelict, Pal.lancerLaser, 120 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 25));
+			Lightning.create(Team.derelict, Pal.lancerLaser, 60 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 25));
 		}
 		if (Mathf.chance(rates.cons)) {
 			tile.entity.items.take();
@@ -176,3 +188,9 @@ arc.entityType = prov(() => {
 	ent._progress = 0;
 	return ent;
 });
+
+// Append as to not override other mods.
+Blocks.plastaniumWall.description += Core.bundle.get("routorio-plastanium-wall-desc");
+Blocks.plastaniumWallLarge.description += Core.bundle.get("routorio-plastanium-wall-desc");
+Blocks.surgeWall.description += Core.bundle.get("routorio-surge-wall-desc");
+Blocks.surgeWallLarge.description += Core.bundle.get("routorio-surge-wall-desc");

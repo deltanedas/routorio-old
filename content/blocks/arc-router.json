@@ -7,5 +7,12 @@
 		"titanium/15"
 		"silicon/15"
 	],
-	"buildCostMultiplier": 4
+	"buildCostMultiplier": 16,
+	"health": 130,
+	"sync": true,
+	"hasPower": true,
+	"outputsPower": true,
+	"consumesPower": false,
+	"baseExplosiveness": 25,
+	"itemCapacity": 3
 }
