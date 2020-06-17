@@ -54,13 +54,6 @@ const rates = {
 			cons: 1.2
 		}
 	},
-	// decrease arcing
-	plast: {
-		apply: tile => adjacent(tile, block => block.insulated),
-		bonuses: {
-			arc: -0.02
-		}
-	},
 	// increase arcing and power dramatically
 	surge: {
 		apply: tile => adjacent(tile,
@@ -71,6 +64,13 @@ const rates = {
 		},
 		modifiers: {
 			arc: 1.6
+		}
+	},
+	// decrease arcing
+	plast: {
+		apply: tile => adjacent(tile, block => block.insulated),
+		bonuses: {
+			arc: -0.02
 		}
 	}
 };
