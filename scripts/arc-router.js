@@ -36,7 +36,8 @@ const rates = {
 	mod: {
 		apply: tile => adjacent(tile, block => block.id == mod.id),
 		bonuses: {
-			arc: 0.02
+			arc: 0.02,
+			gen: 0.25
 		},
 		modifiers: {
 			gen: 1.4
