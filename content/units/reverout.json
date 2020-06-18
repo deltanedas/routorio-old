@@ -2,7 +2,7 @@
 	"type": "FlyingUnit",
 	"speed": 0.1,
 	"flying": true,
-	"health": 300,
+	"health": 1000,
 	"engineSize": 4,
 	"engineOffset": 12,
 	"rotatespeed": 1,
