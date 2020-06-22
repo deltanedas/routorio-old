@@ -48,17 +48,6 @@ const rates = {
 			cons: 0.15
 		}
 	},
-	// bonuses applied for adjacent Moderouters
-	mod: {
-		apply: tile => adjacent(tile, block => block.id == mod.id),
-		bonuses: {
-			arc: 0.02,
-			gen: 0.25
-		},
-		modifiers: {
-			gen: 1.4
-		}
-	},
 	// bonuses applied for adjacent Arc Routers
 	chain: {
 		apply: tile => adjacent(tile, block => block.id == arc.id),
@@ -88,6 +77,17 @@ const rates = {
 		apply: tile => adjacent(tile, block => block.insulated),
 		bonuses: {
 			arc: -0.02
+		}
+	},
+	// bonuses applied for adjacent Moderouters
+	mod: {
+		apply: tile => adjacent(tile, block => block.id == mod.id),
+		bonuses: {
+			arc: 0.02,
+			gen: 0.25
+		},
+		modifiers: {
+			gen: 1.4
 		}
 	}
 };
@@ -154,7 +154,7 @@ arc = extendContent(Router, "arc-router", {
 		if (Mathf.chance(rates.cons)) {
 			tile.entity.items.take();
 		}
-		tile.entity.progress = 1;
+		tile.entity.progress = Math.min(tile.entity.progress + 0.2, 1);
 	},
 
 	calculateRates(tile) {
