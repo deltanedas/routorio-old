@@ -1,5 +1,6 @@
 {
 	"size": 1,
 	"requirements": ["copper/3"],
-	"category": "distribution"
+	"category": "distribution",
+	"research": "clear-router"
 }

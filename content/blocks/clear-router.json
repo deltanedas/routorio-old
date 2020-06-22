@@ -2,6 +2,6 @@
 	"size": 1,
 	"health": 25,
 	"requirements": ["copper/3", "metaglass/1"],
-	"research": "router",
+	"research": "op-router",
 	"category": "distribution"
 }

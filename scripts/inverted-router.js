@@ -15,17 +15,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 const invertedRouter = extendContent(Conveyor, "inverted-router", {
-	draw(tile){
+	draw(tile) {
 		const entity = tile.entity;
 		const rot = entity.clogHeat <= 0.5 ? ((Time.time() * this.speed * 8 * entity.timeScale) % 4) : 0;
 		Draw.rect(this.region, tile.drawx(), tile.drawy(), rot); // Instead of an animated texture, it rotates when active
 	},
 
-	// items are hidden like in a router
-	drawLayer(tile){},
+	drawRequestRegion(req, list) {
+		const scl = this.region.getWidth() * Draw.scl * req.animScale;
+		Draw.rect(this.region, req.drawx(), req.drawy(), scl, scl);
+	},
 
-	generateIcons(){
+	// items are hidden like in a router
+	drawLayer(tile) {},
+
+	generateIcons() {
 		return [Core.atlas.find(this.name)];
+	},
+
+	icon(cicon) {
+		return Core.atlas.find(this.name);
 	}
 });
 

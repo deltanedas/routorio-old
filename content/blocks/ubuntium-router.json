@@ -1,11 +1,11 @@
 {
 	"health": 150,
-	"category": "crafting",
-	"research": "shock-mine",
-	"buildCostMultiplier": 10,
+	"buildCostMultiplier": 6,
 	"requirements": [
 		"graphite/20",
 		"titanium/12",
 		"copper/30"
-	]
+	],
+	"category": "crafting",
+	"research": "inverted-router"
 }

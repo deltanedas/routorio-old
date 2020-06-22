@@ -1,6 +1,4 @@
 {
-	"category": "distribution",
-	"research": "router",
 	"requirements": [
 		"silicon/4",
 		"surge-alloy/3"
@@ -10,5 +8,7 @@
 	"consumes": {
 		"power": 0.25
 	},
-	"hasPower": true
+	"hasPower": true,
+	"category": "distribution",
+	"research": "ubuntium-router"
 }
