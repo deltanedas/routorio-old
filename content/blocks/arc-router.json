@@ -13,6 +13,6 @@
 	"hasPower": true,
 	"outputsPower": true,
 	"consumesPower": false,
-	"baseExplosiveness": 70,
+	"baseExplosiveness": 5,
 	"itemCapacity": 3
 }
