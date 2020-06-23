@@ -25,13 +25,13 @@ const directions = [
 
 const arcMultipliers = {
 	// Conductors increase arcs
-	lead: 1.5,
-	copper: 2.5,
-	titanium: 2.5,
-	silicon: 3,
-	"surge-alloy": 3,
+	lead: () => 2,
+	copper: () => 2,
+	titanium: () => 3,
+	silicon: () => 3,
+	"surge-alloy": () => 4,
 	// Plastanium reduces arcs
-	plastanium: 0.25
+	plastanium: () => Mathf.round(Mathf.random(0, 1))
 };
 
 function adjacent(tile, valid) {
@@ -148,7 +148,7 @@ arc = extendContent(Router, "arc-router", {
 	update(tile) {
 		this.super$update(tile);
 		const ent = tile.entity;
-		ent.progress = Mathf.lerp(ent.progress, 0, 0.005);
+		ent.progress = Math.max(ent.progress - 0.005, 0);
 	},
 
 	draw(tile) {
@@ -170,14 +170,14 @@ arc = extendContent(Router, "arc-router", {
 
 	arc(tile, item) {
 		const rates = tile.entity.rates;
-		const mul = arcMultipliers[item.name];
-		var arcCount = Mathf.random(1, 3);
-		if (mul !== undefined) {
-			arcCount *= mul;
+		var mul = arcMultipliers[item.name];
+		if (mul === undefined) {
+			mul = 1;
+		} else {
+			mul = mul();
 		}
-
-		for (var i = 0; i < arcCount; i++) {
-			Lightning.create(Team.derelict, item.color, 20, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
+		for (var i = 0; i < mul; i++) {
+			Lightning.create(Team.derelict, item.color, 5 * mul, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
 		}
 	},
 
