@@ -214,7 +214,7 @@ arc = extendContent(Router, "arc-router", {
 	onDestroyed(tile) {
 		this.super$onDestroyed(tile);
 		// Spawn lots of arcs
-		for (var i = 0; i < 3; i++) {
+		for (var i = 0; i < 10; i++) {
 			this.arc(tile, Items.surgealloy);
 		}
 	}
