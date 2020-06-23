@@ -23,6 +23,17 @@ const directions = [
 	{x: -1, y: 0}
 ];
 
+const arcMultipliers = {
+	// Conductors increase arcs
+	lead: 1.5,
+	copper: 2.5,
+	titanium: 2.5,
+	silicon: 3,
+	"surge-alloy": 3,
+	// Plastanium reduces arcs
+	plastanium: 0.25
+};
+
 function adjacent(tile, valid) {
 	var adj = 0;
 	var near, dir;
@@ -149,12 +160,25 @@ arc = extendContent(Router, "arc-router", {
 	consume(tile, item) {
 		const rates = tile.entity.rates;
 		if (Mathf.chance(rates.arc)) {
-			Lightning.create(Team.derelict, Pal.lancerLaser, 60 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 25));
+			this.arc(tile, item);
 		}
 		if (Mathf.chance(rates.cons)) {
 			tile.entity.items.take();
 		}
 		tile.entity.progress = Math.min(tile.entity.progress + 0.2, 1);
+	},
+
+	arc(tile, item) {
+		const rates = tile.entity.rates;
+		const mul = arcMultipliers[item ? item.name : null];
+		var arcCount = Mathf.random(1, 3);
+		if (mul !== undefined) {
+			arcCount *= mul;
+		}
+
+		for (var i = 0; i < arcCount; i++) {
+			Lightning.create(Team.derelict, Pal.lancerLaser, 60 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
+		}
 	},
 
 	calculateRates(tile) {
@@ -185,6 +209,14 @@ arc = extendContent(Router, "arc-router", {
 	onProximityUpdate(tile) {
 		this.super$onProximityUpdate(tile);
 		this.calculateRates(tile);
+	},
+
+	onDestroyed(tile) {
+		this.super$onDestroyed(tile);
+		// Spawn lots of arcs
+		for (var i = 0; i < 3; i++) {
+			this.arc(tile, Items.surgealloy);
+		}
 	}
 });
 arc.flags = EnumSet.of(BlockFlag.producer);
@@ -211,5 +243,6 @@ Blocks.surgeWallLarge.description += Core.bundle.get("routorio-surge-wall-desc")
 module.exports = {
 	rates: rates,
 	moderouter: mod,
-	arcRouter: arc
+	arcRouter: arc,
+	arcMultipliers: arcMultipliers
 };
