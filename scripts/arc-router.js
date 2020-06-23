@@ -40,7 +40,7 @@ function adjacent(tile, valid) {
 	for (var i in directions) {
 		dir = directions[i];
 		near = Vars.world.tile(tile.x + dir.x, tile.y + dir.y);
-		if (valid(near.block())) adj++;
+		if (near && valid(near.block())) adj++;
 	}
 	return adj;
 }
