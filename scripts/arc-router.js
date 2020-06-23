@@ -177,7 +177,7 @@ arc = extendContent(Router, "arc-router", {
 		}
 
 		for (var i = 0; i < arcCount; i++) {
-			Lightning.create(Team.derelict, item.color, 60 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
+			Lightning.create(Team.derelict, item.color, 20 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
 		}
 	},
 
