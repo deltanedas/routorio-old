@@ -170,14 +170,14 @@ arc = extendContent(Router, "arc-router", {
 
 	arc(tile, item) {
 		const rates = tile.entity.rates;
-		const mul = arcMultipliers[item ? item.name : null];
+		const mul = arcMultipliers[item.name];
 		var arcCount = Mathf.random(1, 3);
 		if (mul !== undefined) {
 			arcCount *= mul;
 		}
 
 		for (var i = 0; i < arcCount; i++) {
-			Lightning.create(Team.derelict, Pal.lancerLaser, 60 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
+			Lightning.create(Team.derelict, item.color, 60 * rates.arc, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
 		}
 	},
 
