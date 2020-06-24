@@ -26,7 +26,7 @@ const explosiveRouter = extendContent(Router, "explosive-router", {
 
 		for (var i = 0; i < 8; i += 2) {
 			near = Vars.world.tile(tile.x + rot[i], tile.y + rot[i + 1]);
-			if (near.block() instanceof Router) {
+			if (near && near.block() instanceof Router) {
 				this.snekDetected(near);
 				// Prevent stack overflow from explosive routers exploding
 				Core.app.post(run(() => tile.remove()));
