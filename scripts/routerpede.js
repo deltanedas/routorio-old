@@ -22,24 +22,22 @@ weapon.alternate = false;
 weapon.ejectEffect = Fx.coreLand;
 weapon.bullet = Bullets.standardCopper;
 
-const routerpede = extendContent(UnitType, "routerpede", {
+const routerpede = new JavaAdapter(UnitType, {
 	load() {
 		this.region = Core.atlas.find("router");
 		this.legRegion = Core.atlas.find(this.name + "-leg");
 		this.weapon.region = this.baseRegion = Core.atlas.find("clear");
 	}
-});
-routerpede.speed = 0.1;
-routerpede.health = 80;
-routerpede.weapon = weapon;
-routerpede.constructor = prov(() => {
+}, "routerpede", prov(() => {
 	const unit = extend(GroundUnit, {
 		update() {
 			this.super$update();
 			const closest = Units.closest(this.team, this.x, this.y, routerpede.chainRadius, boolf(unit => {
 				return unit !== this && unit.routerSegments !== undefined
-				// The bigger chain consumes the smaller one
-					&& unit.routerSegments().length <= this.segments.length;
+					// The bigger chain consumes the smaller one
+					&& unit.routerSegments().length <= this.segments.length
+					// Max 255 segments
+					&& unit.routerSegments().length + this.segments.length < 256;
 			}));
 
 			if (closest) {
@@ -84,6 +82,21 @@ routerpede.constructor = prov(() => {
 				this.pop();
 			}
 		},
+
+		/* TODO: fix reading
+		writeSave(stream, net) {
+			this.super$writeSave(stream, net === undefined ? false : net);
+			stream.writeByte(this.segments.length);
+		},
+
+		readSave(stream, version) {
+			this.super$readSave(stream, version);
+			const count = stream.readByte();
+			// Saving each segment is wasteful, just recreate them
+			for (var i = 0; i < count; i++) {
+				this.push();
+			}
+		}, */
 
 		// Lerp and draw a segment
 		updateseg(i, to, lerping) {
@@ -130,9 +143,12 @@ routerpede.constructor = prov(() => {
 	});
 	unit.segments = [];
 	return unit;
-});
+}));
 // 1 tile radius for absorbing other chain routers
 routerpede.chainRadius = Vars.tilesize;
+routerpede.speed = 0.1;
+routerpede.health = 80;
+routerpede.weapon = weapon;
 
 const factory = extendContent(UnitFactory, "router-chainer", {
 });
