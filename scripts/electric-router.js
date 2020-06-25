@@ -138,7 +138,7 @@ const elec = extendContent(Router, "electric-router", {
 	// Get comparison number from the mode
 	getPowerFor(entity) {
 		switch (entity.mode) {
-		case modes.buffered:
+		case modes.buffer:
 			return entity.power.status * maxNumber;
 		case modes.rate:
 			return entity.power.graph.getPowerBalance() * 60;
