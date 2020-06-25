@@ -1,0 +1,14 @@
+{
+	"category": "distribution",
+	"research": "ubuntium-router"
+	"requirements": [
+		"copper/10",
+		"lead/15",
+		"silicon/10"
+	],
+
+	"hasPower": true,
+	"consumesPower": true,
+	"outputsPower": true,
+	"configurable": true
+}
