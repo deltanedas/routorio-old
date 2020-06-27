@@ -40,7 +40,11 @@ function adjacent(tile, valid) {
 	for (var i in directions) {
 		dir = directions[i];
 		near = Vars.world.tile(tile.x + dir.x, tile.y + dir.y);
-		if (near && valid(near.block())) adj++;
+		if (!near) continue;
+		if (near.block() instanceof BlockPart) {
+			near = near.linked();
+		}
+		if (valid(near.block())) adj++;
 	}
 	return adj;
 }
@@ -177,7 +181,7 @@ arc = extendContent(Router, "arc-router", {
 			mul = mul();
 		}
 		for (var i = 0; i < mul; i++) {
-			Lightning.create(Team.derelict, item.color, 7.5, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20));
+			Lightning.create(Team.derelict, item.color, 7.5, tile.drawx(), tile.drawy(), Mathf.random(0, 360), Mathf.random(5, 20 * mul));
 		}
 	},
 
