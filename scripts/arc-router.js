@@ -42,7 +42,7 @@ function adjacent(tile, valid) {
 		near = Vars.world.tile(tile.x + dir.x, tile.y + dir.y);
 		if (!near) continue;
 		if (near.block() instanceof BlockPart) {
-			near = near.linked();
+			near = near.link();
 		}
 		if (valid(near.block())) adj++;
 	}
@@ -162,14 +162,19 @@ arc = extendContent(Router, "arc-router", {
 	},
 
 	consume(tile, item) {
-		const rates = tile.entity.rates;
+		const ent = tile.entity;
+		const rates = ent.rates;
+
 		if (Mathf.chance(rates.arc)) {
 			this.arc(tile, item);
 		}
 		if (Mathf.chance(rates.cons)) {
-			tile.entity.items.take();
+			if (Vars.ui) {
+				Effects.effect(Fx.lancerLaserCharge, item.color, tile.drawx(), tile.drawy(), Mathf.random(0, 360));
+			}
+			ent.items.take();
 		}
-		tile.entity.progress = Math.min(tile.entity.progress + 0.2, 1);
+		ent.progress = Math.min(ent.progress + 0.2, 1);
 	},
 
 	arc(tile, item) {
