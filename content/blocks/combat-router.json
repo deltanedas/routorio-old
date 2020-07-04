@@ -2,10 +2,10 @@
 	"health": 640,
 	"size": 4,
 	"reload": 45,
-	"range": 300,
+	"range": 200,
 	"rotatespeed": 10,
-	"maxAmmo": 20,
-	"shots": 15,
+	"maxAmmo": 10,
+	"shots": 6,
 	"burstSpacing": 5,
 	"inaccuracy": 5,
 	"xRand": 6,
@@ -20,8 +20,6 @@
 			"shootEffect": "shootSmall",
 			"smokeEffect": "coreLand",
 			"ammoMultiplier": 1,
-			"homingPower": 3,
-			"homingRange": 60,
 			"knockback": 0.15,
 			"hitShake": 0.25,
 			"drag": -0.01,
@@ -35,5 +33,5 @@
 		"silicon/125"
 	],
 	"category": "turret",
-	"research": "swarmer"
+	"research": "salvo"
 }
