@@ -140,10 +140,11 @@ arc = extendContent(Router, "arc-router", {
 	},
 
 	handleItem(item, tile, source) {
-		this.super$handleItem(item, tile, source);
 		// Only accept core-storable items
 		if (item.type == ItemType.material) {
-			this.consume(tile, item);
+			if (!this.consume(tile, item)) {
+				this.super$handleItem(item, tile, source);
+			}
 		}
 	},
 
@@ -164,6 +165,7 @@ arc = extendContent(Router, "arc-router", {
 	consume(tile, item) {
 		const ent = tile.entity;
 		const rates = ent.rates;
+		var consumed = false;
 
 		if (Mathf.chance(rates.arc)) {
 			this.arc(tile, item);
@@ -173,8 +175,10 @@ arc = extendContent(Router, "arc-router", {
 				Effects.effect(Fx.lancerLaserCharge, item.color, tile.drawx(), tile.drawy(), Mathf.random(0, 360));
 			}
 			ent.items.take();
+			consumed = true;
 		}
 		ent.progress = Math.min(ent.progress + 0.2, 1);
+		return consumed;
 	},
 
 	arc(tile, item) {
