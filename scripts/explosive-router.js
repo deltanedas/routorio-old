@@ -50,7 +50,9 @@ const explosiveRouter = extendContent(Router, "explosive-router", {
 				Effects.effect(Fx.nuclearcloud, wx, wy);
 			}));
 		}
-		Damage.damage(wx, wy, explosionRadius * Vars.tilesize, explosionDamage);
+		Core.app.post(run(() => {
+			Damage.damage(wx, wy, explosionRadius * Vars.tilesize, explosionDamage);
+		}));
 	}
 });
 
