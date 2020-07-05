@@ -14,18 +14,20 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+(() => {
+
 const explosionRadius = 10;
 const explosionDamage = 100;
 
-const rot = [0, 1, 1, 0, 0, -1, -1, 0];
+const dirs = require("routorio/lib/dirs");
 
 const explosiveRouter = extendContent(Router, "explosive-router", {
 	onProximityUpdate(tile) {
 		this.super$onProximityUpdate(tile);
-		var near;
 
-		for (var i = 0; i < 8; i += 2) {
-			near = Vars.world.tile(tile.x + rot[i], tile.y + rot[i + 1]);
+		for (var i in dirs) {
+			var near = Vars.world.tile(tile.x + dirs[i].x, tile.y + dirs[i].y);
 			if (near && near.block() instanceof Router) {
 				this.snekDetected(near);
 				// Prevent stack overflow from explosive routers exploding
@@ -57,3 +59,5 @@ const explosiveRouter = extendContent(Router, "explosive-router", {
 });
 
 module.exports = explosiveRouter;
+
+})();

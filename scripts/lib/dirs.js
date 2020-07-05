@@ -15,23 +15,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-this.global.routorio = {};
-function add(names) {
-	for (var i in names) {
-		var name = names[i];
-		try {
-			this.global.routorio[name] = require("content/" + name);
-		} catch (e) {
-			Log.err("Failed to load routorio script {0}.js: {1}", name, e);
-		}
-	}
-}
-
-// Blocks
-add(["router", "double-router", "titanium-double-router",
-	"inverted-router", "clear-router", "explosive-router",
-	"combat-router", "arc-router", "ubuntium-router",
-	"electric-router", "surge-router"]);
-
-// Units
-add(["reverout", "routerpede"]);
+module.exports = [
+	{x: 0, y: 1},
+	{x: 1, y: 0},
+	{x: 0, y: -1},
+	{x: -1, y: 0}
+];

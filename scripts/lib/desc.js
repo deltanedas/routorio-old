@@ -15,23 +15,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-this.global.routorio = {};
-function add(names) {
-	for (var i in names) {
-		var name = names[i];
-		try {
-			this.global.routorio[name] = require("content/" + name);
-		} catch (e) {
-			Log.err("Failed to load routorio script {0}.js: {1}", name, e);
-		}
-	}
-}
+/* Append a localized description to the description of a some content.
+   Bundle key is in the form TYPE.NAME.description.MODNAME
+   Example for router: block.router.description.routorio */
 
-// Blocks
-add(["router", "double-router", "titanium-double-router",
-	"inverted-router", "clear-router", "explosive-router",
-	"combat-router", "arc-router", "ubuntium-router",
-	"electric-router", "surge-router"]);
-
-// Units
-add(["reverout", "routerpede"]);
+module.exports = (content) => {
+	const key = content.contentType + "." + content.name + ".description." + modName;
+	const append = Core.bundle.get(key);
+	content.description += append;
+	return append;
+};

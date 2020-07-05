@@ -14,19 +14,19 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-// This script contains every arc reoucter module
 
-const directions = [
-	{x: 0, y: 1},
-	{x: 1, y: 0},
-	{x: 0, y: -1},
-	{x: -1, y: 0}
-];
+// This script contains every arc reoucter module
+(() => {
+
+const desc = require("routorio/lib/desc");
+
+const directions = require("routorio/lib/dirs");
 
 const arcMultipliers = {
 	// Conductors increase arcs
 	lead: () => 2,
 	copper: () => 2,
+	"routorio-beryllium": () => 2,
 	titanium: () => 3,
 	silicon: () => 3,
 	"surge-alloy": () => 4,
@@ -60,7 +60,7 @@ const rates = {
 			// 3% chance to arc for an item
 			arc: 0.03,
 			// 15% chance to consume item
-			cons: 0.15
+			burnup: 0.15
 		}
 	},
 	// bonuses applied for adjacent Arc Routers
@@ -72,7 +72,7 @@ const rates = {
 			arc: 0.01
 		},
 		modifiers: {
-			cons: 1.2
+			burnup: 1.2
 		}
 	},
 	// increase arcing and power dramatically
@@ -94,6 +94,13 @@ const rates = {
 			arc: -0.02
 		}
 	},
+	// decrease fuel burnup
+	phase: {
+		apply: tile => adjacent(tile, block => block instanceof DeflectorWall),
+		modifiers: {
+			burnup: 0.5
+		}
+	},
 	// bonuses applied for adjacent Moderouters
 	mod: {
 		apply: tile => adjacent(tile, block => block.id == mod.id),
@@ -107,10 +114,9 @@ const rates = {
 	}
 };
 
-// Moderouters increase power and arc chance but not item consumption
+// Moderouters increase power and arc chance but not item burnup
 // Just here to make it easy to check for it.
-mod = extendContent(Router, "moderouter", {
-});
+mod = new Router("moderouter");
 
 arc = extendContent(Router, "arc-router", {
 	setBars() {
@@ -123,10 +129,17 @@ arc = extendContent(Router, "arc-router", {
 		)));
 
 		this.bars.add("arc-chance", func(entity => new Bar(
-			prov(() => Core.bundle.format("bar.arc-chance",
+			prov(() => Core.bundle.format("stat.arc-chance",
 				Strings.fixed(entity.rates.arc * 100, 2))),
 			prov(() => Pal.lancerLaser),
 			floatp(() => entity.rates.arc)
+		)));
+
+		this.bars.add("fuel-burnup", func(entity => new Bar(
+			prov(() => Core.bundle.format("stat.fuel-burnup",
+				Math.round(entity.rates.burnup * 100))),
+			prov(() => Items.surgealloy.color),
+			floatp(() => entity.rates.burnup)
 		)));
 	},
 
@@ -136,7 +149,7 @@ arc = extendContent(Router, "arc-router", {
 		// base
 		this.stats.add(BlockStat.basePowerGeneration, rates.base.bonuses.gen * 60, StatUnit.powerSecond);
 		this.stats.add(BlockStat.powerDamage, Core.bundle.get("stat.arc-chance"), rates.base.bonuses.arc * 100);
-		this.stats.add(BlockStat.input, Core.bundle.get("stat.cons"), rates.base.bonuses.cons * 100);
+		this.stats.add(BlockStat.input, Core.bundle.get("stat.fuel-burnup"), rates.base.bonuses.burnup * 100);
 	},
 
 	handleItem(item, tile, source) {
@@ -170,7 +183,7 @@ arc = extendContent(Router, "arc-router", {
 		if (Mathf.chance(rates.arc)) {
 			this.arc(tile, item);
 		}
-		if (Mathf.chance(rates.cons)) {
+		if (Mathf.chance(rates.burnup)) {
 			if (Vars.ui) {
 				Effects.effect(Fx.lancerLaserCharge, item.color, tile.drawx(), tile.drawy(), Mathf.random(0, 360));
 			}
@@ -247,11 +260,10 @@ arc.entityType = prov(() => {
 	return ent;
 });
 
-// Append as to not override other mods.
-Blocks.plastaniumWall.description += Core.bundle.get("routorio-plastanium-wall-desc");
-Blocks.plastaniumWallLarge.description += Core.bundle.get("routorio-plastanium-wall-desc");
-Blocks.surgeWall.description += Core.bundle.get("routorio-surge-wall-desc");
-Blocks.surgeWallLarge.description += Core.bundle.get("routorio-surge-wall-desc");
+/* Add affinities to their descriptions */
+Blocks.plastaniumWallLarge.description += desc(Blocks.plastaniumWall);
+Blocks.surgeWallLarge.description += desc(Blocks.surgeWall);
+Blocks.phaseWallLarge.description += desc(Blocks.phaseWall);
 
 module.exports = {
 	rates: rates,
@@ -259,3 +271,5 @@ module.exports = {
 	arcRouter: arc,
 	arcMultipliers: arcMultipliers
 };
+
+})();
