@@ -40,6 +40,16 @@ try {
 		"    Phase Fabric: [coral]Fuel burnup[] [green]halved[]",
 		"    Surge Alloy: [yellow]Power[] [green]increased[], [red]Arcing Chance multiplied[]"
 	]);
+
+	rtfm.addPage("$block.routorio-electric-router.name", [
+		"# Configuration",
+		"There are 3 parts to an electric router: mode, operation and number.",
+		"Mode is simple, it's either power stored in the router (battery) or power rate. (power node)",
+		"Operaration is what it sounds like, which mathematical operator to use.",
+		"The number at the end is the comparison number.\n",
+		"The result is a simple expression like \"active if storage greater than 4k\""
+	]);
+
 	module.exports = true;
 } catch (e) {
 	print("Error " + e)
