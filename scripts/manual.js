@@ -17,6 +17,7 @@
 
 try {
 	const rtfm = require("rtfm/library");
+
 	rtfm.addPage("Arc Reoucter", [
 		"# Power generation",
 		"Arc routers generate power only when items move, so a clogged arc router is dead.",
@@ -26,6 +27,7 @@ try {
 		"# Fuel",
 		"[sky]Arc Routers[] will only accept core-storable materials as fuel.",
 		"Item conductivity determines [red]lightning arc[] length and count.",
+		"Arcs do a lot of damage so make sure to have lots of menders on-site.",
 
 		"# Bars",
 		"[sky]Arc routers[] display the current [red]Arcing[] and [coral]Fuel burnup[] chances.",
@@ -36,9 +38,10 @@ try {
 		"    [sky]Arc Router[]: [red]Arcing Chance[] and [yellow]Power[] [orange]increased[], [coral]Fuel Burnup [red]multiplied[]",
 		"    Plastanium: [red]Arcing Chance[] [green]decreased[]",
 		"    Phase Fabric: [coral]Fuel burnup[] [green]halved[]",
-		"    Surge Alloy: [yellow]Power[] [green]increased[], [red]Arcing Chance multiplied[]");
+		"    Surge Alloy: [yellow]Power[] [green]increased[], [red]Arcing Chance multiplied[]"
 	]);
 	module.exports = true;
 } catch (e) {
+	print("Error " + e)
 	module.exports = false;
 }
