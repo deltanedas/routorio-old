@@ -22,7 +22,7 @@ try {
 		"# Power generation",
 		"Arc routers generate power only when items move, so a clogged arc router is dead.",
 		"This means that they may take some time to fully shut down.",
-		"Hint: you can control item flow with copper conveyors and electric routers",
+		"[stat]Hint: you can control item flow with copper conveyors and electric routers.[]",
 
 		"# Fuel",
 		"[sky]Arc Routers[] will only accept core-storable materials as fuel.",
