@@ -14,6 +14,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 // Similar to the chain blaster.
 const weapon = new Weapon();
 weapon.name = "chain-router";
@@ -41,6 +42,7 @@ const routerpede = new JavaAdapter(UnitType, {
 			}));
 
 			if (closest) {
+				print("Closest unit is " + closest)
 				// Merge the others segments
 				const segments = closest.routerSegments();
 				for (var i in segments) {
@@ -116,6 +118,7 @@ const routerpede = new JavaAdapter(UnitType, {
 
 		// Add a router to the chain
 		push() {
+			print("Add to " + this)
 			const last = this.segments[this.segments.length - 1] || this;
 			this.segments.push({
 				x: last.x - Angles.trnsx(last.rotation, Vars.tilesize),

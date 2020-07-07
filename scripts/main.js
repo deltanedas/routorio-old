@@ -28,6 +28,7 @@ function add(names) {
 }
 
 // Blocks
+require("manual");
 add(["router", "double-router", "titanium-double-router",
 	"inverted-router", "clear-router", "explosive-router",
 	"combat-router", "arc-router", "ubuntium-router",
