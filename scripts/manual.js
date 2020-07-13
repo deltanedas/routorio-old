@@ -19,6 +19,8 @@ try {
 	const rtfm = require("rtfm/library");
 
 	rtfm.addPage("Arc Reoucter", [
+		"## Routorio manual", "~{router}",
+
 		"# Power generation",
 		"Arc routers generate power only when items move, so a clogged arc router is dead.",
 		"This means that they may take some time to fully shut down.",
@@ -42,6 +44,8 @@ try {
 	]);
 
 	rtfm.addPage("$block.routorio-electric-router.name", [
+		"## Routorio manual", "~{router}",
+
 		"# Configuration",
 		"There are 3 parts to an electric router: mode, operation and number.",
 		"Mode is simple, it's either power stored in the router (battery) or power rate. (power node)",
@@ -52,6 +56,6 @@ try {
 
 	module.exports = true;
 } catch (e) {
-	print("Error " + e)
+	Log.warn("Please install [#00aaff]DeltaNedas/rtfm[] to view routorio's manual pages.");
 	module.exports = false;
 }

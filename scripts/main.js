@@ -37,4 +37,4 @@ add(["router", "double-router", "titanium-double-router",
 add(["reverout", "routerpede"]);
 
 // Misc
-require("manual");
+require("routorio/manual");
