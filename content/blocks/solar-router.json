@@ -1,0 +1,13 @@
+{
+	"category": "power",
+	"research": "ubuntium-router",
+	"requirements": [
+		"copper/10",
+		"lead/3",
+		"silicon/12"
+	],
+
+	"hasPower": true,
+	"outputsPower": true,
+	"consumesPower": false
+}
