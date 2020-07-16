@@ -1,4 +1,9 @@
 MSCH := pictoschem
+SCHEMATICS := $(XDG_DATA_HOME)/Mindustry/schematics
+# Android, Termux
+ifeq ($(shell uname -o),Android)
+	SCHEMATICS := /sdcard/Android/data/io.anuke.mindustry/files/schematics
+endif
 
 # Exclude block portions, unit legs, etc
 
@@ -25,3 +30,6 @@ schems/%.msch: sprites/%.png
 
 clean:
 	rm -rf schems
+
+install: all
+	cp -rf $(schems) $(SCHEMATICS)/
