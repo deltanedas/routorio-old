@@ -8,7 +8,8 @@ endif
 # Exclude block portions, unit legs, etc
 
 dist := clear-router colossus double-router explosive-router \
-	incinerouter inverted-router op-router titanium-double-router
+	incinerouter inverted-router op-router titanium-double-router \
+	alien-router
 power := arc-router electric-router moderouter solar-router surge-router
 prod := ubuntium-router
 

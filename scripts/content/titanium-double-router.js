@@ -14,9 +14,12 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+(() => {
+
 var lock = false;
 
-const titaniumDoubleRouter = extendContent(Router, "titanium-double-router", {
+const titanium = extendContent(Router, "titanium-double-router", {
 	load() {
 		this.super$load();
 
@@ -61,4 +64,6 @@ const titaniumDoubleRouter = extendContent(Router, "titanium-double-router", {
 	}
 });
 
-module.exports = titaniumDoubleRouter;
+module.exports = titanium;
+
+})();

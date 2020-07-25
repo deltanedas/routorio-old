@@ -31,7 +31,8 @@ function add(names) {
 add(["router", "double-router", "titanium-double-router",
 	"inverted-router", "clear-router", "explosive-router",
 	"combat-router", "arc-router", "ubuntium-router",
-	"electric-router", "surge-router", "solar-router"]);
+	"electric-router", "surge-router", "solar-router",
+	"alien-router"]);
 
 // Units
 add(["reverout", "routerpede"]);

@@ -1,0 +1,12 @@
+{
+	"health": 230,
+	"research": "ubuntium-router",
+	"category": "distribution",
+	"requirements": [
+		"thorium/12",
+		"copper/6",
+		"metaglass/3"
+	],
+
+	"itemCapacity": 3
+}

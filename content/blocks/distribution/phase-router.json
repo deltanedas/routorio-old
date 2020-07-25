@@ -7,5 +7,6 @@
 		"phase-fabric/4"
 	],
 
-	"itemCapacity": 0
+	"itemCapacity": 0,
+	"buildVisibility": "hidden"
 }
