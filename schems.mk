@@ -14,7 +14,7 @@ power := arc-router electric-router moderouter solar-router surge-router
 prod := ubuntium-router
 
 blocks := $(dist:%=distribution/%) $(power:%=power/%) $(prod:%=production/%) \
-	units/reverout-factory units/router-house
+	units/reverout-factory units/router-house units/router-chainer-icon
 
 units := reverout routerpede
 
