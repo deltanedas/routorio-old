@@ -35,7 +35,7 @@ add(["router", "double-router", "titanium-double-router",
 	"alien-router"]);
 
 // Units
-add(["reverout", "routerpede"]);
+add(["reverout", "routerpede", "router-chainer"]);
 
 // Misc
 require("routorio/manual");

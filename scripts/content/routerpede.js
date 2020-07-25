@@ -15,6 +15,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+(() => {
+
 // Similar to the chain blaster.
 const weapon = new Weapon();
 weapon.name = "chain-router";
@@ -153,11 +155,6 @@ routerpede.speed = 0.1;
 routerpede.health = 80;
 routerpede.weapon = weapon;
 
-const factory = extendContent(UnitFactory, "router-chainer", {
-});
-factory.unitType = routerpede;
+module.exports = routerpede;
 
-module.exports = {
-	routerpede: routerpede,
-	factory: factory
-};
+})();

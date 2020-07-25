@@ -1,6 +1,7 @@
 {
-	"size": 3,
+	"size": 4,
 	"produceTime": 600,
+	"layer": "turret",
 	"consumes": {
 		"power": 2,
 		"items": {
