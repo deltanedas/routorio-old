@@ -18,41 +18,39 @@
 try {
 	const rtfm = require("rtfm/library");
 
-	rtfm.addPage("Arc Reoucter", [
-		"## Routorio manual", "~{router}",
+	rtfm.addSection("Routorio", {
+		"Arc Reoucter": [
+			"# Power generation",
+			"Arc routers generate power only when items move, so a clogged arc router is dead.",
+			"This means that they may take some time to fully shut down.",
+			"[stat]Hint: you can control item flow with copper conveyors and electric routers.[]",
 
-		"# Power generation",
-		"Arc routers generate power only when items move, so a clogged arc router is dead.",
-		"This means that they may take some time to fully shut down.",
-		"[stat]Hint: you can control item flow with copper conveyors and electric routers.[]",
+			"# Fuel",
+			"[sky]Arc Routers[] will only accept core-storable materials as fuel.",
+			"Item conductivity determines [red]lightning arc[] length and count.",
+			"Arcs do a lot of damage so make sure to have lots of menders on-site.",
 
-		"# Fuel",
-		"[sky]Arc Routers[] will only accept core-storable materials as fuel.",
-		"Item conductivity determines [red]lightning arc[] length and count.",
-		"Arcs do a lot of damage so make sure to have lots of menders on-site.",
+			"# Bars",
+			"[sky]Arc routers[] display the current [red]Arcing[] and [coral]Fuel burnup[] chances.",
 
-		"# Bars",
-		"[sky]Arc routers[] display the current [red]Arcing[] and [coral]Fuel burnup[] chances.",
+			"# Affinities",
+			"The [sky]Arc Router[]'s stats change when adjacent to these blocks:",
+			"    Moderouter: [red]Arcing Chance increased[], [yellow]Power [green]multiplied[]",
+			"    [sky]Arc Router[]: [red]Arcing Chance[] and [yellow]Power[] [orange]increased[], [coral]Fuel Burnup [red]multiplied[]",
+			"    Plastanium: [red]Arcing Chance[] [green]decreased[]",
+			"    Phase Fabric: [coral]Fuel burnup[] [green]halved[]",
+			"    Surge Alloy: [yellow]Power[] [green]increased[], [red]Arcing Chance multiplied[]"
+		],
 
-		"# Affinities",
-		"The [sky]Arc Router[]'s stats change when adjacent to these blocks:",
-		"    Moderouter: [red]Arcing Chance increased[], [yellow]Power [green]multiplied[]",
-		"    [sky]Arc Router[]: [red]Arcing Chance[] and [yellow]Power[] [orange]increased[], [coral]Fuel Burnup [red]multiplied[]",
-		"    Plastanium: [red]Arcing Chance[] [green]decreased[]",
-		"    Phase Fabric: [coral]Fuel burnup[] [green]halved[]",
-		"    Surge Alloy: [yellow]Power[] [green]increased[], [red]Arcing Chance multiplied[]"
-	]);
-
-	rtfm.addPage("$block.routorio-electric-router.name", [
-		"## Routorio manual", "~{router}",
-
-		"# Configuration",
-		"There are 3 parts to an electric router: mode, operation and number.",
-		"Mode is simple, it's either power stored in the router (battery) or power rate. (power node)",
-		"Operaration is what it sounds like, which mathematical operator to use.",
-		"The number at the end is the comparison number.\n",
-		"The result is a simple expression like \"active if storage greater than 4k\""
-	]);
+		"$block.routorio-electric-router.name": [
+			"# Configuration",
+			"There are 3 parts to an electric router: mode, operation and number.",
+			"Mode is simple, it's either power stored in the router (battery) or power rate. (power node)",
+			"Operaration is what it sounds like, which mathematical operator to use.",
+			"The number at the end is the comparison number.\n",
+			"The result is a simple expression like \"active if storage greater than 4k\""
+		]
+	});
 
 	module.exports = true;
 } catch (e) {
