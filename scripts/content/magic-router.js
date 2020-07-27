@@ -15,27 +15,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-this.global.routorio = {};
-function add(names) {
-	for (var i in names) {
-		var name = names[i];
-		try {
-			this.global.routorio[name] = require("routorio/content/" + name);
-		} catch (e) {
-			Log.err("Failed to load routorio script {0}.js: {1}", name, e);
-		}
+(() => {
+
+const shaders = require("routorio/lib/shaders");
+
+const magic = extendContent(Router, "magic-router", {
+	draw(tile) {
+		Draw.shader(shaders.magic);
+		this.super$draw(tile);
+		Draw.shader();
 	}
-}
+});
 
-// Blocks
-add(["router", "double-router", "titanium-double-router",
-	"inverted-router", "clear-router", "explosive-router",
-	"combat-router", "arc-router", "ubuntium-router",
-	"electric-router", "surge-router", "solar-router",
-	"alien-router", "magic-router"]);
+module.exports = magic;
 
-// Units
-add(["reverout", "routerpede", "router-chainer"]);
-
-// Misc
-require("routorio/manual");
+})();

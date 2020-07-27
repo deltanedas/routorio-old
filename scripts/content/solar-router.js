@@ -59,7 +59,7 @@ const solar = extendContent(Router, "solar-router", {
 		const mul = rules.solarPowerMultiplier;
 		if (mul >= 0) return mul;
 
-		return rules.lighting ? 1 - rules.ambientLighting.a : 1
+		return rules.lighting ? 1 - rules.ambientLight.a : 1
 	}
 });
 
