@@ -1,14 +1,15 @@
 {
+	"health": 600,
+	"category": "distribution",
+	"research": "electric-router",
 	"requirements": [
 		"silicon/4",
 		"surge-alloy/3"
 	],
-	"buildCostMultiplier": 4,
-	"health": 600,
+
 	"consumes": {
 		"power": 0.25
 	},
-	"hasPower": true,
-	"category": "distribution",
-	"research": "phase-router"
+	"buildCostMultiplier": 4,
+	"hasPower": true
 }

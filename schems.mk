@@ -10,7 +10,8 @@ endif
 dist := clear-router colossus double-router explosive-router \
 	incinerouter inverted-router op-router titanium-double-router \
 	alien-router
-power := arc-router electric-router moderouter solar-router surge-router
+power := arc-router electric-router moderouter solar-router surge-router \
+	phase-router
 prod := ubuntium-router
 
 blocks := $(dist:%=distribution/%) $(power:%=power/%) $(prod:%=production/%) \
