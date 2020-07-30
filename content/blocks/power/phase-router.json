@@ -1,4 +1,5 @@
 {
+	"health": 600,
 	"research": "surge-router",
 	"requirements": [
 		"copper/6",
@@ -9,6 +10,9 @@
 	"itemCapacity": 0,
 	"instantTransfer": true,
 	"hasPower": true,
+	"outputsPower": true,
+	"update": false,
+	"destructible": true,
 	"consumes": {
 		"power": 0.5,
 	}
