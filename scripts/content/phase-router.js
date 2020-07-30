@@ -23,14 +23,13 @@
 
 var phase;
 
-/* Horrible, slow thing that has O(n) lag when modifying a network.
-   TODO: Save what each tile added, then remove and rebuild that tile. */
 const NetworkGraph = {
 	new(entity) {
 		const ret = Object.create(NetworkGraph);
 		ret.routers = ObjectSet.with(entity);
-		ret.last = 0;
+		// Linked list nodes
 		ret.rebuild(entity);
+		ret.rebuildOutputs();
 		return ret;
 	},
 
@@ -54,6 +53,7 @@ const NetworkGraph = {
 		ent = this.routers.first();
 		this.routers.clear();
 		this.rebuild(ent);
+		this.rebuildOutputs();
 	},
 
 	rebuild(root) {
@@ -74,7 +74,39 @@ const NetworkGraph = {
 				}
 			}
 		}
-	}
+	},
+
+	rebuildOutputs() {
+		const routers = this.routers.asArray();
+
+		var last;
+		for (var i = 0; i < routers.size; i++) {
+			var router = routers.get(i);
+			for (var o in router.outputs) {
+				var node = {
+					to: router.outputs[o],
+					from: router.tile,
+					prev: node
+				};
+
+				if (last) {
+					last.next = node;
+				} else {
+					this.last = this.begin = node;
+				}
+				last = node;
+			}
+		}
+		if (!node) return;
+
+		this.end = node;
+		this.end.next = this.begin;
+		this.begin.prev = node;
+	},
+
+	begin: null,
+	end: null,
+	last: null
 };
 
 const diags = [
@@ -254,7 +286,9 @@ phase = extendContent(Router, "phase-router", {
 			}
 		}
 
-		Effects.effect(Fx.placeBlock, tile.drawx(), tile.drawy());
+		if (tile.ent().power.status >= 1) {
+			Effects.effect(Fx.placeBlock, tile.drawx(), tile.drawy());
+		}
 		tile.entity.blendBits = bits;
 	},
 
@@ -273,26 +307,21 @@ phase = extendContent(Router, "phase-router", {
 	handleItem(item, tile, source) {
 		const ent = tile.ent();
 		const network = ent.network;
-		const routers = network.routers.asArray();
-		const max = routers.size + network.last;
 
-		for (var i = network.last; i < max; i++) {
-			var index = i % routers.size;
-			var router = routers.get(index);
-			print("Try router " + router)
-			for (var o in router.outputs) {
-				var output = router.outputs[o];
-				print("Try out " + output)
-				if (output.block().acceptItem(item, output, router.tile)) {
-					output.block().handleItem(item, output, router.tile);
-					network.last = index + 1;
-					return;
-				}
+		var ended = false;
+		var node = network.last;
+		while (!ended) {
+			var output = node.to, source = node.from;
+			node = node.next;
+			if (output.block().acceptItem(item, output, source)) {
+				output.block().handleItem(item, output, source);
+				network.last = node;
+				return;
 			}
-		}
 
-		Log.err("Handled unhandlable item " + item + " for " + tile + " from " + source);
-		Call.removeTile(tile);
+			ended = node == network.last;
+		}
+		// acceptItem said yes but handleItem said no
 	},
 
 	acceptItem(item, tile, source) {
@@ -301,19 +330,18 @@ phase = extendContent(Router, "phase-router", {
 		if (!ent.network) {
 			ent.network = NetworkGraph.new(ent);
 		}
-	print("Network size " + ent.network.routers.size);
 
-		const routers = ent.network.routers.asArray();
-		for (var i = 0; i < routers.size; i++) {
-			var router = routers.get(i);
-			for (var o in router.outputs) {
-				var output = router.outputs[o];
-				if (output.block().acceptItem(item, output, router.tile)) {
-					print("yes " + output)
-					return true;
-				}
+		const net = ent.network;
+		var node = net.begin;
+		do {
+			var output = node.to, source = node.from;
+			node = node.next;
+
+			if (output.block().acceptItem(item, output, source)) {
+				return true;
 			}
-		}
+		} while (node != net.begin);
+
 		return false;
 	},
 
@@ -321,16 +349,21 @@ phase = extendContent(Router, "phase-router", {
 		this.super$onProximityUpdate(tile);
 
 		const ent = tile.entity;
+		const net = ent.network;
 		const prox = ent.proximity();
+		// Remove potentially broken tiles
 		ent.outputs = [];
 
-		/* Rebuild the outputs */
+		/* Add back the remaining tiles */
 		for (var i = 0; i < prox.size; i++) {
 			var near = prox.get(i);
 			if (near.block().hasItems && near.block() != this) {
 				ent.outputs.push(near);
 			}
 		}
+
+		// Very slow
+		if (net) net.rebuildOutputs();
 	}
 });
 
