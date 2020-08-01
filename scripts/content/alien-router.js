@@ -38,6 +38,8 @@ const alien = extendContent(Router, "alien-router", {
 			var dir = dirs[Math.round(Mathf.random(0, 3))];
 
 			var other = Vars.world.tile(tile.x + dir.x, tile.y + dir.y);
+			if (!other) continue;
+
 			if (other.block() == Blocks.air ||
 				(other.block() instanceof Router
 				&& other.block() != this
