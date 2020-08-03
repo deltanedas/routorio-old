@@ -14,6 +14,9 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+(() => {
+
 const surge = extendContent(Router, "surge-router", {
 	update(tile) {
 		const ent = tile.entity;
@@ -36,3 +39,5 @@ const surge = extendContent(Router, "surge-router", {
 surge.sparkChance = 0.1;
 
 module.exports = surge;
+
+})();

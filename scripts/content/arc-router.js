@@ -15,7 +15,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// This script contains every arc reoucter module
+/* This script contains every arc reoucter module */
+
 (() => {
 
 const directions = require("routorio/lib/dirs");

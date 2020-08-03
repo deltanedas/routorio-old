@@ -14,7 +14,10 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-const invertedRouter = extendContent(Conveyor, "inverted-router", {
+
+(() => {
+
+const inverted = extendContent(Conveyor, "inverted-router", {
 	draw(tile) {
 		const entity = tile.entity;
 		const rot = entity.clogHeat <= 0.5 ? ((Time.time() * this.speed * 8 * entity.timeScale) % 4) : 0;
@@ -38,4 +41,6 @@ const invertedRouter = extendContent(Conveyor, "inverted-router", {
 	}
 });
 
-module.exports = invertedRouter;
+module.exports = inverted;
+
+})();
