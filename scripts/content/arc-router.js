@@ -18,8 +18,6 @@
 // This script contains every arc reoucter module
 (() => {
 
-const desc = require("routorio/lib/desc");
-
 const directions = require("routorio/lib/dirs");
 
 const arcMultipliers = {
@@ -259,11 +257,6 @@ arc.entityType = prov(() => {
 	ent._progress = 0;
 	return ent;
 });
-
-/* Add affinities to their descriptions */
-Blocks.plastaniumWallLarge.description += desc(Blocks.plastaniumWall);
-Blocks.surgeWallLarge.description += desc(Blocks.surgeWall);
-Blocks.phaseWallLarge.description += desc(Blocks.phaseWall);
 
 module.exports = {
 	rates: rates,
