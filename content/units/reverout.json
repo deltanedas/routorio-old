@@ -5,12 +5,11 @@
 	"health": 1000,
 	"engineSize": 4,
 	"engineOffset": 12,
-	"rotatespeed": 1,
+	"rotateSpeed": 1,
 	"baseRotateSpeed": 0.3,
 	"range": 300,
-	"weapon": {
+	"weapons": [{
 		"name": "router-missiles",
-		"length": 1.5,
 		"reload": 45,
 		"shots": 5,
 		"spacing": 4,
@@ -18,8 +17,8 @@
 			"type": "BasicBulletType",
 			"speed": 10,
 			"damage": 10,
-			"bulletWidth": 6,
-			"bulletHeight": 6,
+			"width": 6,
+			"height": 6,
 			"hitEffect": "blastExplosion",
 			"shootEffect": "shootSmall",
 			"smokeEffect": "coreLand",
@@ -29,8 +28,8 @@
 			"knockback": 0.15,
 			"hitShake": 0.25,
 			"drag": -0.01,
-			"bulletSprite": "router",
+			"sprite": "router",
 			"frontColor": "#ffffff"
 		}
-	}
+	}]
 }

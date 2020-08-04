@@ -117,35 +117,29 @@ arc = extendContent(Router, "arc-router", {
 
 		this.bars.add("power", entity => new Bar(
 			() => Core.bundle.format("bar.poweroutput",
-				Strings.fixed(this.getPowerProduction(entity.tile) * entity.timeScale * 60, 1)),
+				Strings.fixed(entity.powerProduction * entity.timeScale * 60, 1)),
 			() => Pal.powerBar,
-			() => entity.progress
+			() => entity._progress
 		));
 
 		this.bars.add("arc-chance", entity => new Bar(
 			() => Core.bundle.format("stat.arc-chance",
-				Strings.fixed(entity.rates.arc * 100, 2)),
+				Strings.fixed(entity._rates.arc * 100, 2)),
 			() => Pal.lancerLaser,
-			() => entity.rates.arc
+			() => entity._rates.arc
 		));
 
 		this.bars.add("fuel-burnup", entity => new Bar(
 			() => Core.bundle.format("stat.fuel-burnup",
-				Math.round(entity.rates.burnup * 100)),
+				Math.round(entity._rates.burnup * 100)),
 			() => Items.surgealloy.color,
-			() => entity.rates.burnup
+			() => entity._rates.burnup
 		));
 
 		// base
 		this.stats.add(BlockStat.basePowerGeneration, rates.base.bonuses.gen * 60, StatUnit.powerSecond);
 		this.stats.add(BlockStat.powerDamage, Core.bundle.get("stat.arc-chance"), rates.base.bonuses.arc * 100);
 		this.stats.add(BlockStat.input, Core.bundle.get("stat.fuel-burnup"), rates.base.bonuses.burnup * 100);
-	},
-
-	drawBase(tile) {
-		Draw.color(this.minColor, this.maxColor, tile.entity.progress);
-		this.super$drawBase(tile);
-		Draw.color();
 	}
 });
 
@@ -235,7 +229,11 @@ arc.entityType = () => {
 			for (var i = 0; i < 10; i++) {
 				this.arc(tile, Items.surgealloy);
 			}
-		}
+		},
+
+		/* Public fields */
+		get_progress() { return this.progress; },
+		get_rates() { return this._rates; }
 	});
 	ent.rates = Object.create(rates.base.bonuses);
 	ent.progress = 0;

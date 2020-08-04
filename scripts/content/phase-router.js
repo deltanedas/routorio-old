@@ -261,7 +261,7 @@ phase.entityType = () => {
 				// Server doesn't care about drawing, stop
 				if (!Vars.ui) return;
 				this.reblendAll();
-			}));
+			});
 		},
 
 		reblendAll() {
@@ -355,15 +355,15 @@ phase.entityType = () => {
 			this.super$onProximityUpdate();
 
 			const net = this.network;
-			const prox = this.proximity();
+			const prox = this.proximity;
 			// Remove potentially broken tiles
 			this.outputs = [];
 
 			/* Add back the remaining tiles */
 			for (var i = 0; i < prox.size; i++) {
 				var near = prox.get(i);
-				if (near.block().hasItems && near.block() != phase) {
-					this.outputs.push(near.bc());
+				if (near.block.hasItems && near.block != phase) {
+					this.outputs.push(near);
 				}
 			}
 
@@ -388,5 +388,6 @@ phase.entityType = () => {
 
 	return ent;
 };
+
 
 module.exports = phase;
