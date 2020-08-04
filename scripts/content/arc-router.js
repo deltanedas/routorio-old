@@ -46,9 +46,7 @@ const adjacent = (tile, valid) => {
 		if (valid(near.block())) adj++;
 	}
 	return adj;
-}
-
-const phase = this.global.routorio["phase-router"];
+};
 
 var mod, arc;
 const rates = {
@@ -98,7 +96,7 @@ const rates = {
 	// decrease fuel burnup
 	phase: {
 		apply: tile => adjacent(tile, block => block instanceof DeflectorWall
-			|| block.id == phase.id),
+			|| block.id == this.global.routorio["phase-router"].id),
 		modifiers: {
 			burnup: 0.5
 		}
