@@ -17,6 +17,8 @@
 
 /* Factory for routorio's units */
 
+const UnitPlan = UnitFactory.UnitPlan;
+
 const chainer = extendContent(UnitFactory, "router-chainer", {
 	load() {
 		this.super$load();
