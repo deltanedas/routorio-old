@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const combatRouter = extendContent(BurstTurret, "combat-router", {
+const combatRouter = extendContent(ItemTurret, "combat-router", {
 	load() {
 		this.super$load();
 		this.facade = Core.atlas.find("routorio-totally-4-distributors");

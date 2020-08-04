@@ -1,7 +1,7 @@
 {
 	"health": 640,
 	"size": 4,
-	"reload": 45,
+	"reloadTime": 45,
 	"range": 200,
 	"rotatespeed": 10,
 	"maxAmmo": 10,
@@ -9,13 +9,13 @@
 	"burstSpacing": 5,
 	"inaccuracy": 5,
 	"xRand": 6,
-	"ammo": {
+	"ammoTypes": {
 		"copper": {
 			"type": "BasicBulletType",
 			"speed": 10,
 			"damage": 10,
-			"bulletWidth": 8,
-			"bulletHeight": 8,
+			"width": 8,
+			"height": 8,
 			"hitEffect": "blastExplosion",
 			"shootEffect": "shootSmall",
 			"smokeEffect": "coreLand",
@@ -23,7 +23,7 @@
 			"knockback": 0.15,
 			"hitShake": 0.25,
 			"drag": -0.01,
-			"bulletSprite": "router",
+			"sprite": "router",
 			"frontColor": "#ffffff"
 		}
 	},

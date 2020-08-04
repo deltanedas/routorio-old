@@ -15,6 +15,6 @@
 		"copper/40",
 		"lead/20"
 	],
-	"category": "upgrade",
+	"category": "units",
 	"research": "router-chainer"
 }
