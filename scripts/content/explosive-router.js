@@ -15,8 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-(() => {
-
 const explosionRadius = 10;
 const explosionDamage = 100;
 
@@ -31,7 +29,7 @@ const explosiveRouter = extendContent(Router, "explosive-router", {
 			if (near && near.block() instanceof Router) {
 				this.snekDetected(near);
 				// Prevent stack overflow from explosive routers exploding
-				Core.app.post(run(() => tile.remove()));
+				Core.app.post(() => tile.remove());
 			}
 		}
 	},
@@ -48,16 +46,14 @@ const explosiveRouter = extendContent(Router, "explosive-router", {
 		Effects.shake(40, 16, wx, wy);
 		Effects.effect(Fx.nuclearShockwave, wx, wy);
 		for (var i = 0; i < 4; i++) {
-			Time.run(Mathf.random(40), run(() => {
+			Time.run(Mathf.random(40), () => {
 				Effects.effect(Fx.nuclearcloud, wx, wy);
-			}));
+			});
 		}
-		Core.app.post(run(() => {
+		Core.app.post(() => {
 			Damage.damage(wx, wy, explosionRadius * Vars.tilesize, explosionDamage);
-		}));
+		});
 	}
 });
 
 module.exports = explosiveRouter;
-
-})();

@@ -15,8 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-(() => {
-
 const dirs = require("routorio/lib/dirs");
 
 const clear = this.global.routorio["clear-router"]
@@ -46,18 +44,18 @@ const alien = extendContent(Router, "alien-router", {
 				// Big routers get messy
 				&& other.block().size == 1)) {
 				if (fed) {
-					Core.app.post(run(() => {
+					Core.app.post(() => {
 						Call.setTile(other, this, tile.team, 0);
-					}));
+					});
 				}
 				return;
 			}
 		}
 
 		// This alien router couldn't spread and is a failure
-		Core.app.post(run(() => {
+		Core.app.post(() => {
 			Call.setTile(tile, clear, tile.team, 0);
-		}));
+		});
 	}
 });
 
@@ -65,4 +63,3 @@ alien.spreadChance = 0.02;
 
 module.exports = alien;
 
-})();

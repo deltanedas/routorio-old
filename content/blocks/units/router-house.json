@@ -1,6 +1,10 @@
 {
-	"type": "MechPad",
-	"mech": "sexy-router",
+	"type": "UnitFactory",
+	"plans": [{
+		"unit": "sexy-router",
+		"time": 300,
+		"items": ["silicon/5", "copper/6"]
+	}],
 	"size": 2,
 	"health": 200,
 	"consumes": {
@@ -8,10 +12,9 @@
 	},
 	"requirements": [
 		"silicon/100",
-		"copper/4",
-		"lead/2"
+		"copper/40",
+		"lead/20"
 	],
 	"category": "upgrade",
-	"research": "reverout-factory",
-	"buildTime": 120
+	"research": "router-chainer"
 }

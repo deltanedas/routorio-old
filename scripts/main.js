@@ -16,7 +16,8 @@
 */
 
 this.global.routorio = {};
-function add(names) {
+
+const add = names => {
 	for (var i in names) {
 		var name = names[i];
 		try {
@@ -25,10 +26,10 @@ function add(names) {
 			Log.err("Failed to load routorio script {0}.js: {1}", name, e);
 		}
 	}
-}
+};
 
 // Blocks
-add(["router", "double-router", "titanium-double-router",
+add(["op-router", "double-router", "titanium-double-router",
 	"inverted-router", "clear-router", "explosive-router",
 	"combat-router", "arc-router", "ubuntium-router",
 	"electric-router", "surge-router", "solar-router",

@@ -1,4 +1,5 @@
 {
+	"type": "MechUnit",
 	"health": 1,
 	"buildPower": 0,
 	"boostSpeed": 0,

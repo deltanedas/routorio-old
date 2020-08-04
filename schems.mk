@@ -2,7 +2,7 @@ MSCH := pictoschem
 SCHEMATICS := $(XDG_DATA_HOME)/Mindustry/schematics
 # Android, Termux
 ifeq ($(shell uname -o),Android)
-	SCHEMATICS := /sdcard/Android/data/io.anuke.mindustry/files/schematics
+	SCHEMATICS := /sdcard/Android/data/io.anuke.mindustry.be/files/schematics
 endif
 
 # Exclude block portions, unit legs, etc
@@ -15,12 +15,11 @@ power := arc-router electric-router moderouter solar-router surge-router \
 prod := ubuntium-router
 
 blocks := $(dist:%=distribution/%) $(power:%=power/%) $(prod:%=production/%) \
-	units/reverout-factory units/router-house units/router-chainer-icon
+	units/router-house units/router-chainer-icon
 
-units := reverout routerpede
+units := reverout routerpede sexy-router
 
-schems := $(blocks:%=blocks/%) $(units:%=units/%) \
-	mechs/sexy-router
+schems := $(blocks:%=blocks/%) $(units:%=units/%)
 schems := $(schems:%=schems/%.msch)
 
 all: $(schems)

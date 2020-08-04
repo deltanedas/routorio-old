@@ -14,6 +14,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 const offset = 1.6 * Vars.tilesize;
 
 const dist = (2 * offset^2)^0.5
@@ -32,7 +33,7 @@ const reverout = new JavaAdapter(UnitType, {
 		this.region = Core.atlas.find(this.name);
 		this.rotor = Core.atlas.find("router");
 	}
-}, "reverout", prov(() => extend(FlyingUnit, {
+}, "reverout", () => extend(FlyingUnit, {
 	drawOver() {
 		const r = this.rotation;
 		const sin = Mathf.sin(r) * dist;
@@ -48,6 +49,6 @@ const reverout = new JavaAdapter(UnitType, {
 				r + Time.time() * 20);
 		}
 	}
-})));
+}));
 
 module.exports = reverout;

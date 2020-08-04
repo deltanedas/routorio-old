@@ -14,11 +14,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-const invertedRouter = extendContent(Conveyor, "inverted-router", {
+
+const inverted = extendContent(Conveyor, "inverted-router", {
 	draw(tile) {
 		const entity = tile.entity;
-		const rot = entity.clogHeat <= 0.5 ? ((Time.time() * this.speed * 8 * entity.timeScale) % 4) : 0;
-		Draw.rect(this.region, tile.drawx(), tile.drawy(), rot); // Instead of an animated texture, it rotates when active
+		const rot = entity.clogHeat <= 0.5 ? (Time.time() * this.speed * 8 * entity.timeScale) : 0;
+		// Instead of an animated texture, it rotates when active
+		Draw.rect(this.region, tile.drawx(), tile.drawy(), rot);
 	},
 
 	drawRequestRegion(req, list) {
@@ -38,4 +40,4 @@ const invertedRouter = extendContent(Conveyor, "inverted-router", {
 	}
 });
 
-module.exports = invertedRouter;
+module.exports = inverted;

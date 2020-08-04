@@ -19,8 +19,6 @@
    Blendbits are 3 least significant nibbles, edges, outer corners and inner corners.
    The fourth nibble is unused. */
 
-(() => {
-
 var phase;
 
 const NetworkGraph = {
@@ -289,7 +287,7 @@ phase = extendContent(Router, "phase-router", {
 		if (tile.ent().power.status >= 1) {
 			Effects.effect(Fx.placeBlock, tile.drawx(), tile.drawy());
 		}
-		tile.entity.blendBits = bits;
+		tile.ent().blendBits = bits;
 	},
 
 	adjacent(tile, i) {
@@ -371,7 +369,7 @@ phase.hitTime = 10;
 // Temporary variables
 phase.rect = new Rect(); phase.rect2 = new Rect();
 
-phase.entityType = prov(() => {
+phase.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, phase, {
 		read(stream, version) {
 			this.super$read(stream, version);
@@ -398,8 +396,6 @@ phase.entityType = prov(() => {
 	ent._blendBits = 0;
 	ent._hit = 0;
 	return ent;
-});
+};
 
 module.exports = phase;
-
-})();

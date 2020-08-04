@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-(() => {
+/* Factory for routorio's units */
 
 const chainer = extendContent(UnitFactory, "router-chainer", {
 	load() {
@@ -66,7 +66,14 @@ const chainer = extendContent(UnitFactory, "router-chainer", {
 	}
 });
 
-chainer.entityType = prov(() => {
+chainer.plans = [
+	new UnitPlan(this.global.routorio.routerpede, 60 * 20,
+		ItemStack.with(Items.copper, 30, Items.graphite, 12)),
+	new UnitPlan(this.global.routorio.reverout, 60 * 30,
+		ItemStack.with(Items.silicon, 12, Items.pyratite, 6))
+];
+
+chainer.entityType = () => {
 	const ent = extend(UnitFactory.UnitFactoryEntity, {
 		getProgress() {return this._progress;},
 		setProgress(set) {this._progress = set;},
@@ -80,10 +87,6 @@ chainer.entityType = prov(() => {
 	ent._dist = 0;
 
 	return ent;
-});
-
-chainer.unitType = this.global.routorio.routerpede;
+};
 
 module.exports = chainer;
-
-})();

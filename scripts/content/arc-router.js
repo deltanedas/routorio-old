@@ -15,10 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// This script contains every arc reoucter module
-(() => {
-
-const desc = require("routorio/lib/desc");
+/* This script contains every arc reoucter module */
 
 const directions = require("routorio/lib/dirs");
 
@@ -121,26 +118,26 @@ mod = new Router("moderouter");
 arc = extendContent(Router, "arc-router", {
 	setBars() {
 		this.super$setBars();
-		this.bars.add("power", func(entity => new Bar(
-			prov(() => Core.bundle.format("bar.poweroutput",
-				Strings.fixed(this.getPowerProduction(entity.tile) * entity.timeScale * 60, 1))),
-			prov(() => Pal.powerBar),
-			floatp(() => entity.progress)
-		)));
+		this.bars.add("power", entity => new Bar(
+			() => Core.bundle.format("bar.poweroutput",
+				Strings.fixed(this.getPowerProduction(entity.tile) * entity.timeScale * 60, 1)),
+			() => Pal.powerBar,
+			() => entity.progress
+		));
 
-		this.bars.add("arc-chance", func(entity => new Bar(
-			prov(() => Core.bundle.format("stat.arc-chance",
-				Strings.fixed(entity.rates.arc * 100, 2))),
-			prov(() => Pal.lancerLaser),
-			floatp(() => entity.rates.arc)
-		)));
+		this.bars.add("arc-chance", entity => new Bar(
+			() => Core.bundle.format("stat.arc-chance",
+				Strings.fixed(entity.rates.arc * 100, 2)),
+			() => Pal.lancerLaser,
+			() => entity.rates.arc
+		));
 
-		this.bars.add("fuel-burnup", func(entity => new Bar(
-			prov(() => Core.bundle.format("stat.fuel-burnup",
-				Math.round(entity.rates.burnup * 100))),
-			prov(() => Items.surgealloy.color),
-			floatp(() => entity.rates.burnup)
-		)));
+		this.bars.add("fuel-burnup", entity => new Bar(
+			() => Core.bundle.format("stat.fuel-burnup",
+				Math.round(entity.rates.burnup * 100)),
+			() => Items.surgealloy.color,
+			() => entity.rates.burnup
+		));
 	},
 
 	setStats() {
@@ -248,7 +245,7 @@ arc = extendContent(Router, "arc-router", {
 arc.flags = EnumSet.of(BlockFlag.producer);
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
-arc.entityType = prov(() => {
+arc.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, arc, {
 		getRates() {return this._rates},
 		setRates(set) {this._rates = set},
@@ -258,12 +255,7 @@ arc.entityType = prov(() => {
 	ent._rates = Object.create(rates.base.bonuses);
 	ent._progress = 0;
 	return ent;
-});
-
-/* Add affinities to their descriptions */
-Blocks.plastaniumWallLarge.description += desc(Blocks.plastaniumWall);
-Blocks.surgeWallLarge.description += desc(Blocks.surgeWall);
-Blocks.phaseWallLarge.description += desc(Blocks.phaseWall);
+};
 
 module.exports = {
 	rates: rates,
@@ -271,5 +263,3 @@ module.exports = {
 	arcRouter: arc,
 	arcMultipliers: arcMultipliers
 };
-
-})();

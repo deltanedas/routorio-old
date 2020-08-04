@@ -1,0 +1,7 @@
+# Configuration
+There are 3 parts to an electric router: mode, operation and number.
+Mode is simple, it's either power stored in the router (battery) or power rate. (power node)
+Operaration is what it sounds like, which mathematical operator to use.
+The number at the end is the comparison number.
+
+The result is a simple expression like "active if storage greater than 4k"

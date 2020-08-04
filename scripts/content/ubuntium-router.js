@@ -14,6 +14,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 // Chance for an item to be turned into Beryllium.
 const amazonChance = 1 / 30;
 

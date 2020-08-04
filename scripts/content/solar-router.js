@@ -15,8 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-(() => {
-
 const solar = extendContent(Router, "solar-router", {
 	update(tile) {
 		this.super$update(tile);
@@ -38,12 +36,12 @@ const solar = extendContent(Router, "solar-router", {
 	setBars() {
 		this.super$setBars();
 
-		this.bars.add("power", func(entity => new Bar(
-			prov(() => Core.bundle.format("bar.poweroutput",
-				Strings.fixed(this.getPowerProduction(entity.tile) * 60 * entity.timeScale, 1))),
-			prov(() => Pal.powerBar),
-			floatp(() => this.efficiency(entity))
-		)));
+		this.bars.add("power", entity => new Bar(
+			() => Core.bundle.format("bar.poweroutput",
+				Strings.fixed(this.getPowerProduction(entity.tile) * 60 * entity.timeScale, 1)),
+			() => Pal.powerBar,
+			() => this.efficiency(entity)
+		));
 	},
 
 	getPowerProduction(tile) {
@@ -67,7 +65,7 @@ solar.baseExplosiveness = 5;
 solar.generationType = BlockStat.basePowerGeneration;
 solar.powerGeneration = 0.1;
 
-solar.entityType = prov(() => {
+solar.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, solar, {
 		getProgress() {
 			return this._progress;
@@ -78,8 +76,6 @@ solar.entityType = prov(() => {
 	});
 	ent._progress = 0;
 	return ent;
-});
+};
 
 module.exports = solar;
-
-})();

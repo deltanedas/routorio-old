@@ -15,8 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-(() => {
-
 var lock = false;
 
 const titanium = extendContent(Router, "titanium-double-router", {
@@ -65,5 +63,3 @@ const titanium = extendContent(Router, "titanium-double-router", {
 });
 
 module.exports = titanium;
-
-})();

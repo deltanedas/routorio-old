@@ -31,8 +31,8 @@ const routerpede = new JavaAdapter(UnitType, {
 		this.legRegion = Core.atlas.find(this.name + "-leg");
 		this.weapon.region = this.baseRegion = Core.atlas.find("clear");
 	}
-}, "routerpede", prov(() => {
-	const unit = extend(GroundUnit, {
+}, "routerpede", () => {
+	const unit = extend(MechUnit, {
 		update() {
 			this.super$update();
 			const closest = Units.closest(this.team, this.x, this.y, routerpede.chainRadius, boolf(unit => {
@@ -56,6 +56,7 @@ const routerpede = new JavaAdapter(UnitType, {
 				closest.kill();
 			}
 		},
+
 		draw() {
 			var n = 0;
 			this.super$draw();
@@ -148,7 +149,7 @@ const routerpede = new JavaAdapter(UnitType, {
 	});
 	unit.segments = [];
 	return unit;
-}));
+});
 // 1 tile radius for absorbing other chain routers
 routerpede.chainRadius = Vars.tilesize;
 routerpede.speed = 0.1;
@@ -156,5 +157,3 @@ routerpede.health = 80;
 routerpede.weapon = weapon;
 
 module.exports = routerpede;
-
-})();

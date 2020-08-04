@@ -14,7 +14,6 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-(() => {
 
 // Configurable router, responds to changes in the power grid
 
@@ -74,19 +73,22 @@ const elec = extendContent(Router, "electric-router", {
 
 	buildConfiguration(tile, parent) {
 		const ent = tile.entity;
-		const table = parent.fill();
-		table.setBackground(this.background);
+		const table = parent.fill(this.backgrond);
 
-		var modeb = table.addImageButton(this.buttons.modes[ent.mode], Styles.clearTransi, run(() => {
+		const modeb = table.addImageButton(this.buttons.modes[ent.mode],
+			Styles.clearTransi, () => {
 			tile.configure(-1);
 			modeb.style.imageUp = this.buttons.modes[ent.mode]
-		})).size(40).get();
-		var opb = table.addImageButton(this.buttons.operations[ent.operation], Styles.clearTransi, run(() => {
+		}).size(40).get();
+
+		const opb = table.addImageButton(this.buttons.operations[ent.operation],
+			Styles.clearTransi, () => {
 			// Cycle through operations
 			tile.configure(-2);
 			opb.style.imageUp = this.buttons.operations[ent.operation]
-		})).size(40).get();
-		var numberf = table.addField(ent.number, cons(text => {
+		}).size(40).get();
+
+		const numberf = table.addField(ent.number, text => {
 			try {
 				var set = parseInt(text);
 			} catch (e) {
@@ -97,7 +99,7 @@ const elec = extendContent(Router, "electric-router", {
 				numberf.text = set;
 				tile.configure(set);
 			}
-		})).width(120).get();
+		}).width(120).get();
 	},
 
 	configured(tile, player, n) {
@@ -147,7 +149,7 @@ const elec = extendContent(Router, "electric-router", {
 	}
 });
 
-elec.entityType = prov(() => {
+elec.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, elec, {
 		write(stream) {
 			this.super$write(stream);
@@ -179,8 +181,8 @@ elec.entityType = prov(() => {
 	ent._number = maxNumber;
 
 	return ent;
-});
+};
 
 elec.consumes.powerBuffered(maxNumber);
+
 module.exports = elec
-})();
