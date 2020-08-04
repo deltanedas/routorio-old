@@ -15,8 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-(() => {
-
 // Similar to the chain blaster.
 const weapon = new Weapon();
 weapon.name = "chain-router";
@@ -25,13 +23,14 @@ weapon.alternate = false;
 weapon.ejectEffect = Fx.coreLand;
 weapon.bullet = Bullets.standardCopper;
 
-const routerpede = new JavaAdapter(UnitType, {
+const routerpede = extendContent(UnitType, "routerpede", {
 	load() {
 		this.region = Core.atlas.find("router");
 		this.legRegion = Core.atlas.find(this.name + "-leg");
-		this.weapon.region = this.baseRegion = Core.atlas.find("clear");
 	}
-}, "routerpede", () => {
+});
+
+routerpede.constructor = () => {
 	const unit = extend(MechUnit, {
 		update() {
 			this.super$update();
@@ -149,11 +148,11 @@ const routerpede = new JavaAdapter(UnitType, {
 	});
 	unit.segments = [];
 	return unit;
-});
+};
 // 1 tile radius for absorbing other chain routers
 routerpede.chainRadius = Vars.tilesize;
 routerpede.speed = 0.1;
 routerpede.health = 80;
-routerpede.weapon = weapon;
+routerpede.weapons.add(weapon);
 
 module.exports = routerpede;

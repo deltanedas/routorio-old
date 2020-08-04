@@ -27,36 +27,34 @@ const titanium = extendContent(Router, "titanium-double-router", {
 		}
 	},
 
-	draw(tile) {
+	drawBase(tile) {
 		Draw.rect(this.regions[tile.x % 2], tile.drawx(), tile.drawy());
-	},
-
-	generateIcons() {
-		return [Core.atlas.find(this.name)];
 	},
 
 	calcOffset: x => x + ((x % 2) ? -1 : 1),
 
-	canPlaceOn(tile){
+	canPlaceOn(tile, team){
 		const x = this.calcOffset(tile.x);
 		const other = Vars.world.tile(x, tile.y);
-		return other.block() == "air"
+		return other.block().id == Blocks.air.id
+	}
+});
+
+titanium.entityType = () => extendContent(Router.RouterEntity, titanium, {
+	placed() {
+		this.super$placed();
+		const x = titanium.calcOffset(this.tile.x);
+		Vars.world.tile(x, this.tile.y).setBlock(titanium, this.team, 0);
 	},
 
-	placed(tile) {
-		this.super$placed(tile);
-		const x = this.calcOffset(tile.x);
-		Call.setTile(Vars.world.tile(x, tile.y), this, tile.team, 0);
-	},
-
-	removed(tile) {
-		this.super$removed(tile);
-		const x = this.calcOffset(tile.x);
+	removed() {
+		this.super$removed();
+		const x = titanium.calcOffset(this.tile.x);
 
 		/* Prevent trying to delete the other half infinitely */
 		if (!lock) {
 			lock = true;
-			Call.setTile(Vars.world.tile(x, tile.y), Blocks.air, tile.team, 0);
+			Vars.world.tile(x, this.tile.y).remove();
 			lock = false;
 		}
 	}

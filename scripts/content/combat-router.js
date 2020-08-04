@@ -15,21 +15,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const combatRouter = extendContent(ItemTurret, "combat-router", {
+const combat = extendContent(ItemTurret, "combat-router", {
 	load() {
 		this.super$load();
 		this.facade = Core.atlas.find("routorio-totally-4-distributors");
 	},
+});
 
-	draw(tile) {
-		Draw.rect(tile.team == Vars.player.team ? this.baseRegion : this.facade, tile.drawx(), tile.drawy());
-	},
-
-	drawLayer(tile) {
-		if (tile.team == Vars.player.team) {
-			this.super$drawLayer(tile);
+combat.entityType = () => extendContent(ItemTurret.ItemTurretEntity, combat, {
+	draw() {
+		if (this.team() == Vars.player.team) {
+			this.super$draw();
+		} else {
+			Draw.rect(combat.facade, this.x, this.y);
 		}
 	}
 });
 
-module.exports = combatRouter;
+module.exports = combat;

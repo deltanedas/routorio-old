@@ -16,43 +16,20 @@
 */
 
 const solar = extendContent(Router, "solar-router", {
-	update(tile) {
-		this.super$update(tile);
-		const ent = tile.entity;
-		ent.progress = Math.max(ent.progress - 0.003, 0);
-	},
-
-	handleItem(item, tile, source) {
-		this.super$handleItem(item, tile, source);
-		const ent = tile.entity;
-		ent.progress = Math.min(ent.progress + 0.1, 1);
-	},
-
 	setStats() {
 		this.super$setStats();
-		this.stats.add(this.generationType, this.powerGeneration * 60, StatUnit.powerSecond);
-	},
-
-	setBars() {
-		this.super$setBars();
 
 		this.bars.add("power", entity => new Bar(
 			() => Core.bundle.format("bar.poweroutput",
-				Strings.fixed(this.getPowerProduction(entity.tile) * 60 * entity.timeScale, 1)),
+				Strings.fixed(entity.powerProduction * 60 * entity.timeScale, 1)),
 			() => Pal.powerBar,
-			() => this.efficiency(entity)
+			() => entity.efficiency()
 		));
+
+		this.stats.add(this.generationType, this.powerGeneration * 60, StatUnit.powerSecond);
 	},
 
-	getPowerProduction(tile) {
-		return this.powerGeneration * this.efficiency(tile.entity);
-	},
-
-	efficiency(ent) {
-		return ent.progress * this.solarEfficiency();
-	},
-
-	solarEfficiency() {
+	efficiency() {
 		const rules = Vars.state.rules;
 		const mul = rules.solarPowerMultiplier;
 		if (mul >= 0) return mul;
@@ -63,18 +40,29 @@ const solar = extendContent(Router, "solar-router", {
 
 solar.baseExplosiveness = 5;
 solar.generationType = BlockStat.basePowerGeneration;
-solar.powerGeneration = 0.1;
+solar.powerGeneration = 1 / 6;
 
 solar.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, solar, {
-		getProgress() {
-			return this._progress;
+		updateTile() {
+			this.super$updateTile();
+			this.progress = Math.max(this.progress - 0.003, 0);
 		},
-		setProgress(set) {
-			this._progress = set;
+
+		handleItem(source, item) {
+			this.super$handleItem(source, item);
+			this.progress = Math.min(this.progress + 0.1, 1);
+		},
+
+		getPowerProduction() {
+			return solar.powerGeneration * this.efficiency();
+		},
+
+		efficiency() {
+			return this.progress * solar.efficiency();
 		}
 	});
-	ent._progress = 0;
+	ent.progress = 0;
 	return ent;
 };
 

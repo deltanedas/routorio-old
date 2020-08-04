@@ -15,26 +15,29 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const surge = extendContent(Router, "surge-router", {
-	update(tile) {
-		const ent = tile.entity;
-		// Only route items when there is power
-		if (ent.cons.valid()) {
-			ent.cons.trigger();
-			this.super$update(tile);
+const surge = extendContent(Router, "surge-router", {});
+
+surge.sparkChance = 0.1;
+
+surge.entityType = () => extendContent(Router.RouterEntity, surge, {
+	updateTile() {
+		// Only route items when there is power, but the amount doesn't matter
+		if (this.cons.valid()) {
+			this.super$updateTile();
 		}
 	},
 
 	// Add random spark effects
-	handleItem(item, tile, source) {
-		this.super$handleItem(item, tile, source);
+	handleItem(source, item) {
+		this.super$handleItem(source, item);
 
-		if (Vars.ui && Mathf.chance(this.sparkChance)) {
-			Effects.effect(Fx.lancerLaserCharge, Items.surgealloy.color,
-				tile.drawx(), tile.drawy(), Mathf.random(0, 360));
+		print(surge.sparkChance)
+		print(Mathf.chance(surge.sparkChance))
+		if (Vars.ui && Mathf.chance(surge.sparkChance)) {
+			Fx.lancerLaserCharge.at(this.x + Mathf.range(2), this.y + Mathf.range(2),
+				Math.random(0, 360), Items.surgealloy.color);
 		}
 	}
 });
-surge.sparkChance = 0.1;
 
 module.exports = surge;

@@ -16,20 +16,17 @@
 */
 
 const inverted = extendContent(Conveyor, "inverted-router", {
-	draw(tile) {
-		const entity = tile.entity;
-		const rot = entity.clogHeat <= 0.5 ? (Time.time() * this.speed * 8 * entity.timeScale) : 0;
+	drawBase(tile) {
+		const building = tile.bc();
+		const rot = Time.time() * this.speed * 8 * building.timeScale;
 		// Instead of an animated texture, it rotates when active
 		Draw.rect(this.region, tile.drawx(), tile.drawy(), rot);
 	},
 
 	drawRequestRegion(req, list) {
-		const scl = this.region.getWidth() * Draw.scl * req.animScale;
+		const scl = Vars.tilesize * req.animScale;
 		Draw.rect(this.region, req.drawx(), req.drawy(), scl, scl);
 	},
-
-	// items are hidden like in a router
-	drawLayer(tile) {},
 
 	generateIcons() {
 		return [Core.atlas.find(this.name)];

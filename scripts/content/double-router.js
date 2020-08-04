@@ -24,7 +24,7 @@ const double = extendContent(Router, "double-router", {
 		];
 	},
 
-	draw(tile){
+	drawBase(tile){
 		Draw.rect(this.regions[tile.x % 2], tile.drawx(), tile.drawy());
 	}
 });

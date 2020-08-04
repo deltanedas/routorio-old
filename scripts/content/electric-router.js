@@ -63,32 +63,34 @@ const elec = extendContent(Router, "electric-router", {
 				buttons[i] = new TextureRegionDrawable(Core.atlas.find("routorio-button-" + buttons[i]));
 			}
 		}
-	},
+	}
+});
 
-	update(tile) {
-		if (this.activeFor(tile.entity)) {
-			this.super$update(tile);
+const edef = {
+	updateTile() {
+		if (this.active()) {
+			this.super$updateTile();
 		}
 	},
 
-	buildConfiguration(tile, parent) {
-		const ent = tile.entity;
-		const table = parent.fill(this.backgrond);
+	buildConfiguration(parent) {
+		const table = parent.fill(elec.background);
 
-		const modeb = table.addImageButton(this.buttons.modes[ent.mode],
+		const modeb = table.imageButton(elec.buttons.modes[this.mode],
 			Styles.clearTransi, () => {
-			tile.configure(-1);
-			modeb.style.imageUp = this.buttons.modes[ent.mode]
+			// Cycle through modes
+			this.configure(-1);
+			modeb.style.imageUp = elec.buttons.modes[this.mode]
 		}).size(40).get();
 
-		const opb = table.addImageButton(this.buttons.operations[ent.operation],
+		const opb = table.imageButton(elec.buttons.operations[this.operation],
 			Styles.clearTransi, () => {
 			// Cycle through operations
-			tile.configure(-2);
-			opb.style.imageUp = this.buttons.operations[ent.operation]
+			this.configure(-2);
+			opb.style.imageUp = elec.buttons.operations[this.operation]
 		}).size(40).get();
 
-		const numberf = table.addField(ent.number, text => {
+		const numberf = table.field(ent.number, text => {
 			try {
 				var set = parseInt(text);
 			} catch (e) {
@@ -102,7 +104,7 @@ const elec = extendContent(Router, "electric-router", {
 		}).width(120).get();
 	},
 
-	configured(tile, player, n) {
+	configured(player, n) {
 		const ent = tile.entity;
 		/* Number */
 		if (n >= 0) {
@@ -117,68 +119,64 @@ const elec = extendContent(Router, "electric-router", {
 
 		/* Cycle through operations */
 		if (n == -2) {
-			ent.operation = (ent.operation + 1) % operationCount;
+			this.operation = (this.operation + 1) % operationCount;
 		}
 	},
 
-	activeFor(entity) {
-		const number = Math.round(this.getPowerFor(entity));
+	active() {
+		const number = Math.round(this.powerNum);
 
-		switch (entity.operation) {
+		switch (this.operation) {
 		case operations.equals:
-			return number == entity.number;
+			return number == this.number;
 		case operations.greater:
-			return number > entity.number;
+			return number > this.number;
 		case operations.less:
-			return number < entity.number;
+			return number < this.number;
 		case operations.not:
-			return number != entity.number;
+			return number != this.number;
 		}
 		return false;
 	},
 
 	// Get comparison number from the mode
-	getPowerFor(entity) {
-		switch (entity.mode) {
+	getPowerNum() {
+		switch (this.mode) {
 		case modes.buffer:
-			return entity.power.status * maxNumber;
+			return this.power.status * maxNumber;
 		case modes.rate:
-			return entity.power.graph.getPowerBalance() * 60;
+			return this.power.graph.powerBalance * 60;
 		}
 		return 0;
+	},
+
+	config() {
+		var lhs = this.mode << 15;
+		lhs |= this.operation << 13;
+		return this.number | lhs;
+	},
+
+	write(stream) {
+		this.super$write(stream);
+		stream.s(this.config());
+	},
+
+	read(stream, version) {
+		this.super$read(stream, version);
+		const raw = stream.s();
+		this.mode = raw >> 15 & 0x01;
+		this.operation = (raw >> 13) & 0x03
+		this.number = raw & maxNumber;
 	}
-});
+};
 
 elec.entityType = () => {
-	const ent = extendContent(Router.RouterEntity, elec, {
-		write(stream) {
-			this.super$write(stream);
-			var lhs = this._mode << 15;
-			lhs |= this._operation << 13;
-			stream.writeShort(this._number | lhs);
-		},
-
-		read(stream, version) {
-			this.super$read(stream, version);
-			const raw = stream.readShort();
-			this._mode = raw >> 15 & 0x01;
-			this._operation = (raw >> 13) & 0x03
-			this._number = raw & maxNumber;
-		},
-
-		/* Variable accessors */
-		getMode() {return this._mode;},
-		setMode(set) {this._mode = set;},
-		getOperation() {return this._operation;},
-		setOperation(set) {this._operation = set;},
-		getNumber() {return this._number;},
-		setNumber(set) {this._number = set;}
-	});
+	const ent = extendContent(Router.RouterEntity, elec, edef);
 
 	/* Default configuration */
-	ent._mode = modes.buffer;
-	ent._operation = operations.equals;
-	ent._number = maxNumber;
+	ent.mode = modes.buffer;
+	ent.operation = operations.equals;
+	ent.number = maxNumber;
 
 	return ent;
 };

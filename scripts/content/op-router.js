@@ -30,7 +30,7 @@ const opRouter = extendContent(Router, "op-router", {
 		return this.regions[(tile.x % 2) + 2 * (tile.y % 2)];
 	},
 
-	draw(tile){
+	drawBase(tile){
 		Draw.rect(this.getRegion(tile), tile.drawx(), tile.drawy());
 	},
 

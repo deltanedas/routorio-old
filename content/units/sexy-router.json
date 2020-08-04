@@ -1,17 +1,9 @@
 {
 	"type": "MechUnit",
 	"health": 1,
-	"buildPower": 0,
-	"boostSpeed": 0,
 	"drawCell": false,
-	"drawLight": false,
 	"itemCapacity": 400,
 	"speed": 0.1,
-	"mass": 1,
-	"weapon": {
-		"name": "that's my purse",
-		"shots": 0,
-		"reload": 9999999999999,
-		"bullet": "lancerLaser"
-	}
+	"weapons": [],
+	"commandLimit": 512
 }

@@ -19,33 +19,32 @@ const dirs = require("routorio/lib/dirs");
 
 const clear = this.global.routorio["clear-router"]
 
-const alien = extendContent(Router, "alien-router", {
-	update(tile) {
-		this.super$update(tile);
+const alien = extendContent(Router, "alien-router", {});
+alien.entityType = () => extendContent(Router.RouterEntity, alien, {
+	updateTile() {
+		this.super$updateTile();
 
-		const items = tile.ent().items;
-		if (Mathf.chance(this.spreadChance)) {
+		const items = this.items;
+		if (Mathf.chance(alien.spreadChance)) {
 			const fed = items.get(Items.thorium) > 0;
 			if (fed) items.take();
-			this.spread(tile, fed);
+			this.spread(fed);
 		}
 	},
 
-	spread(tile, fed) {
+	spread(fed) {
 		for (var i in dirs) {
-			var dir = dirs[Math.round(Mathf.random(0, 3))];
+			var dir = Math.round(Mathf.random(0, 3));
 
-			var other = Vars.world.tile(tile.x + dir.x, tile.y + dir.y);
+			var other = this.tile.getNearby(dir);
 			if (!other) continue;
 
 			if (other.block() == Blocks.air ||
 				(other.block() instanceof Router
-				&& other.block() != this
-				// Big routers get messy
-				&& other.block().size == 1)) {
+				&& other.block().id != alien.id)) {
 				if (fed) {
 					Core.app.post(() => {
-						Call.setTile(other, this, tile.team, 0);
+						Call.setTile(other, alien, this.team, 0);
 					});
 				}
 				return;
@@ -54,7 +53,7 @@ const alien = extendContent(Router, "alien-router", {
 
 		// This alien router couldn't spread and is a failure
 		Core.app.post(() => {
-			Call.setTile(tile, clear, tile.team, 0);
+			Call.setTile(this.tile, clear, tile.team, 0);
 		});
 	}
 });
@@ -62,4 +61,3 @@ const alien = extendContent(Router, "alien-router", {
 alien.spreadChance = 0.02;
 
 module.exports = alien;
-

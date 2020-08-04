@@ -15,45 +15,50 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const explosionRadius = 10;
-const explosionDamage = 100;
-
 const dirs = require("routorio/lib/dirs");
 
-const explosiveRouter = extendContent(Router, "explosive-router", {
-	onProximityUpdate(tile) {
-		this.super$onProximityUpdate(tile);
+const explode = extendContent(Router, "explosive-router", {});
+
+explode.radius = 10;
+explode.damage = 100;
+
+explode.entityType = () => extendContent(Router.RouterEntity, explode, {
+	onProximityUpdate() {
+		this.super$onProximityUpdate();
 
 		for (var i in dirs) {
-			var near = Vars.world.tile(tile.x + dirs[i].x, tile.y + dirs[i].y);
+			var near = this.tile.getNearby(i);
 			if (near && near.block() instanceof Router) {
-				this.snekDetected(near);
+				this.snekDetected();
 				// Prevent stack overflow from explosive routers exploding
-				Core.app.post(() => tile.remove());
+				Core.app.post(() => this.tile.remove());
 			}
 		}
 	},
 
-	onDestroyed(tile) {
-		this.super$onDestroyed(tile);
-		this.snekDetected(tile);
+	onDestroyed() {
+		this.super$onDestroyed();
+		this.snekDetected();
 	},
 
 	/* Call when a snek is found and must be eliminated */
-	snekDetected(tile) {
-		Sounds.explosionbig.at(tile);
-		const wx = tile.worldx(), wy = tile.worldy();
-		Effects.shake(40, 16, wx, wy);
-		Effects.effect(Fx.nuclearShockwave, wx, wy);
+	snekDetected() {
+		const x = this.x, y = this.y;
+		Core.app.post(() => {
+			Damage.damage(x, y, explode.radius * Vars.tilesize, explode.damage);
+		});
+
+		if (!Vars.ui) return;
+
+		Sounds.explosionbig.at(this.tile);
+		Effects.shake(40, 16, x, y);
+		Fx.nuclearShockwave.at(x, y);
 		for (var i = 0; i < 4; i++) {
-			Time.run(Mathf.random(40), () => {
-				Effects.effect(Fx.nuclearcloud, wx, wy);
+			Time.run(Math.random(40), () => {
+				Fx.nuclearcloud.at(x + Mathf.range(4), y + Mathf.range(4));
 			});
 		}
-		Core.app.post(() => {
-			Damage.damage(wx, wy, explosionRadius * Vars.tilesize, explosionDamage);
-		});
 	}
 });
 
-module.exports = explosiveRouter;
+module.exports = explode;

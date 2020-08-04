@@ -61,7 +61,7 @@ const NetworkGraph = {
 			tile = tile.link();
 
 			if (tile.block() == phase) {
-				var ent = tile.entity;
+				var ent = tile.building;
 				if (this.routers.add(ent)) {
 					if (ent.network) {
 						if (ent.network == this) return;
@@ -140,228 +140,6 @@ phase = extendContent(Router, "phase-router", {
 			this.cornerRegions[i] = Core.atlas.find(this.name + "-corner_" + i);
 			this.icornerRegions[i] = Core.atlas.find(this.name + "-icorner_" + i);
 		}
-	},
-
-	draw(tile) {
-		if (tile.entity.power.status < 1) {
-			// Inactive state, draw disconnected version
-			Draw.rect(this.icon(Cicon.full), tile.drawx(), tile.drawy());
-		} else {
-			this.super$draw(tile);
-			this.drawEdges(tile);
-			this.drawCorners(tile);
-		}
-
-		this.drawShine(tile);
-	},
-
-	drawEdges(tile) {
-		const bits = tile.entity.blendBits;
-		const dx = tile.drawx(), dy = tile.drawy();
-
-		for (var i = 0; i < 4; i++) {
-			// First nibble has the edges
-			if ((bits & (1 << i)) == 0) {
-				Draw.rect(this.edgeRegions[i >> 1], dx, dy, 90 * -i);
-			}
-		}
-	},
-
-	drawCorners(tile) {
-		const bits = tile.entity.blendBits;
-		const dx = tile.drawx(), dy = tile.drawy();
-
-		for (var i = 0; i < 4; i++) {
-			if ((bits & (256 << i)) != 0) {
-				// Third nibble has the inner corners, which take priority
-				Draw.rect(this.icornerRegions[i], dx, dy);
-			} else if ((bits & (16 << i)) == 0) {
-				// Second nibble has the outer corners
-				Draw.rect(this.cornerRegions[i], dx, dy);
-			}
-		}
-	},
-
-	/* DeflectorWall stuff */
-
-	drawShine(tile) {
-		const ent = tile.ent();
-		var hit = ent.hit;
-		hit += Mathf.clamp(Math.sin(Time.time() / 10 + tile.x + tile.y) / 10, 0, 0.75);
-		if (Mathf.zero(hit)) return;
-
-		Draw.color(Color.white);
-		Draw.alpha(hit / 2);
-		Draw.blend(Blending.additive);
-		Fill.rect(tile.drawx(), tile.drawy(), Vars.tilesize, Vars.tilesize);
-		Draw.blend();
-		Draw.reset();
-
-		ent.hit = Mathf.clamp(hit - Time.delta() / this.hitTime);
-	},
-
-	/* TODO: make this actually deflect stuff */
-	handleBulletHit(ent, b) {
-		this.super$handleBulletHit(ent, b);
-		if (b.damage > this.maxDamageDeflected(ent) || b.isDeflected()) {
-			return;
-		}
-
-		const penX = Math.abs(ent.x - b.x), penY = Math.abs(ent.y - b.y);
-		b.hitbox(this.rect2);
-		const pos = Geometry.raycastRect(b.x - b.velocity().x * Time.delta(), b.y - b.velocity().y * Time.delta(),
-			b.x + b.velocity().x * Time.delta(), b.y + b.velocity().y * Time.delta(),
-			this.rect.setSize(Vars.tilesize + this.rect2.width * 2 + this.rect2.height * 2)
-				.setCenter(ent.x, ent.y));
-
-		if (pos) {
-			b.set(pos.x, pos.y);
-		}
-
-		b[penX > penY ? "x" : "y"] *= -1;
-
-		b.resetOwner(ent, ent.team);
-		b.scaleTime(1);
-		b.deflect();
-
-		ent.hit = 1;
-	},
-
-	maxDamageDeflected: ent => ent.power.status >= 1 ? 30 : 10,
-
-	/* PhaseRouter */
-
-	placed(tile) {
-		this.super$placed(tile);
-
-		// Server doesn't care about drawing, stop
-		if (!Vars.ui) return;
-
-		this.reblendAll(tile);
-		this.reblend(tile);
-	},
-
-	removed(tile) {
-		this.super$removed(tile);
-
-		const net = tile.entity.network;
-		Core.app.post(run(() => {
-			if (net) net.refresh();
-
-			// Server doesn't care about drawing, stop
-			if (!Vars.ui) return;
-			this.reblendAll(tile);
-		}));
-	},
-
-	reblendAll(tile) {
-		for (var i in all) {
-			var other = tile.getNearby(all[i][0], all[i][1]);
-			if (other && other.block() == phase) {
-				this.reblend(other);
-			}
-		}
-	},
-
-	reblend(tile) {
-		// All edges and outer corners by default
-		var bits = 0;
-
-		for (var i = 0; i < 4; i++) {
-			var prev = this.adjacent(tile, (i + 3) % 4);
-			var current = this.adjacent(tile, i);;
-			if (current || prev) {
-				// Can't be a corner
-				bits |= 16 << i;
-				if (current) {
-					// Can't be a straight edge
-					bits |= 1 << i;
-					if (prev && this.interior(tile, i)) {
-						// It's a bend, show inner corner
-						bits |= 256 << i;
-					}
-				}
-			}
-		}
-
-		if (tile.ent().power.status >= 1) {
-			Effects.effect(Fx.placeBlock, tile.drawx(), tile.drawy());
-		}
-		tile.ent().blendBits = bits;
-	},
-
-	adjacent(tile, i) {
-		const other = tile.getNearby(dirs[i].x, dirs[i].y);
-		return other && other.block() == this;
-	},
-
-	/* Whether a router is a corner of a square or just a bend */
-	interior(tile, i) {
-		const diag = tile.getNearby(diags[i][0], diags[i][1]);
-		return diag && diag.block() != this;
-	},
-
-	/* Round-robin all outputs in this network */
-	handleItem(item, tile, source) {
-		const ent = tile.ent();
-		const network = ent.network;
-
-		var ended = false;
-		var node = network.last;
-		while (!ended) {
-			var output = node.to, source = node.from;
-			node = node.next;
-			if (output.block().acceptItem(item, output, source)) {
-				output.block().handleItem(item, output, source);
-				network.last = node;
-				return;
-			}
-
-			ended = node == network.last;
-		}
-		// acceptItem said yes but handleItem said no
-	},
-
-	acceptItem(item, tile, source) {
-		const ent = tile.ent();
-		if (ent.power.status < 1) return false;
-		if (!ent.network) {
-			ent.network = NetworkGraph.new(ent);
-		}
-
-		const net = ent.network;
-		var node = net.begin;
-		do {
-			var output = node.to, source = node.from;
-			node = node.next;
-
-			if (output.block().acceptItem(item, output, source)) {
-				return true;
-			}
-		} while (node != net.begin);
-
-		return false;
-	},
-
-	onProximityUpdate(tile) {
-		this.super$onProximityUpdate(tile);
-
-		const ent = tile.entity;
-		const net = ent.network;
-		const prox = ent.proximity();
-		// Remove potentially broken tiles
-		ent.outputs = [];
-
-		/* Add back the remaining tiles */
-		for (var i = 0; i < prox.size; i++) {
-			var near = prox.get(i);
-			if (near.block().hasItems && near.block() != this) {
-				ent.outputs.push(near);
-			}
-		}
-
-		// Very slow
-		if (net) net.rebuildOutputs();
 	}
 });
 
@@ -371,30 +149,243 @@ phase.rect = new Rect(); phase.rect2 = new Rect();
 
 phase.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, phase, {
+		draw() {
+			if (this.power.status < 1) {
+				// Inactive state, draw disconnected version
+				Draw.rect(phase.icon(Cicon.full), this.x, this.y);
+			} else {
+				this.super$draw();
+				this.drawEdges();
+				this.drawCorners();
+			}
+
+			this.drawShine();
+		},
+
+		drawEdges() {
+			const bits = this.blendBits;
+			const x = this.x, y = this.y;
+
+			for (var i = 0; i < 4; i++) {
+				// First nibble has the edges
+				if ((bits & (1 << i)) == 0) {
+					Draw.rect(phase.edgeRegions[i >> 1], x, y, 90 * -i);
+				}
+			}
+		},
+
+		drawCorners() {
+			const bits = this.blendBits;
+			const x = this.y, y = this.y;
+
+			for (var i = 0; i < 4; i++) {
+				if ((bits & (256 << i)) != 0) {
+					// Third nibble has the inner corners, which take priority
+					Draw.rect(phase.icornerRegions[i], x, y);
+				} else if ((bits & (16 << i)) == 0) {
+					// Second nibble has the outer corners
+					Draw.rect(phase.cornerRegions[i], x, y);
+				}
+			}
+		},
+
+		/* DeflectorWall stuff */
+
+		drawShine() {
+			var hit = this.hit;
+			hit += Mathf.clamp(Math.sin(Time.time() / 10 + this.x + this.y) / 10, 0, 0.75);
+			if (Mathf.zero(hit)) return;
+
+			Draw.color(Color.white);
+			Draw.alpha(hit / 2);
+			Draw.blend(Blending.additive);
+			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
+			Draw.blend();
+			Draw.reset();
+
+			this.hit = Mathf.clamp(hit - Time.delta() / this.hitTime);
+		},
+
+		/* TODO: make this actually deflect stuff */
+		collision(b) {
+			this.super$collision(b);
+			if (b.damage > this.maxDamageDeflected() || b.isDeflected()) {
+				print("h");
+				return true;
+			}
+
+			const penX = Math.abs(this.x - b.x), penY = Math.abs(this.y - b.y);
+			b.hitbox(phase.rect2);
+			const pos = Geometry.raycastRect(b.x - b.velocity().x * Time.delta(), b.y - b.velocity().y * Time.delta(),
+				b.x + b.velocity().x * Time.delta(), b.y + b.velocity().y * Time.delta(),
+			phase.rect.setSize(Vars.tilesize + phase.rect2.width * 2 + phase.rect2.height * 2)
+				.setCenter(this.x, this.y));
+
+			if (pos) {
+				b.set(pos.x, pos.y);
+			}
+
+			b[penX > penY ? "x" : "y"] *= -1;
+
+			b.resetOwner(this, this.team);
+			b.scaleTime(1);
+			b.deflect();
+
+			this.hit = 1;
+			return false
+		},
+
+		maxDamageDeflected() {
+			return this.power.status * 20 + 10;
+		},
+
+		/* PhaseRouter */
+
+		placed() {
+			this.super$placed();
+
+			// Server doesn't care about drawing, stop
+			if (!Vars.ui) return;
+
+			this.reblendAll();
+			this.reblend();
+		},
+
+		removed() {
+			this.super$removed();
+
+			const net = this.network;
+			Core.app.post(() => {
+				if (net) net.refresh();
+
+				// Server doesn't care about drawing, stop
+				if (!Vars.ui) return;
+				this.reblendAll();
+			}));
+		},
+
+		reblendAll() {
+			for (var i in all) {
+				var other = this.tile.getNearby(all[i][0], all[i][1]);
+				if (other && other.block() == phase) {
+					other.reblend();
+				}
+			}
+		},
+
+		reblend() {
+			// All edges and outer corners by default
+			var bits = 0;
+
+			for (var i = 0; i < 4; i++) {
+				var prev = this.adjacent((i + 3) % 4);
+				var current = this.adjacent(i);
+				if (current || prev) {
+					// Can't be a corner
+					bits |= 16 << i;
+					if (current) {
+						// Can't be a straight edge
+						bits |= 1 << i;
+						if (prev && this.interior(i)) {
+							// It's a bend, show inner corner
+							bits |= 256 << i;
+						}
+					}
+				}
+			}
+
+			if (this.power.status >= 1) {
+				Fx.placeBlock.at(this.x, this.y);
+			}
+			this.blendBits = bits;
+		},
+
+		adjacent(i) {
+			const other = this.tile.getNearby(dirs[i].x, dirs[i].y);
+			return other && other.block() == phase;
+		},
+
+		/* Whether a router is a corner of a square or just a bend */
+		interior(i) {
+			const diag = this.tile.getNearby(diags[i][0], diags[i][1]);
+			return diag && diag.block() != phase;
+		},
+
+		/* Round-robin all outputs in this network */
+		handleItem(source, item) {
+			const network = this.network;
+
+			var ended = false;
+			var node = network.last;
+			while (!ended) {
+				var output = node.to, source = node.from;
+				node = node.next;
+				if (output.acceptItem(source, item)) {
+					output.handleItem(source, item);
+					network.last = node;
+					return;
+				}
+
+				ended = node == network.last;
+			}
+			// acceptItem said yes but handleItem said no
+		},
+
+		acceptItem(source, item) {
+			if (this.power.status < 1) return false;
+			if (!this.network) {
+				this.network = NetworkGraph.new(this);
+			}
+
+			const net = this.network;
+			var node = net.begin;
+			do {
+				var output = node.to, source = node.from;
+				node = node.next;
+
+				if (output.acceptItem(source, item)) {
+					return true;
+				}
+			} while (node != net.begin);
+
+			return false;
+		},
+
+		onProximityUpdate() {
+			this.super$onProximityUpdate();
+
+			const net = this.network;
+			const prox = this.proximity();
+			// Remove potentially broken tiles
+			this.outputs = [];
+
+			/* Add back the remaining tiles */
+			for (var i = 0; i < prox.size; i++) {
+				var near = prox.get(i);
+				if (near.block().hasItems && near.block() != phase) {
+					this.outputs.push(near.bc());
+				}
+			}
+
+			// Very slow
+			if (net) net.rebuildOutputs();
+		},
 		read(stream, version) {
 			this.super$read(stream, version);
-			this._blendBits = stream.readShort();
+			this.blendBits = stream.s();
 		},
 
 		write(stream) {
 			this.super$write(stream);
-			stream.writeShort(this._blendBits);
-		},
-
-		setNetwork(set) {this._network = set;},
-		getNetwork() {return this._network;},
-		setOutputs(set) {this._outputs = set;},
-		getOutputs() {return this._outputs;},
-		setBlendBits(set) {this._blendBits = set;},
-		getBlendBits() {return this._blendBits;},
-		setHit(set) {this._hit = set;},
-		getHit() {return this._hit;}
+			stream.s(this.blendBits);
+		}
 	});
 
-	ent._network = null;
-	ent._outputs = [];
-	ent._blendBits = 0;
-	ent._hit = 0;
+	ent.network = null;
+	ent.outputs = [];
+	ent.blendBits = 0;
+	ent.hit = 0;
+
 	return ent;
 };
 

@@ -25,11 +25,11 @@ const clear = extendContent(Router, "clear-router", {
 		this.topRegion = Core.atlas.find("routorio-clear-router-top");
 	},
 
-	draw(tile){
-		const entity = tile.ent();
+	drawBase(tile){
+		const building = tile.bc();
 		Draw.rect(this.bottomRegion, tile.drawx(), tile.drawy());
-		if (entity.items.total() != 0) {
-			Draw.rect(entity.items.first().icon(Cicon.full), tile.drawx(), tile.drawy());
+		if (building.items.total() != 0) {
+			Draw.rect(building.items.first().icon(Cicon.full), tile.drawx(), tile.drawy());
 		}
 		Draw.color(colour);
 		Draw.rect(this.topRegion, tile.drawx(), tile.drawy());

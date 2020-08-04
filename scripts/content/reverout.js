@@ -26,14 +26,15 @@ const rotors = [
 	-1, 1
 ];
 
-const reverout = new JavaAdapter(UnitType, {
+const reverout = extendContent(UnitType, "reverout", {
 	load() {
 		this.super$load();
-		this.weapon.region = Core.atlas.find("clear");
 		this.region = Core.atlas.find(this.name);
 		this.rotor = Core.atlas.find("router");
 	}
-}, "reverout", () => extend(FlyingUnit, {
+});
+
+reverout.constructor = () => extend(BuilderUnit, {
 	drawOver() {
 		const r = this.rotation;
 		const sin = Mathf.sin(r) * dist;
@@ -49,6 +50,6 @@ const reverout = new JavaAdapter(UnitType, {
 				r + Time.time() * 20);
 		}
 	}
-}));
+});
 
 module.exports = reverout;

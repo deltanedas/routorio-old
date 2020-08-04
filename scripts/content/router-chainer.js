@@ -20,47 +20,39 @@
 const chainer = extendContent(UnitFactory, "router-chainer", {
 	load() {
 		this.super$load();
-		this.topRegion = Core.atlas.find("clear");
-		this.router = Core.atlas.find("router");
+		this.topRegion = this.outRegion = this.outRegion = Core.atlas.find("clear");
 
+		this.region = Core.atlas.find(this.name + "-base");
+		this.router = Core.atlas.find("router");
 		this.surge = Core.atlas.find("routorio-surge-router");
+
 		this.laser = Core.atlas.find("laser");
 		this.laserEnd = Core.atlas.find("laser-end");
 	},
 
-	icon(cicon) {
-		if (!this.iconRegion) {
-			this.iconRegion = Core.atlas.find(this.name + "-icon");
-		}
-		return this.iconRegion;
-	},
-	generateIcons() {
-		return [this.iconRegion];
-	},
+	draw() {
+		const dx = this.x, dy = this.y;
+		Draw.rect(chainer.region, dx, dy);
 
-	drawLayer(tile) {
-		const dx = tile.drawx(), dy = tile.drawy();
-		const ent = tile.ent();
+		const rot = Time.time() * this.progress * this.timeScale;
+		const chaining = this.cons.valid();
 
-		ent.progress = Mathf.lerp(ent.progress, Math.min(ent.efficiency(), 1), 0.02);
-		const rot = Time.time() * ent.progress * ent.timeScale;
-		const chaining = ent.cons.valid();
-
-		ent.dist = Mathf.lerp(ent.dist, chaining ? 24 : 4 * ent.progress + 8, 0.04);
+		this.dist = Mathf.lerp(this.dist, chaining ? this.payload.type().size * 24
+			: 4 * this.progress + 8, 0.04);
 
 		for (var i = 0; i < 8; i++) {
 			var angle = rot + 360 * i / 8;
-			var x = dx + Angles.trnsx(angle, ent.dist);
-			var y = dy + Angles.trnsy(angle, ent.dist);
+			var x = dx + Angles.trnsx(angle, this.dist);
+			var y = dy + Angles.trnsy(angle, this.dist);
 
 			if (chaining) {
-				Drawf.laser(this.laser, this.laserEnd,
-					// ni = hide laser
+				Drawf.laser(chainer.laser, chainer.laserEnd,
+					// n*i = hide laser
 					x, y, dx, dy, Math.sqrt(Math.sin(angle / 50) / 5));
 				// Surge routers face the center when at max dist
-				Draw.rect(this.surge, x, y, Mathf.slerp(0, angle, ent.dist / 24));
+				Draw.rect(chainer.surge, x, y, Mathf.slerp(0, angle, this.dist / 24));
 			} else {
-				Draw.rect(this.router, x, y);
+				Draw.rect(chainer.router, x, y);
 			}
 		}
 	}
@@ -75,16 +67,10 @@ chainer.plans = [
 
 chainer.entityType = () => {
 	const ent = extend(UnitFactory.UnitFactoryEntity, {
-		getProgress() {return this._progress;},
-		setProgress(set) {this._progress = set;},
-
-		getDist() {return this._dist;},
-		setDist(set) {this._dist = set;}
 	});
 
-	ent._progress = 0;
 	// Routers start by folding out
-	ent._dist = 0;
+	ent.dist = 0;
 
 	return ent;
 };
