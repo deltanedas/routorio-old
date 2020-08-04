@@ -3,7 +3,7 @@
 	"plans": [{
 		"unit": "sexy-router",
 		"time": 300,
-		"items": ["silicon/5", "copper/6"]
+		"requirements": ["silicon/5", "copper/6"]
 	}],
 	"size": 2,
 	"health": 200,
