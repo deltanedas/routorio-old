@@ -31,7 +31,7 @@ const arcMultipliers = {
 	plastanium: () => Mathf.round(Mathf.random(0, 1))
 };
 
-function adjacent(tile, valid) {
+const adjacent = (tile, valid) => {
 	var adj = 0;
 	var near, dir;
 	for (var i in directions) {
@@ -44,7 +44,9 @@ function adjacent(tile, valid) {
 		if (valid(near.block())) adj++;
 	}
 	return adj;
-}
+};
+
+const phase = this.global.routorio["phase-router"];
 
 var mod, arc;
 const rates = {
@@ -93,7 +95,8 @@ const rates = {
 	},
 	// decrease fuel burnup
 	phase: {
-		apply: tile => adjacent(tile, block => block instanceof DeflectorWall),
+		apply: tile => adjacent(tile, block => block instanceof DeflectorWall
+			|| block.id == phase.id),
 		modifiers: {
 			burnup: 0.5
 		}
