@@ -33,9 +33,9 @@ const add = names => {
 // Blocks
 add(["op-router", "double-router", "titanium-double-router",
 	"inverted-router", "clear-router", "explosive-router",
-	"combat-router", "arc-router", "ubuntium-router",
+	"combat-router", "phase-router", "ubuntium-router",
 	"electric-router", "surge-router", "solar-router",
-	"alien-router", "phase-router", "routary-pump",
+	"alien-router", "arc-router", "routary-pump",
 	"enigmatic-router"]);
 
 // Units
