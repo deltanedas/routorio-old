@@ -15,7 +15,7 @@ void main() {
 	vec2 v = vec2(1.0/u_resolution.x, 1.0/u_resolution.y);
 	vec2 coords = c / v;
 
-	float wave = sin(coords.x + coords.y + u_time * speed) * 0.6 + 1.3;
+	float wave = sin((coords.x + coords.y + u_time) * speed) * 0.6 + 1.5;
 	vec3 colour = texture2D(u_texture, c).rgb * wave;
 	gl_FragColor = vec4(colour.rgb, 1.0);
 }
