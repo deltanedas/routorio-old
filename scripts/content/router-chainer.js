@@ -45,6 +45,7 @@ chainer.entityType = () => {
 		draw() {
 			const dx = this.x, dy = this.y;
 			Draw.rect(chainer.region, dx, dy);
+			Draw.z(Layer.turret);
 
 			this.rot = Mathf.lerp(this.rot, Math.min(this.efficiency(), 1) * this.timeScale, 0.02);
 			const rot = Time.time() * this.rot;

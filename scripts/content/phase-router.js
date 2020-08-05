@@ -19,6 +19,8 @@
    Blendbits are 3 least significant nibbles, edges, outer corners and inner corners.
    The fourth nibble is unused. */
 
+const shaders = require("routorio/lib/shaders");
+
 var phase;
 
 const NetworkGraph = {
@@ -144,23 +146,22 @@ phase = extendContent(Router, "phase-router", {
 });
 
 phase.enableDrawStatus = false;
-phase.hitTime = 10;
-// Temporary variables
-phase.rect = new Rect(); phase.rect2 = new Rect();
 
 phase.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, phase, {
 		draw() {
-			if (this.power.status < 1) {
-				// Inactive state, draw disconnected version
-				Draw.rect(phase.icon(Cicon.full), this.x, this.y);
-			} else {
-				this.super$draw();
-				this.drawEdges();
-				this.drawCorners();
-			}
-
-			this.drawShine();
+			Draw.draw(Layer.block, () => {
+				Draw.shader(shaders.phase);
+				if (this.power.status < 1) {
+					// Inactive state, draw disconnected version
+					Draw.rect(phase.icon(Cicon.full), this.x, this.y);
+				} else {
+					this.super$draw();
+					this.drawEdges();
+					this.drawCorners();
+				}
+				Draw.shader();
+			});
 		},
 
 		drawEdges() {
@@ -189,59 +190,6 @@ phase.entityType = () => {
 				}
 			}
 		},
-
-		/* DeflectorWall stuff */
-
-		drawShine() {
-			var hit = this.hit;
-			const wave = Mathf.clamp(Math.sin(Time.time() / 10 + this.x + this.y) / 10, 0, 0.75);
-			hit += wave;
-			if (Mathf.zero(hit)) return;
-
-			Draw.color(Color.white);
-			Draw.alpha(hit / 2);
-			Draw.blend(Blending.additive);
-			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
-			Draw.blend();
-			Draw.reset();
-
-			hit -= wave;
-			this.hit = Mathf.clamp(hit - Time.delta / this.hitTime);
-		},
-
-		/* TODO: make this actually deflect stuff */
-/*		collision(b) {
-			this.super$collision(b);
-			if (b.damage > this.maxDamageDeflected() || b.isDeflected()) {
-				return true;
-			}
-
-			const penX = Math.abs(this.x - b.x), penY = Math.abs(this.y - b.y);
-			b.hitbox(phase.rect2);
-			const pos = Geometry.raycastRect(b.x - b.velocity().x * Time.delta(), b.y - b.velocity().y * Time.delta(),
-				b.x + b.velocity().x * Time.delta(), b.y + b.velocity().y * Time.delta(),
-			phase.rect.setSize(Vars.tilesize + phase.rect2.width * 2 + phase.rect2.height * 2)
-				.setCenter(this.x, this.y));
-
-			if (pos) {
-				b.set(pos.x, pos.y);
-			}
-
-			b[penX > penY ? "x" : "y"] *= -1;
-
-			b.resetOwner(this, this.team);
-			b.scaleTime(1);
-			b.deflect();
-
-			this.hit = 1;
-			return false
-		},
-*/
-		maxDamageDeflected() {
-			return this.power.status * 20 + 10;
-		},
-
-		/* PhaseRouter */
 
 		placed() {
 			this.super$placed();
@@ -390,6 +338,5 @@ phase.entityType = () => {
 
 	return ent;
 };
-
 
 module.exports = phase;
