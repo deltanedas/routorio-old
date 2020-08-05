@@ -76,14 +76,14 @@ const edef = {
 	buildConfiguration(parent) {
 		const table = parent.fill(elec.background);
 
-		const modeb = table.imageButton(elec.buttons.modes[this.mode],
+		const modeb = table.button(elec.buttons.modes[this.mode],
 			Styles.clearTransi, () => {
 			// Cycle through modes
 			this.configure(-1);
 			modeb.style.imageUp = elec.buttons.modes[this.mode]
 		}).size(40).get();
 
-		const opb = table.imageButton(elec.buttons.operations[this.operation],
+		const opb = table.button(elec.buttons.operations[this.operation],
 			Styles.clearTransi, () => {
 			// Cycle through operations
 			this.configure(-2);

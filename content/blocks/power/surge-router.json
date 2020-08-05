@@ -1,11 +1,11 @@
 {
+	"category": "power",
 	"health": 600,
-	"category": "distribution",
-	"research": "electric-router",
 	"requirements": [
 		"silicon/4",
 		"surge-alloy/3"
 	],
+	"research": "electric-router",
 
 	"consumes": {
 		"power": 0.25
