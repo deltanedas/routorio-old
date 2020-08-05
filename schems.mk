@@ -10,19 +10,17 @@ endif
 dist := clear-router colossus double-router explosive-router \
 	incinerouter inverted-router op-router titanium-double-router \
 	alien-router
-liquid := routary-pump
 power := arc-router electric-router moderouter solar-router surge-router \
 	phase-router
 prod := ubuntium-router
 
 blocks := $(dist:%=distribution/%) $(power:%=power/%) $(prod:%=production/%) \
-	$(liquid:%=liquid/%) \
 	units/reverout-factory units/router-house units/router-chainer-icon
 
 units := reverout routerpede
 
 schems := $(blocks:%=blocks/%) $(units:%=units/%) \
-	mechs/sexy-router items/neutron-router
+	mechs/sexy-router
 schems := $(schems:%=schems/%.msch)
 
 all: $(schems)
