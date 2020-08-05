@@ -192,6 +192,7 @@ arc.entityType = () => {
 
 			print("Mul " + mul)
 			for (var i = 0; i < mul; i++) {
+				print("Lightning\n");
 				Lightning.create(Team.derelict, item.color, 7.5, this.x, this.y, Math.random(0, 360), Math.random(5, 20 * mul));
 			}
 		},

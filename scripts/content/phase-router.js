@@ -19,8 +19,6 @@
    Blendbits are 3 least significant nibbles, edges, outer corners and inner corners.
    The fourth nibble is unused. */
 
-const shaders = require("routorio/lib/shaders");
-
 var phase;
 
 const NetworkGraph = {
@@ -60,10 +58,9 @@ const NetworkGraph = {
 		for (var i in dirs) {
 			var tile = root.tile.getNearby(i);
 			if (!tile) return;
-			tile = tile.link();
 
 			if (tile.block() == phase) {
-				var ent = tile.building;
+				var ent = tile.bc();
 				if (this.routers.add(ent)) {
 					if (ent.network) {
 						if (ent.network == this) return;
@@ -85,7 +82,7 @@ const NetworkGraph = {
 			for (var o in router.outputs) {
 				var node = {
 					to: router.outputs[o],
-					from: router.tile,
+					from: router,
 					prev: node
 				};
 
@@ -150,18 +147,15 @@ phase.enableDrawStatus = false;
 phase.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, phase, {
 		draw() {
-/*			Draw.draw(Layer.block, () => {
-				Draw.shader(shaders.phase);*/
-				if (this.power.status < 1) {
-					// Inactive state, draw disconnected version
-					Draw.rect(phase.icon(Cicon.full), this.x, this.y);
-				} else {
-					this.super$draw();
-					this.drawEdges();
-					this.drawCorners();
-				}
-/*				Draw.shader();
-			});*/
+			if (this.power.status < 1) {
+				// Inactive state, draw disconnected version
+				Draw.rect(phase.icon(Cicon.full), this.x, this.y);
+			} else {
+				this.super$draw();
+				this.drawEdges();
+				this.drawCorners();
+				this.drawShine();
+			}
 		},
 
 		drawEdges() {
@@ -189,6 +183,18 @@ phase.entityType = () => {
 					Draw.rect(phase.cornerRegions[i], x, y);
 				}
 			}
+		},
+
+		drawShine() {
+			const shine = (Math.sin((Time.time() / 6 + this.x + this.y) / 10) + 1) / 16;
+			if (shine < 0.01) return;
+
+			Draw.color(Color.white)
+			Draw.alpha(shine);
+			Draw.blend(Blending.additive);
+			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
+			Draw.blend();
+			Draw.reset();
 		},
 
 		placed() {
@@ -328,13 +334,18 @@ phase.entityType = () => {
 		write(stream) {
 			this.super$write(stream);
 			stream.s(this.blendBits);
-		}
+		},
+
+		/* Public fields */
+		getNetwork() { return this._network; },
+		setNetwork(set) { this._network = set; },
+		getOutputs() { return this._outputs; },
+		setOutputs(set) { this._outputs = set; }
 	});
 
 	ent.network = null;
 	ent.outputs = [];
 	ent.blendBits = 0;
-	ent.hit = 0;
 
 	return ent;
 };
