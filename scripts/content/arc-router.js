@@ -181,7 +181,6 @@ arc.entityType = () => {
 		},
 
 		arc(item) {
-			print("Anuken arc " + this)
 			const rates = this.rates;
 			var mul = arcMultipliers[item.name];
 			if (mul === undefined) {
@@ -190,11 +189,14 @@ arc.entityType = () => {
 				mul = mul();
 			}
 
-			print("Mul " + mul)
-			for (var i = 0; i < mul; i++) {
-				print("Lightning\n");
-				Lightning.create(Team.derelict, item.color, 7.5, this.x, this.y, Math.random(0, 360), Math.random(5, 20 * mul));
-			}
+			const x = this.x, y = this.y;
+
+			Core.app.post(() => {
+				for (var i = 0; i < mul; i++) {
+					Lightning.create(Team.derelict, item.color, 10, x, y,
+						Mathf.random(0, 360), Math.round(Mathf.random(5, 20 * mul)));
+				}
+			});
 		},
 
 		calculateRates() {
@@ -220,7 +222,9 @@ arc.entityType = () => {
 			}
 		},
 
-		getPowerProduction: () => this.rates.gen * this.progress,
+		getPowerProduction() {
+			return this.rates.gen * this.progress;
+		},
 
 		onProximityUpdate() {
 			this.super$onProximityUpdate();
