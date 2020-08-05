@@ -143,6 +143,7 @@ arc = extendContent(Router, "arc-router", {
 	}
 });
 
+arc.enableDrawStatus = true;
 arc.flags = EnumSet.of(BlockFlag.producer);
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
@@ -180,6 +181,7 @@ arc.entityType = () => {
 		},
 
 		arc(item) {
+			print("Anuken arc " + this)
 			const rates = this.rates;
 			var mul = arcMultipliers[item.name];
 			if (mul === undefined) {
@@ -188,6 +190,7 @@ arc.entityType = () => {
 				mul = mul();
 			}
 
+			print("Mul " + mul)
 			for (var i = 0; i < mul; i++) {
 				Lightning.create(Team.derelict, item.color, 7.5, this.x, this.y, Math.random(0, 360), Math.random(5, 20 * mul));
 			}
@@ -229,6 +232,15 @@ arc.entityType = () => {
 			for (var i = 0; i < 10; i++) {
 				this.arc(Items.surgealloy);
 			}
+		},
+
+		/* Status - Orange */
+		shouldConsume() {
+			return this.progress > 0.5;
+		},
+		/* Status - Red */
+		productionValid() {
+			return this.progress > 0.02;
 		},
 
 		/* Public fields */

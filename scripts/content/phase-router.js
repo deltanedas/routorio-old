@@ -143,6 +143,7 @@ phase = extendContent(Router, "phase-router", {
 	}
 });
 
+phase.enableDrawStatus = false;
 phase.hitTime = 10;
 // Temporary variables
 phase.rect = new Rect(); phase.rect2 = new Rect();
@@ -193,7 +194,8 @@ phase.entityType = () => {
 
 		drawShine() {
 			var hit = this.hit;
-			hit += Mathf.clamp(Math.sin(Time.time() / 10 + this.x + this.y) / 10, 0, 0.75);
+			const wave = Mathf.clamp(Math.sin(Time.time() / 10 + this.x + this.y) / 10, 0, 0.75);
+			hit += wave;
 			if (Mathf.zero(hit)) return;
 
 			Draw.color(Color.white);
@@ -203,11 +205,12 @@ phase.entityType = () => {
 			Draw.blend();
 			Draw.reset();
 
-			this.hit = Mathf.clamp(hit - Time.delta() / this.hitTime);
+			hit -= wave;
+			this.hit = Mathf.clamp(hit - Time.delta / this.hitTime);
 		},
 
 		/* TODO: make this actually deflect stuff */
-		collision(b) {
+/*		collision(b) {
 			this.super$collision(b);
 			if (b.damage > this.maxDamageDeflected() || b.isDeflected()) {
 				return true;
@@ -233,7 +236,7 @@ phase.entityType = () => {
 			this.hit = 1;
 			return false
 		},
-
+*/
 		maxDamageDeflected() {
 			return this.power.status * 20 + 10;
 		},
@@ -267,7 +270,7 @@ phase.entityType = () => {
 			for (var i in all) {
 				var other = this.tile.getNearby(all[i][0], all[i][1]);
 				if (other && other.block() == phase) {
-					other.reblend();
+					other.bc().reblend();
 				}
 			}
 		},

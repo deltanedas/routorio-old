@@ -46,7 +46,8 @@ chainer.entityType = () => {
 			const dx = this.x, dy = this.y;
 			Draw.rect(chainer.region, dx, dy);
 
-			const rot = Time.time() * this.progress * this.timeScale;
+			this.rot = Mathf.lerp(this.rot, Math.min(this.efficiency(), 1) * this.timeScale, 0.02);
+			const rot = Time.time() * this.rot;
 			const chaining = this.cons.valid();
 
 			this.dist = Mathf.lerp(this.dist, this.payload ? this.payload.type().size * 24
@@ -58,8 +59,8 @@ chainer.entityType = () => {
 				var y = dy + Angles.trnsy(angle, this.dist);
 
 				if (chaining) {
-					Drawf.laser(chainer.laser, chainer.laserEnd,
-						// n*i = hide laser
+					Drawf.laser(this.team, chainer.laser, chainer.laserEnd,
+						// imaginary = hide laser
 						x, y, dx, dy, Math.sqrt(Math.sin(angle / 50) / 5));
 					// Surge routers face the center when at max dist
 					Draw.rect(chainer.surge, x, y, Mathf.slerp(0, angle, this.dist / 24));
@@ -72,6 +73,7 @@ chainer.entityType = () => {
 
 	// Routers start by folding out
 	ent.dist = 0;
+	ent.rot = 0;
 
 	return ent;
 };
