@@ -150,8 +150,8 @@ phase.enableDrawStatus = false;
 phase.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, phase, {
 		draw() {
-			Draw.draw(Layer.block, () => {
-				Draw.shader(shaders.phase);
+/*			Draw.draw(Layer.block, () => {
+				Draw.shader(shaders.phase);*/
 				if (this.power.status < 1) {
 					// Inactive state, draw disconnected version
 					Draw.rect(phase.icon(Cicon.full), this.x, this.y);
@@ -160,8 +160,8 @@ phase.entityType = () => {
 					this.drawEdges();
 					this.drawCorners();
 				}
-				Draw.shader();
-			});
+/*				Draw.shader();
+			});*/
 		},
 
 		drawEdges() {
@@ -178,7 +178,7 @@ phase.entityType = () => {
 
 		drawCorners() {
 			const bits = this.blendBits;
-			const x = this.y, y = this.y;
+			const x = this.x, y = this.y;
 
 			for (var i = 0; i < 4; i++) {
 				if ((bits & (256 << i)) != 0) {
