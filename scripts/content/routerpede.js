@@ -137,7 +137,7 @@ routerpede.constructor = () => {
 				ScorchDecal.create(seg.x, seg.y);
 				Effects.effect(Fx.explosion, seg.x, seg.y);
 				// Less shake than if it fully died
-				Effects.shake(1, 1, seg.x, seg.y);
+				Effect.shake(1, 1, seg.x, seg.y);
 			}
 		},
 

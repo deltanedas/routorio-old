@@ -51,7 +51,7 @@ explode.entityType = () => extendContent(Router.RouterEntity, explode, {
 		if (!Vars.ui) return;
 
 		Sounds.explosionbig.at(this.tile);
-		Effects.shake(40, 16, x, y);
+		Effect.shake(40, 16, x, y);
 		Fx.nuclearShockwave.at(x, y);
 		for (var i = 0; i < 4; i++) {
 			Time.run(Math.random(40), () => {

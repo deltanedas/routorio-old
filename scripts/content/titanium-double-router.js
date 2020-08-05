@@ -50,6 +50,7 @@ titanium.entityType = () => extendContent(Router.RouterEntity, titanium, {
 	removed() {
 		this.super$removed();
 		const x = titanium.calcOffset(this.tile.x);
+		Log.info("Remove @,@ (i am @, @)", x, this.tile.y, this.tile.x, this.tile.y);
 
 		/* Prevent trying to delete the other half infinitely */
 		if (!lock) {

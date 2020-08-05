@@ -155,12 +155,12 @@ arc.entityType = () => {
 		},
 
 		handleItem(source, item) {
-			if (!this.consume(item)) {
+			if (!this.consumeFuel(item)) {
 				this.super$handleItem(source, item);
 			}
 		},
 
-		consume(item) {
+		consumeFuel(item) {
 			const rates = this.rates;
 			var consumed = false;
 
@@ -223,11 +223,11 @@ arc.entityType = () => {
 			this.calculateRates();
 		},
 
-		onDestroyed(tile) {
-			this.super$onDestroyed(tile);
+		onDestroyed() {
+			this.super$onDestroyed();
 			// Spawn lots of arcs
 			for (var i = 0; i < 10; i++) {
-				this.arc(tile, Items.surgealloy);
+				this.arc(Items.surgealloy);
 			}
 		},
 
