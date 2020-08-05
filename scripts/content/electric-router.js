@@ -148,13 +148,11 @@ const edef = {
 	},
 
 	write(stream) {
-		print("Write elec");
 		this.super$write(stream);
 		stream.s(this.config());
 	},
 
 	read(stream, version) {
-		print("Read elec");
 		this.super$read(stream, version);
 		this.configured(null, stream.s());
 	}

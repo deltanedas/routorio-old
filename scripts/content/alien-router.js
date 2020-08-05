@@ -53,7 +53,7 @@ alien.entityType = () => extendContent(Router.RouterEntity, alien, {
 
 		// This alien router couldn't spread and is a failure
 		Core.app.post(() => {
-			Call.setTile(this.tile, clear, tile.team, 0);
+			Call.setTile(this.tile, clear, this.team, 0);
 		});
 	}
 });
