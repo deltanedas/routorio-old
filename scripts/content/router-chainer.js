@@ -49,7 +49,7 @@ chainer.entityType = () => {
 			const rot = Time.time() * this.progress * this.timeScale;
 			const chaining = this.cons.valid();
 
-			this.dist = Mathf.lerp(this.dist, chaining ? this.payload.type().size * 24
+			this.dist = Mathf.lerp(this.dist, this.payload ? this.payload.type().size * 24
 				: 4 * this.progress + 8, 0.04);
 
 			for (var i = 0; i < 8; i++) {
