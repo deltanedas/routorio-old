@@ -24,7 +24,7 @@ const combat = extendContent(ItemTurret, "combat-router", {
 
 combat.entityType = () => extendContent(ItemTurret.ItemTurretEntity, combat, {
 	draw() {
-		if (this.team() == Vars.player.team) {
+		if (this.team == Vars.player.team()) {
 			this.super$draw();
 		} else {
 			Draw.rect(combat.facade, this.x, this.y);

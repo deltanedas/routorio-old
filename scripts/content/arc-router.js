@@ -233,7 +233,7 @@ arc.entityType = () => {
 
 		/* Public fields */
 		get_progress() { return this.progress; },
-		get_rates() { return this._rates; }
+		get_rates() { return this.rates; }
 	});
 	ent.rates = Object.create(rates.base.bonuses);
 	ent.progress = 0;

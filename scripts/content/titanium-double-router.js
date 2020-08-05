@@ -47,10 +47,9 @@ titanium.entityType = () => extendContent(Router.RouterEntity, titanium, {
 		Vars.world.tile(x, this.tile.y).setBlock(titanium, this.team, 0);
 	},
 
-	removed() {
-		this.super$removed();
+	onRemoved() {
+		this.super$onRemoved();
 		const x = titanium.calcOffset(this.tile.x);
-		Log.info("Remove @,@ (i am @, @)", x, this.tile.y, this.tile.x, this.tile.y);
 
 		/* Prevent trying to delete the other half infinitely */
 		if (!lock) {

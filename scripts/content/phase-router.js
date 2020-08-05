@@ -210,7 +210,6 @@ phase.entityType = () => {
 		collision(b) {
 			this.super$collision(b);
 			if (b.damage > this.maxDamageDeflected() || b.isDeflected()) {
-				print("h");
 				return true;
 			}
 
@@ -251,8 +250,8 @@ phase.entityType = () => {
 			this.reblend();
 		},
 
-		removed() {
-			this.super$removed();
+		onRemoved() {
+			this.super$onRemoved();
 
 			const net = this.network;
 			Core.app.post(() => {
