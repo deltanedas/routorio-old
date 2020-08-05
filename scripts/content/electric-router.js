@@ -74,23 +74,26 @@ const edef = {
 	},
 
 	buildConfiguration(parent) {
-		const table = parent.fill(elec.background);
+		const table = parent.fill();
+		table.background(elec.background);
 
 		const modeb = table.button(elec.buttons.modes[this.mode],
 			Styles.clearTransi, () => {
 			// Cycle through modes
-			this.configure(-1);
+			this.mode = (this.mode + 1) % modeCount;
+			this.configure(this.config());
 			modeb.style.imageUp = elec.buttons.modes[this.mode]
 		}).size(40).get();
 
 		const opb = table.button(elec.buttons.operations[this.operation],
 			Styles.clearTransi, () => {
 			// Cycle through operations
-			this.configure(-2);
+			this.operation = (this.operation + 1) % operationCount;
+			this.configure(this.config());
 			opb.style.imageUp = elec.buttons.operations[this.operation]
 		}).size(40).get();
 
-		const numberf = table.field(ent.number, text => {
+		const numberf = table.field(this.number + "", text => {
 			try {
 				var set = parseInt(text);
 			} catch (e) {
@@ -99,28 +102,16 @@ const edef = {
 			if (!isNaN(set)) {
 				set = Mathf.clamp(set, 0, maxNumber);
 				numberf.text = set;
-				tile.configure(set);
+				this.number = set;
+				this.configure(this.config());
 			}
 		}).width(120).get();
 	},
 
-	configured(player, n) {
-		const ent = tile.entity;
-		/* Number */
-		if (n >= 0) {
-			ent.number = Math.min(n, maxNumber);
-			return;
-		}
-
-		/* Cycle through modes */
-		if (n == -1) {
-			ent.mode = (ent.mode + 1) % modeCount;
-		}
-
-		/* Cycle through operations */
-		if (n == -2) {
-			this.operation = (this.operation + 1) % operationCount;
-		}
+	configured(player, raw) {
+		this.mode = raw >> 15 & 0x01;
+		this.operation = (raw >> 13) & 0x03
+		this.number = raw & maxNumber;
 	},
 
 	active() {
@@ -153,20 +144,19 @@ const edef = {
 	config() {
 		var lhs = this.mode << 15;
 		lhs |= this.operation << 13;
-		return this.number | lhs;
+		return (this.number | lhs) + "";
 	},
 
 	write(stream) {
+		print("Write elec");
 		this.super$write(stream);
 		stream.s(this.config());
 	},
 
 	read(stream, version) {
+		print("Read elec");
 		this.super$read(stream, version);
-		const raw = stream.s();
-		this.mode = raw >> 15 & 0x01;
-		this.operation = (raw >> 13) & 0x03
-		this.number = raw & maxNumber;
+		this.configured(null, stream.s());
 	}
 };
 
