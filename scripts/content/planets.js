@@ -15,29 +15,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-this.global.routorio = {};
+const planets = {};
 
-const add = names => {
-	for (var i in names) {
-		var name = names[i];
-		try {
-			this.global.routorio[name] = require("routorio/content/" + name);
-		} catch (e) {
-			Log.err("Failed to load routorio script @.js: @", name, e);
-		}
-	}
+// Router's mean colour
+const colour = Color.valueOf("#6e7080");
+
+const routerosSectors = routeros => {
+	const lavaflow = new SectorPreset("lavaflow", routeros, 0);
+	lavaflow.captureWave = 40;
 };
 
-// Blocks
-add(["op-router", "double-router", "titanium-double-router",
-	"inverted-router", "clear-router", "explosive-router",
-	"combat-router", "phase-router", "ubuntium-router",
-	"electric-router", "surge-router", "solar-router",
-	"alien-router", "arc-router"]);
+const routeros = new Planet("routeros", Planets.serpulo, 3, 6);
+routeros.generator = extend(SerpuloPlanetGenerator, {
+});
+routeros.mesh = new HexMesh(routeros, 3);
+routeros.atmosphereColor = colour;
+routeros.startSector = 0;
+planets.routeros = routeros;
+routerosSectors(routeros);
 
-// Units
-add(["reverout", "routerpede", "router-chainer"]);
-
-// Misc
-add(["planets"]);
-require("routorio/manual");
+module.exports = planets;
