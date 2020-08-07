@@ -31,8 +31,6 @@ surge.entityType = () => extendContent(Router.RouterEntity, surge, {
 	handleItem(source, item) {
 		this.super$handleItem(source, item);
 
-		print(surge.sparkChance)
-		print(Mathf.chance(surge.sparkChance))
 		if (Vars.ui && Mathf.chance(surge.sparkChance)) {
 			Fx.lancerLaserCharge.at(this.x + Mathf.range(2), this.y + Mathf.range(2),
 				Math.random(0, 360), Items.surgealloy.color);
