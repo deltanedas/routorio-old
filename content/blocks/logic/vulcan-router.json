@@ -1,0 +1,16 @@
+{
+	"category": "distribution",
+	"requirements": [
+		"copper/30",
+		"silicon/20",
+		"graphite/15",
+		"titanium/10",
+	],
+	"research": "electric-router",
+
+	"configurable": true,
+	"hasPower": true,
+	"consumes": {
+		"power": 0.3
+	}
+}

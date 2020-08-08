@@ -13,8 +13,10 @@ dist := clear-router colossus double-router explosive-router \
 power := arc-router electric-router moderouter solar-router surge-router \
 	phase-router
 prod := ubuntium-router
+logic := vulcan-router
 
-blocks := $(dist:%=distribution/%) $(power:%=power/%) $(prod:%=production/%) \
+blocks := $(dist:%=distribution/%) $(power:%=power/%)\
+	$(prod:%=production/%) $(logic:%=logic/%) \
 	units/router-house units/router-chainer
 
 units := reverout routerpede sexy-router

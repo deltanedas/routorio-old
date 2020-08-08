@@ -17,6 +17,8 @@
 
 // Configurable router, responds to changes in the power grid
 
+const Short = java.lang.Short;
+
 const modes = {
 	buffer: 0,
 	rate: 1
@@ -66,6 +68,12 @@ const elec = extendContent(Router, "electric-router", {
 	}
 });
 
+elec.config(Short, (ent, raw) => {
+	ent.mode = raw >> 15 & 0x01;
+	ent.operation = (raw >> 13) & 0x03
+	ent.number = raw & maxNumber;
+});
+
 const edef = {
 	updateTile() {
 		if (this.active()) {
@@ -108,12 +116,6 @@ const edef = {
 		}).width(120).get();
 	},
 
-	configured(player, raw) {
-		this.mode = raw >> 15 & 0x01;
-		this.operation = (raw >> 13) & 0x03
-		this.number = raw & maxNumber;
-	},
-
 	active() {
 		const number = Math.round(this.powerNum);
 
@@ -144,7 +146,7 @@ const edef = {
 	config() {
 		var lhs = this.mode << 15;
 		lhs |= this.operation << 13;
-		return (this.number | lhs) + "";
+		return java.lang.Short(this.number | lhs);
 	},
 
 	write(stream) {
