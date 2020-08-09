@@ -37,7 +37,7 @@ operations.min = operations.equals;
 operations.max = operations.not;
 
 // Short - mode | operation
-const maxNumber = 0x1FFF;
+const maxNumber = 0xFFF;
 
 const elec = extendContent(Router, "electric-router", {
 	load() {
@@ -69,9 +69,7 @@ const elec = extendContent(Router, "electric-router", {
 });
 
 elec.config(Short, (ent, raw) => {
-	ent.mode = raw >> 15 & 0x01;
-	ent.operation = (raw >> 13) & 0x03
-	ent.number = raw & maxNumber;
+	ent.load(raw);
 });
 
 const edef = {
@@ -144,9 +142,15 @@ const edef = {
 	},
 
 	config() {
-		var lhs = this.mode << 15;
-		lhs |= this.operation << 13;
+		var lhs = this.mode << 14;
+		lhs |= this.operation << 12;
 		return java.lang.Short(this.number | lhs);
+	},
+
+	load(raw) {
+		this.mode = raw >> 14 & 0x01;
+		this.operation = (raw >> 12) & 0x03
+		this.number = raw & maxNumber;
 	},
 
 	write(stream) {
@@ -156,7 +160,7 @@ const edef = {
 
 	read(stream, version) {
 		this.super$read(stream, version);
-		this.configured(null, stream.s());
+		this.load(stream.s());
 	}
 };
 
