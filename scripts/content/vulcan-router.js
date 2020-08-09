@@ -28,23 +28,18 @@ spock.config(java.lang.String, (entity, code) => {
 spock.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, spock, {
 		getTileTarget(item, from, set) {
+			const vars = this.vm.vars;
+			vars[this.itemI].objval = item;
+			vars[this.sourceI].objval = from.bc();
+			vars[this.dirI].numval = from.relativeTo(this.tile);
+
 			const dir = this.runScript(item, from);
-			Log.info("Dir @", dir);
 			const tile = this.tile.getNearby(dir);
-			return tile ? tile.bc() : null;
+			if (!tile) return null;
+			return tile.bc().acceptItem(this, item) ? tile.bc() : null;
 		},
 
 		handleString: print,
-
-		handleItem(source, item) {
-			this.super$handleItem(source, item);
-			const vars = this.vm.vars;
-			const i = this.startIdx;
-
-			vars[i++].objval = item;
-			vars[i++].objval = source;
-			vars[i].numval = source.tile.relativeTo(this.tile);
-		},
 
 		acceptItem(source, item) {
 			return this.power.status >= 1
@@ -57,11 +52,17 @@ spock.entityType = () => {
 		runScript(item, source) {
 			const vars = this.vm.vars;
 			// Only let an item through if it was just set
-			vars[this.outIdx].numval = -1;
+			vars[this.outputI].numval = -1;
+
+			print(this.itemI);
+			print("step vm " + this.outputI)
+			for (var i in vars) {
+				Log.warn("Var @ = @", i, vars[i].isobj ? vars[i].objval : vars[i].numval);
+			}
 
 			this.vm.runOnce();
 
-			return vars[this.outIdx].isobj ? -1 : vars[this.outIdx].numval % 4;
+			return vars[this.outputI].isobj ? -1 : vars[this.outputI].numval % 4;
 		},
 
 		setScript(code, cons) {
@@ -84,11 +85,11 @@ spock.entityType = () => {
 				if (cons) cons(asm);
 
 				/* Placeholders, set in handleItem */
-				this.startIdx = asm.putConst("@item", null).id;
-				asm.putConst("@source", null);
-				asm.putConst("@dir", -1);
+				this.itemI = asm.putConst("@item", null).id;
+				this.sourceI = asm.putConst("@source", null).id;
+				this.dirI = asm.putConst("@dir", -1).id;
 				asm.putConst("@this", this);
-				this.outIdx = asm.var("@output").id;
+				this.outputI = asm.putVar("@output").id;
 
 				this.vm.load(asm);
 			} catch (e) {
@@ -164,8 +165,6 @@ spock.entityType = () => {
 		}
 	});
 
-	// Start of our reserved variables
-	ent.startIdx = -1;
 	ent.code = null;
 	ent.vm = new LExecutor();
 
