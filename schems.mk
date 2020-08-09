@@ -11,7 +11,7 @@ dist := clear-router colossus double-router explosive-router \
 	incinerouter inverted-router op-router titanium-double-router \
 	alien-router
 power := arc-router electric-router moderouter solar-router surge-router \
-	phase-router
+	phase-router fusion-router
 prod := ubuntium-router
 logic := vulcan-router
 

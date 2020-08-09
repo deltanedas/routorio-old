@@ -33,7 +33,8 @@ add(["op-router", "double-router", "titanium-double-router",
 	"inverted-router", "clear-router", "explosive-router",
 	"combat-router", "phase-router", "ubuntium-router",
 	"electric-router", "surge-router", "solar-router",
-	"alien-router", "arc-router", "vulcan-router"]);
+	"alien-router", "arc-router", "vulcan-router",
+	"fusion-router"]);
 
 // Units
 add(["reverout", "routerpede", "router-chainer"]);

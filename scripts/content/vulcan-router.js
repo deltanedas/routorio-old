@@ -28,45 +28,47 @@ spock.config(java.lang.String, (entity, code) => {
 spock.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, spock, {
 		getTileTarget(item, from, set) {
-			const dir = this.runScript(item, from) % 4
+			const dir = this.runScript(item, from);
 			Log.info("Dir @", dir);
 			const tile = this.tile.getNearby(dir);
 			return tile ? tile.bc() : null;
 		},
 
-		acceptItem(item, source) {
+		handleString: print,
+
+		handleItem(source, item) {
+			this.super$handleItem(source, item);
+			const vars = this.vm.vars;
+			const i = this.startIdx;
+
+			vars[i++].objval = item;
+			vars[i++].objval = source;
+			vars[i].numval = source.tile.relativeTo(this.tile);
+		},
+
+		acceptItem(source, item) {
 			return this.power.status >= 1
 				&& this.code
-				&& this.team == source.team()
-				&& this.items.total() == 0;
+				&& this.team == source.team
+				&& this.items.total() == 0
+				&& this.vm.initialized();
 		},
 
 		runScript(item, source) {
 			const vars = this.vm.vars;
-			const i = this.startIdx;
+			// Only let an item through if it was just set
+			vars[this.outIdx].numval = -1;
 
-			vars[i++].value = item;
-			vars[i++].value = source.block();
-			vars[i++].value = source.relativeTo(this.tile);
+			this.vm.runOnce();
 
-			while (this.vm.initialized()) {
-				this.vm.runOnce();
-			}
-
-			const dir = vars[i];
-			Log.info("Script says @", dir);
-			return dir;
+			return vars[this.outIdx].isobj ? -1 : vars[this.outIdx].numval % 4;
 		},
 
 		setScript(code, cons) {
 			this.code = code;
+			print(code);
 			try {
 				const asm = LAssembler.assemble(code);
-
-				/* Placeholders, set in runScript */
-				this.startIdx = asm.putConst("@item", null).index;
-				asm.putConst("@source", null);
-				asm.put("@output");
 
 				/* Load old variables */
 				for (var i in this.vm.vars) {
@@ -81,18 +83,24 @@ spock.entityType = () => {
 
 				if (cons) cons(asm);
 
+				/* Placeholders, set in handleItem */
+				this.startIdx = asm.putConst("@item", null).id;
+				asm.putConst("@source", null);
+				asm.putConst("@dir", -1);
 				asm.putConst("@this", this);
+				this.outIdx = asm.var("@output").id;
+
 				this.vm.load(asm);
 			} catch (e) {
 				Log.err("Failed to load vulcan router code: @", e);
-				this.vm.load();
+				this.vm.load("");
 			}
 		},
 
 
 		buildConfiguration(table) {
 			table.button(Icon.pencil, Styles.clearTransi, () => {
-				Vars.ui.logic.show(this.code, this.configure);
+				Vars.ui.logic.show(this.code, c => this.configure(c));
 			});
 		},
 
