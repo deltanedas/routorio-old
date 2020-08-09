@@ -1,0 +1,16 @@
+{
+	"category": "power",
+	"research": "arc-router",
+	"requirements": [
+		"titanium/300",
+		"metaglass/200",
+		"beryllium/145",
+		"phase-fabric/80"
+	],
+
+	"liquidCapacity": 15,
+	"hasPower": true,
+	"consumes": {
+		"power": 3
+	}
+}

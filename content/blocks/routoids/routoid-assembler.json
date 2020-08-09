@@ -1,0 +1,9 @@
+{
+	"category": "distribution",
+	"consumes": {
+		"power": 2,
+		"items": {
+			"items": ["copper/12", "graphite/3"]
+		}
+	}
+}

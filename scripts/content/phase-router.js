@@ -125,9 +125,7 @@ const dirs = require("routorio/lib/dirs");
 
 phase = extendContent(Router, "phase-router", connected.new("block", {
 	load() {
-		print("pre")
 		this.super$load();
-		print("Start")
 		// Center dot
 		this.region = Core.atlas.find(this.name + "-base");
 		this.loadConnect();
@@ -229,7 +227,7 @@ const building = connected.new("building", {
 	setNetwork(set) { this._network = set; },
 	getOutputs() { return this._outputs; },
 	setOutputs(set) { this._outputs = set; }
-});
+}, phase);
 
 phase.entityType = () => {
 	const ent = extendContent(Router.RouterEntity, phase, building);
