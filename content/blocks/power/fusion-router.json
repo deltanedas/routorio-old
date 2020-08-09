@@ -10,6 +10,7 @@
 
 	"liquidCapacity": 15,
 	"hasPower": true,
+	"outputsPower": true,
 	"consumes": {
 		"power": 3
 	}
