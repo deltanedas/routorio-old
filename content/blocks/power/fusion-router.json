@@ -1,4 +1,5 @@
 {
+	"health": 400,
 	"category": "power",
 	"research": "arc-router",
 	"requirements": [
@@ -12,6 +13,6 @@
 	"hasPower": true,
 	"outputsPower": true,
 	"consumes": {
-		"power": 3
+		"power": 6
 	}
 }

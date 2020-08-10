@@ -73,7 +73,7 @@ const ReoucterGraph = {
 		}
 	},
 
-	rebuildOutputs() {
+	rebuildPorts() {
 		const routers = this.routers.asArray();
 
 		var last;
@@ -81,8 +81,7 @@ const ReoucterGraph = {
 			var router = routers.get(i);
 			for (var o in router.outputs) {
 				var node = {
-					to: router.outputs[o],
-					from: router,
+					port: port,
 					prev: node
 				};
 
@@ -148,17 +147,38 @@ fusion = extendContent(LiquidRouter, "fusion-router", {
 
 	icons() {
 		return [Core.atlas.find(this.name)]
+	},
+
+	setStats() {
+		this.super$setStats();
+		this.bars.add("poweroutput", ent => ent.powerBar());
+		this.bars.add("warmup", ent => ent.warmupBar());
 	}
 });
 
 fusion.enableDrawStatus = false;
+fusion.powerGeneration = 100;
+fusion.heatRate = 0.0001;
+fusion.coolRate = -0.0002;
 
 fusion.entityType = () => {
 	const ent = extendContent(LiquidRouter.LiquidRouterEntity, fusion, {
+		updateTile() {
+			this.super$updateTile();
+			if (this.warmup > 0.001 && this.warmup < 0.9) {
+				this.warmup = Math.max(this.warmup + fusion.coolRate, 0);
+			}
+			this.heat = Mathf.clamp(this.heat + (this.warmup >= 0.999 ? fusion.heatRate : fusion.coolRate));
+		},
+
 		draw() {
 			if (this.liquids.total() > 0.001) {
 				this.drawLiquid();
 			}
+			if (this.heat > 0.01) {
+				this.drawPlasma();
+			}
+
 			this.drawEdges();
 			this.drawCorners();
 			Draw.rect(fusion.topRegion, this.x, this.y);
@@ -169,6 +189,10 @@ fusion.entityType = () => {
 			Draw.alpha(this.liquids.total() / fusion.liquidCapacity);
 			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
 			Draw.reset();
+		},
+
+		drawPlasma() {
+			
 		},
 
 		drawEdges() {
@@ -271,23 +295,15 @@ fusion.entityType = () => {
 		},
 
 		canOutputLiquid: (to, l) => to.block == fusion,
-		h(){
-			const reoucter = this.reoucter;
 
-			var ended = false;
-			var node = reoucter.last;
-			while (!ended) {
-				var output = node.to, source = node.from;
-				node = node.next;
-				if (output.acceptItem(source, item)) {
-					output.handleItem(source, item);
-					reoucter.last = node;
-					return;
-				}
-
-				ended = node == reoucter.last;
+		/* Check for lightning to ignite */
+		collision(b) {
+			print(b.type);
+			if (b.type.status == StatusEffects.shocked) {
+				this.warmup = Math.min(this.warmup + b.damage / 250, 1);
+				print("Zap " + this.warmup);
 			}
-			// acceptItem said yes but handleItem said no
+			return this.super$collision(b);
 		},
 
 		onProximityUpdate() {
@@ -310,13 +326,36 @@ fusion.entityType = () => {
 			if (reoucter) reoucter.rebuildOutputs();
 		},
 
-		read(stream, version) {
-			this.super$read(stream, version);
-			this.blendBits = stream.s();
+		read(read, version) {
+			this.super$read(read, version);
+			this.blendBits = read.s();
+			this.warmup = read.b() / 255;
+			this.heat = read.b() / 255;
 		},
-		write(stream) {
-			this.super$write(stream);
-			stream.s(this.blendBits);
+		write(write) {
+			this.super$write(write);
+			write.s(this.blendBits);
+			write.b(this.warmup * 255);
+			write.b(this.heat * 255);
+		},
+
+		getPowerProduction() {
+			return this.heat * fusion.powerGeneration;
+		},
+
+		powerBar() {
+			const base = fusion.consumes.getPower().usage;
+			return new Bar(
+				() => Core.bundle.format("bar.poweroutput",
+					Strings.fixed(Math.max(this.powerProduction - base, 0) * 60 * this.timeScale, 1)),
+				() => Pal.powerBar,
+				() => this.heat);
+		},
+		warmupBar() {
+			return new Bar(
+				"warmup",
+				Pal.ammo,
+				() => this.warmup);
 		},
 
 		/* Public fields */
@@ -326,6 +365,8 @@ fusion.entityType = () => {
 
 	ent.reoucter = null;
 	ent.blendBits = 0;
+	ent.warmup = 0;
+	ent.heat = 0
 
 	return ent;
 };
