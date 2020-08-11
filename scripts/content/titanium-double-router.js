@@ -40,7 +40,7 @@ const titanium = extendContent(Router, "titanium-double-router", {
 	}
 });
 
-titanium.entityType = () => extendContent(Router.RouterEntity, titanium, {
+titanium.entityType = () => extendContent(Router.RouterBuild, titanium, {
 	placed() {
 		this.super$placed();
 		const x = titanium.calcOffset(this.tile.x);

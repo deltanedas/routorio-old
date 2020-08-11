@@ -15,7 +15,84 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const holo = extendContent(Router, "holorouter", {
+var holo;
+
+const HoloI = {
+	_(builder, target, name) {
+		this.target = builder.var(target);
+		this.name = builder.var(name);
+	},
+
+	run(vm) {
+		const target = vm.building(this.target);
+		if (!(target && target.block == holo)) {
+			return;
+		}
+
+		const name = vm.obj(this.name);
+		if (!name) return;
+
+		target.texture(name);
+	}
+};
+
+const HoloStatement = {
+	new: words => {
+		const st = extend(LStatement, HoloStatement);
+		st.read(words);
+		return st;
+	},
+
+	read(words) {
+		if (words.length < 2) throw "Invalid argument length";
+
+		this.target = words[1];
+		this.texture = words[2];
+	},
+
+	build(h) {
+		if (h instanceof Table) {
+			return this.buildt(h);
+		}
+
+		const inst = extend(LExecutor.LInstruction, HoloI);
+		print("Init inst " + inst)
+		print("Was " + inst.target);
+		inst._(h, this.target, this.texture);
+		return inst;
+	},
+
+	buildt(table) {
+		this.field(table, this.target, text => {this.building = text});
+		table.add(" -> ");
+		this.field(table, this.texture, text => {this.texture = text});
+	},
+
+	write(builder) {
+		builder.append("holorouter ");
+		builder.append(this.target);
+		builder.append(" ");
+		builder.append(this.texture);
+	},
+
+	name: () => "Holorouter",
+	category: () => LCategory.operations
+};
+
+/* Mimic @RegisterStatement */
+LAssembler.customParsers.put("holorouter", extend(Func, {
+	get: HoloStatement.new
+}));
+
+LogicIO.allStatements.add(extend(Prov, {
+	get: () => HoloStatement.new([
+		"holorouter",
+		"@0",
+		'"god"'
+	])
+}));
+
+holo = extendContent(Router, "holorouter", {
 	load() {
 		this.super$load();
 
@@ -40,7 +117,7 @@ const holo = extendContent(Router, "holorouter", {
 		field = t.field("router", text => {
 			texture = text;
 			preview.region = this.get(text);
-		}).growX().get();
+		}).growX().pad(32).get();
 		t.row();
 
 		this.dialog.addCloseButton();
@@ -102,7 +179,7 @@ holo.entityType = () => {
 		texture(name) {
 			this.name = name;
 			this.region = holo.get(name);
-			this.offset = (this.region.height / Vars.tilesize) + 4;
+			this.offset = (this.region.height / 8) + 6;
 		},
 
 		/* I/O */

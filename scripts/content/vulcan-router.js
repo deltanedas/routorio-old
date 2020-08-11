@@ -22,22 +22,27 @@ var spock;
 const vars = ["output", "source", "item", "side"];
 
 const VulcanI = {
-	init(asm, key, to, from) {
+	_(builder, key, to, from) {
 		this.key = key.substr(1);
 		this.to = builder.var(to);
 		this.from = builder.var(from);
 	},
 
 	run(vm) {
-		const from = vm.getObj(this.from);
-		print("Run " + from)
-		if (!(from instanceof Building && from.block == spock)) {
+		const from = vm.building(this.from);
+		print("From " + from)
+		if (!(from && from.block == spock)) {
+			return;
+		}
+
+		print("Key " + this.key)
+		if (this.key == "output") {
+			from.vars.output = vm.num(this.to);
+			print([this.to, vm.num(this.to)])
 			return;
 		}
 
 		const val = from.vars[this.key];
-		print("Key " + key)
-		print("Val " + val)
 		if (val == undefined) return;
 
 		vm[typeof(val) == "number" ? "setnum" : "setobj"](this.to, val);
@@ -64,8 +69,8 @@ const VulcanStatement = {
 			return this.buildt(h);
 		}
 
-		const inst = extend(LInstruction, VulcanI);
-		inst.init(h, this.key, this.to, this.from);
+		const inst = extend(LExecutor.LInstruction, VulcanI);
+		inst._(h, this.key, this.to, this.from);
 		return inst;
 	},
 
@@ -127,7 +132,7 @@ spock = extendContent(Router, "vulcan-router", {
 });
 
 spock.entityType = () => {
-	const ent = extendContent(Router.RouterEntity, spock, {
+	const ent = extendContent(Router.RouterBuild, spock, {
 		getTileTarget(item, from, set) {
 			const dir = this._vars.output.val;
 			const tile = this.tile.getNearby(dir % 4);
@@ -145,8 +150,7 @@ spock.entityType = () => {
 			return this.power.status >= 1
 				&& this.code
 				&& this.team == source.team
-				&& this.items.total() == 0
-				&& this.vm.initialized();
+				&& this.items.total() == 0;
 		},
 
 		getVars() {return this._vars},

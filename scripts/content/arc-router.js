@@ -149,7 +149,7 @@ arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
 
 arc.entityType = () => {
-	const ent = extendContent(Router.RouterEntity, arc, {
+	const ent = extendContent(Router.RouterBuild, arc, {
 		updateTile() {
 			this.super$updateTile();
 			this.progress = Math.max(this.progress - 0.005, 0);

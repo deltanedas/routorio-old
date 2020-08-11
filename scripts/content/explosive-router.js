@@ -22,7 +22,7 @@ const explode = extendContent(Router, "explosive-router", {});
 explode.radius = 10;
 explode.damage = 100;
 
-explode.entityType = () => extendContent(Router.RouterEntity, explode, {
+explode.entityType = () => extendContent(Router.RouterBuild, explode, {
 	onProximityUpdate() {
 		this.super$onProximityUpdate();
 
