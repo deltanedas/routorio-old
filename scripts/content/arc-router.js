@@ -15,10 +15,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// This script contains every arc reoucter module
-(() => {
+/* This script contains every arc reoucter module */
 
-const desc = require("routorio/lib/desc");
+(() => {
 
 const directions = require("routorio/lib/dirs");
 
@@ -34,7 +33,7 @@ const arcMultipliers = {
 	plastanium: () => Mathf.round(Mathf.random(0, 1))
 };
 
-function adjacent(tile, valid) {
+const adjacent = (tile, valid) => {
 	var adj = 0;
 	var near, dir;
 	for (var i in directions) {
@@ -47,7 +46,7 @@ function adjacent(tile, valid) {
 		if (valid(near.block())) adj++;
 	}
 	return adj;
-}
+};
 
 var mod, arc;
 const rates = {
@@ -96,7 +95,8 @@ const rates = {
 	},
 	// decrease fuel burnup
 	phase: {
-		apply: tile => adjacent(tile, block => block instanceof DeflectorWall),
+		apply: tile => adjacent(tile, block => block instanceof DeflectorWall
+			|| block.id == this.global.routorio["phase-router"].id),
 		modifiers: {
 			burnup: 0.5
 		}
@@ -259,11 +259,6 @@ arc.entityType = prov(() => {
 	ent._progress = 0;
 	return ent;
 });
-
-/* Add affinities to their descriptions */
-Blocks.plastaniumWallLarge.description += desc(Blocks.plastaniumWall);
-Blocks.surgeWallLarge.description += desc(Blocks.surgeWall);
-Blocks.phaseWallLarge.description += desc(Blocks.phaseWall);
 
 module.exports = {
 	rates: rates,

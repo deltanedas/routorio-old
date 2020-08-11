@@ -14,6 +14,9 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
+(() => {
+
 const offset = 1.6 * Vars.tilesize;
 
 const dist = (2 * offset^2)^0.5
@@ -51,3 +54,5 @@ const reverout = new JavaAdapter(UnitType, {
 })));
 
 module.exports = reverout;
+
+})();

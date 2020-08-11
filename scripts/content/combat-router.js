@@ -14,7 +14,10 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-const combatRouter = extendContent(BurstTurret, "combat-router", {
+
+(() => {
+
+const combat = extendContent(BurstTurret, "combat-router", {
 	load() {
 		this.super$load();
 		this.facade = Core.atlas.find("routorio-totally-4-distributors");
@@ -31,4 +34,6 @@ const combatRouter = extendContent(BurstTurret, "combat-router", {
 	}
 });
 
-module.exports = combatRouter;
+module.exports = combat;
+
+})();

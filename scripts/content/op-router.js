@@ -14,7 +14,10 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-// Turns router into a UV locked distributor quarter.
+
+/* Turns router into a UV locked distributor quarter. */
+
+(() => {
 
 const opRouter = extendContent(Router, "op-router", {
 	load() {
@@ -39,3 +42,5 @@ const opRouter = extendContent(Router, "op-router", {
 });
 
 module.exports = opRouter;
+
+})();

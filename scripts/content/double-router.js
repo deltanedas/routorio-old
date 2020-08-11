@@ -14,17 +14,23 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-const doubleRouter = extendContent(Router, "double-router", {
-	draw(tile){
-		Draw.rect(
-			Core.atlas.find(this.name + "_" + tile.x % 2),
-			tile.drawx(),
-			tile.drawy());
+
+(() => {
+
+const double = extendContent(Router, "double-router", {
+	load() {
+		this.super$load();
+		this.regions = [
+			Core.atlas.find(this.name + "_0"),
+			Core.atlas.find(this.name + "_1")
+		];
 	},
 
-	generateIcons(){
-		return [Core.atlas.find(this.name)];
+	draw(tile) {
+		Draw.rect(this.regions[tile.x % 2], tile.drawx(), tile.drawy());
 	}
 });
 
-module.exports = doubleRouter;
+module.exports = double;
+
+}();
