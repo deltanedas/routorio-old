@@ -139,9 +139,11 @@ fusion = extendContent(LiquidRouter, "fusion-router", {
 
 		this.cornerRegions = [];
 		this.icornerRegions = [];
+		this.plasmaRegions = [];
 		for (var i = 0; i < 4; i++) {
 			this.cornerRegions[i] = Core.atlas.find(this.name + "-corner_" + i);
 			this.icornerRegions[i] = Core.atlas.find(this.name + "-icorner_" + i);
+			this.plasmaRegions[i] = Core.atlas.find(this.name + "-plasma_" + i);
 		}
 	},
 
@@ -157,9 +159,12 @@ fusion = extendContent(LiquidRouter, "fusion-router", {
 });
 
 fusion.enableDrawStatus = false;
-fusion.powerGeneration = 100;
+fusion.powerGeneration = 50;
 fusion.heatRate = 0.0001;
 fusion.coolRate = -0.0002;
+
+fusion.plasma1 = Color.valueOf("#f19a37");
+fusion.plasma2 = Color.valueOf("#b24de7");
 
 fusion.entityType = () => {
 	const ent = extendContent(LiquidRouter.LiquidRouterEntity, fusion, {
@@ -168,15 +173,12 @@ fusion.entityType = () => {
 			if (this.warmup > 0.001 && this.warmup < 0.9) {
 				this.warmup = Math.max(this.warmup + fusion.coolRate, 0);
 			}
-			this.heat = Mathf.clamp(this.heat + (this.warmup >= 0.999 ? fusion.heatRate : fusion.coolRate));
+			this.heat = Mathf.clamp(this.heat + (this.valid() ? fusion.heatRate : fusion.coolRate));
 		},
 
 		draw() {
 			if (this.liquids.total() > 0.001) {
 				this.drawLiquid();
-			}
-			if (this.heat > 0.01) {
-				this.drawPlasma();
 			}
 
 			this.drawEdges();
@@ -185,14 +187,10 @@ fusion.entityType = () => {
 		},
 
 		drawLiquid() {
-			Draw.color(liquid.color);
+			Draw.color(liquid.color, fusion.plasma2, this.warmup * Math.sin(Time.time() / 100));
 			Draw.alpha(this.liquids.total() / fusion.liquidCapacity);
 			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
 			Draw.reset();
-		},
-
-		drawPlasma() {
-			
 		},
 
 		drawEdges() {
@@ -294,14 +292,13 @@ fusion.entityType = () => {
 				&& this.liquids.total() + amount < fusion.liquidCapacity;
 		},
 
-		canOutputLiquid: (to, l) => to.block == fusion,
+		canDumpLiquid: (to, l) => to.block == fusion,
 
 		/* Check for lightning to ignite */
 		collision(b) {
-			print(b.type);
 			if (b.type.status == StatusEffects.shocked) {
-				this.warmup = Math.min(this.warmup + b.damage / 250, 1);
-				print("Zap " + this.warmup);
+				const mul = this.liquids.total() / fusion.liquidCapacity;
+				this.warmup = Math.min(this.warmup + mul * (b.damage / 250), 1);
 			}
 			return this.super$collision(b);
 		},
@@ -332,6 +329,7 @@ fusion.entityType = () => {
 			this.warmup = read.b() / 255;
 			this.heat = read.b() / 255;
 		},
+
 		write(write) {
 			this.super$write(write);
 			write.s(this.blendBits);
@@ -356,6 +354,12 @@ fusion.entityType = () => {
 				"warmup",
 				Pal.ammo,
 				() => this.warmup);
+		},
+
+		valid() {
+			return this.warmup > 0.999
+				&& this.liquids.total() > 1
+				&& this.power.status > 0.9;
 		},
 
 		/* Public fields */
