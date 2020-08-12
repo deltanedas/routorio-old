@@ -39,6 +39,7 @@ const HoloI = {
 const HoloStatement = {
 	new: words => {
 		const st = extend(LStatement, HoloStatement);
+		print("New statement")
 		st.read(words);
 		return st;
 	},
