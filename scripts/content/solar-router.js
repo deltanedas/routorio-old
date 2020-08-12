@@ -43,7 +43,7 @@ solar.generationType = BlockStat.basePowerGeneration;
 solar.powerGeneration = 1 / 6;
 
 solar.entityType = () => {
-	const ent = extendContent(Router.RouterEntity, solar, {
+	const ent = extendContent(Router.RouterBuild, solar, {
 		updateTile() {
 			this.super$updateTile();
 			this.progress = Math.max(this.progress - 0.003, 0);

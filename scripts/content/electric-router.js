@@ -165,7 +165,7 @@ const edef = {
 };
 
 elec.entityType = () => {
-	const ent = extendContent(Router.RouterEntity, elec, edef);
+	const ent = extendContent(Router.RouterBuild, elec, edef);
 
 	/* Default configuration */
 	ent.mode = modes.buffer;

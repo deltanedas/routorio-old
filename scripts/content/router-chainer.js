@@ -41,7 +41,7 @@ chainer.plans = [
 ];
 
 chainer.entityType = () => {
-	const ent = extendContent(UnitFactory.UnitFactoryEntity, chainer, {
+	const ent = extendContent(UnitFactory.UnitFactoryBuild, chainer, {
 		draw() {
 			const dx = this.x, dy = this.y;
 			Draw.rect(chainer.region, dx, dy);

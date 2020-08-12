@@ -19,7 +19,7 @@ const surge = extendContent(Router, "surge-router", {});
 
 surge.sparkChance = 0.1;
 
-surge.entityType = () => extendContent(Router.RouterEntity, surge, {
+surge.entityType = () => extendContent(Router.RouterBuild, surge, {
 	updateTile() {
 		// Only route items when there is power, but the amount doesn't matter
 		if (this.cons.valid()) {

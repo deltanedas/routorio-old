@@ -26,7 +26,7 @@ spock.config(java.lang.String, (entity, code) => {
 });
 
 spock.entityType = () => {
-	const ent = extendContent(Router.RouterEntity, spock, {
+	const ent = extendContent(Router.RouterBuild, spock, {
 		getTileTarget(item, from, set) {
 			const vars = this.vm.vars;
 			vars[this.itemI].objval = item;

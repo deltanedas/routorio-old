@@ -145,7 +145,7 @@ phase = extendContent(Router, "phase-router", {
 phase.enableDrawStatus = false;
 
 phase.entityType = () => {
-	const ent = extendContent(Router.RouterEntity, phase, {
+	const ent = extendContent(Router.RouterBuild, phase, {
 		draw() {
 			if (this.power.status < 1) {
 				// Inactive state, draw disconnected version
