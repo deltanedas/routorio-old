@@ -31,6 +31,16 @@ const arcMultipliers = {
 	plastanium: () => Math.round(Math.random(0, 1))
 };
 
+const arcMultiplier = item => {
+	var mul = arcMultipliers[item.name];
+	if (mul === undefined) {
+		mul = 1;
+	} else {
+		mul = mul();
+	}
+	return mul;
+};
+
 const adjacent = (tile, valid) => {
 	var adj = 0;
 	for (var i in directions) {
@@ -165,7 +175,7 @@ arc.entityType = () => {
 			const rates = this.rates;
 			var consumed = false;
 
-			if (Mathf.chance(rates.arc)) {
+			if (Mathf.chance(rates.arc) * arcMultiplier(item)) {
 				this.arc(item);
 			}
 			if (Mathf.chance(rates.burnup)) {
@@ -182,12 +192,7 @@ arc.entityType = () => {
 
 		arc(item) {
 			const rates = this.rates;
-			var mul = arcMultipliers[item.name];
-			if (mul === undefined) {
-				mul = 1;
-			} else {
-				mul = mul();
-			}
+			const mul = arcMultiplier(item.name);
 
 			const x = this.x, y = this.y;
 
