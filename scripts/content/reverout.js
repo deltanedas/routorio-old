@@ -17,7 +17,7 @@
 
 const offset = 1.6 * Vars.tilesize;
 
-const dist = (2 * offset^2)^0.5
+const dist = Math.sqrt(2 * offset * offset)
 
 const rotors = [
 	1, 1,
@@ -34,8 +34,10 @@ const reverout = extendContent(UnitType, "reverout", {
 	}
 });
 
-reverout.constructor = () => extend(BuilderUnit, {
-	drawOver() {
+reverout.constructor = () => extend(BuilderMinerUnit, {
+	draw() {
+		this.super$draw();
+
 		const r = this.rotation;
 		const sin = Mathf.sin(r) * dist;
 		const cos = Mathf.cos(r) * dist;

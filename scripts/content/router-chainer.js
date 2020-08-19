@@ -51,8 +51,8 @@ chainer.entityType = () => {
 			const rot = Time.time() * this.rot;
 			const chaining = this.cons.valid();
 
-			this.dist = Mathf.lerp(this.dist, this.payload ? this.payload.type().size / 40
-				: 4 * this.progress + 8, 0.04);
+			this.dist = Mathf.lerp(this.dist, this.plan ? this.plan.type.size / 40
+				: 4 * this.rot + 8, 0.04);
 
 			for (var i = 0; i < 8; i++) {
 				var angle = rot + 360 * i / 8;
