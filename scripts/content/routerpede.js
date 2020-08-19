@@ -51,7 +51,6 @@ routerpede.constructor = () => {
 			}));
 
 			if (closest) {
-				print("Closest unit is " + closest)
 				// Merge the others segments
 				const segments = closest.routerSegments();
 				for (var i in segments) {
@@ -161,8 +160,8 @@ routerpede.constructor = () => {
 };
 // 1 tile radius for absorbing other chain routers
 routerpede.chainRadius = Vars.tilesize;
-routerpede.speed = 0.1;
-routerpede.health = 80;
+routerpede.speed = 0.7;
+routerpede.health = 170;
 routerpede.weapons.add(weapon);
 
 // Update viewport for rendering stuff

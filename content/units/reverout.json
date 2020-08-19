@@ -1,6 +1,6 @@
 {
 	"type": "BuilderMinerUnit",
-	"speed": 0.1,
+	"speed": 1.9,
 	"flying": true,
 	"health": 1000,
 	"engineSize": 4,
