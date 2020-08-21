@@ -34,7 +34,7 @@ const opRouter = extendContent(Router, "op-router", {
 		Draw.rect(this.getRegion(tile), tile.drawx(), tile.drawy());
 	},
 
-	generateIcons(){
+	icons(){
 		return [Core.atlas.find("routorio-distributor")]; // Vanilla distributor texture
 	}
 });

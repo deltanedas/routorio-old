@@ -15,165 +15,154 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const spock = extendContent(Router, "vulcan-router", {
-});
+/* "vulcan" instruction */
 
-spock.maxInstructionScale = 8;
-spock.memory = 16;
+var spock;
 
-spock.config(java.lang.String, (entity, code) => {
-	entity.setScript(code, null);
+const vars = ["output", "source", "item", "side"];
+
+const VulcanI = {
+	_(builder, key, to, from) {
+		this.key = key.substr(1);
+		this.to = builder.var(to);
+		this.from = builder.var(from);
+	},
+
+	run(vm) {
+		const from = vm.building(this.from);
+		print("From " + from)
+		if (!(from && from.block == spock)) {
+			return;
+		}
+
+		print("Key " + this.key)
+		if (this.key == "output") {
+			from.vars.output = vm.num(this.to);
+			print([this.to, vm.num(this.to)])
+			return;
+		}
+
+		const val = from.vars[this.key];
+		if (val == undefined) return;
+
+		vm[typeof(val) == "number" ? "setnum" : "setobj"](this.to, val);
+	}
+};
+
+const VulcanStatement = {
+	new: words => {
+		const st = extend(LStatement, VulcanStatement);
+		st.read(words);
+		return st;
+	},
+
+	read(words) {
+		if (words.length < 3) throw "Invalid argument length";
+
+		this.key = words[1];
+		this.to = words[2];
+		this.from = words[3];
+	},
+
+	build(h) {
+		if (h instanceof Table) {
+			return this.buildt(h);
+		}
+
+		const inst = extend(LExecutor.LInstruction, VulcanI);
+		inst._(h, this.key, this.to, this.from);
+		return inst;
+	},
+
+	buildt(table) {
+		const keyf = this.field(table, this.key, text => {this.key = text})
+			.padRight(0).get();
+		const b = table.button(Icon.pencilSmall, () => {
+			this.showSelectTable(b, (t, hide) => {
+				const list = new Table();
+				for (var i of vars) {
+					const name = "@" + i;
+					list.button(name == "@output" ? "[accent]" + name : name, () => {
+						this.key = name;
+						keyf.text = name;
+						hide.run();
+					}).size(240, 40).row();
+				}
+
+				const stack = new Stack(list);
+				t.add(stack).colspan(3).expand().left();
+			});
+		}).size(40).padLeft(-1).get();
+
+		table.label(() => this.key == "@output" ? "=" : "->");
+		this.field(table, this.to, text => {this.to = text});
+
+		table.add(" in ");
+		this.field(table, this.from, text => {this.from = text});
+	},
+
+	write(builder) {
+		builder.append("vulcan ");
+		builder.append(this.key);
+		builder.append(" ");
+		builder.append(this.to);
+		builder.append(" ");
+		builder.append(this.from);
+	},
+
+	name: () => "Vulcan Router",
+	category: () => LCategory.operations
+};
+
+/* Mimic @RegisterStatement */
+LAssembler.customParsers.put("vulcan", extend(Func, {
+	get: VulcanStatement.new
+}));
+
+LogicIO.allStatements.add(extend(Prov, {
+	get: () => VulcanStatement.new([
+		"vulcan",
+		"@output",
+		"side",
+		"@0"
+	])
+}));
+
+spock = extendContent(Router, "vulcan-router", {
 });
 
 spock.entityType = () => {
 	const ent = extendContent(Router.RouterBuild, spock, {
 		getTileTarget(item, from, set) {
-			const vars = this.vm.vars;
-			vars[this.itemI].objval = item;
-			vars[this.sourceI].objval = from.bc();
-			vars[this.dirI].numval = from.relativeTo(this.tile);
-
-			const dir = this.runScript(item, from);
-			const tile = this.tile.getNearby(dir);
+			const dir = this._vars.output.val;
+			const tile = this.tile.getNearby(dir % 4);
 			if (!tile) return null;
 			return tile.bc().acceptItem(this, item) ? tile.bc() : null;
 		},
 
-		handleString: print,
+		handleItem(source, item) {
+			this._vars.source = source;
+			this._vars.item = item;
+			this._vars.dir = source.tile.relativeTo(this.tile);
+		},
 
 		acceptItem(source, item) {
 			return this.power.status >= 1
 				&& this.code
 				&& this.team == source.team
-				&& this.items.total() == 0
-				&& this.vm.initialized();
+				&& this.items.total() == 0;
 		},
 
-		runScript(item, source) {
-			const vars = this.vm.vars;
-			// Only let an item through if it was just set
-			vars[this.outputI].numval = -1;
-
-			print(this.itemI);
-			print("step vm " + this.outputI)
-			for (var i in vars) {
-				Log.warn("Var @ = @", i, vars[i].isobj ? vars[i].objval : vars[i].numval);
-			}
-
-			this.vm.runOnce();
-
-			return vars[this.outputI].isobj ? -1 : vars[this.outputI].numval % 4;
-		},
-
-		setScript(code, cons) {
-			this.code = code;
-			print(code);
-			try {
-				const asm = LAssembler.assemble(code);
-
-				/* Load old variables */
-				for (var i in this.vm.vars) {
-					var v = this.vm.vars[i];
-					if (!v.constant) {
-						var dest = asm.getVar(v.name);
-						if (dest && !dest.constant) {
-							dest.value = v.isobj ? v.objval : v.numval;
-						}
-					}
-				}
-
-				if (cons) cons(asm);
-
-				/* Placeholders, set in handleItem */
-				this.itemI = asm.putConst("@item", null).id;
-				this.sourceI = asm.putConst("@source", null).id;
-				this.dirI = asm.putConst("@dir", -1).id;
-				asm.putConst("@this", this);
-				this.outputI = asm.putVar("@output").id;
-
-				this.vm.load(asm);
-			} catch (e) {
-				Log.err("Failed to load vulcan router code: @", e);
-				this.vm.load("");
-			}
-		},
-
-
-		buildConfiguration(table) {
-			table.button(Icon.pencil, Styles.clearTransi, () => {
-				Vars.ui.logic.show(this.code, c => this.configure(c));
-			});
-		},
-
-		config() {
-			return this.code;
-		},
-
-		write(write) {
-			this.super$write(write);
-
-			write.str(this.code);
-
-			/* Save variables */
-			// Only write non constant variables excluding output side.
-			const count = Structs.count(this.vm.vars, v => !v.constant) - 1;
-			write.i(count);
-
-			for (var i in this.vm.vars) {
-				var v = this.vm.vars[i];
-				if (v.constant || v.name == "@output") continue;
-
-				write.str(v.name);
-				TypeIO.writeObject(write, v.obj ? v.objval : v.numval);
-			}
-
-			/* Save memory */
-			write.i(this.vm.memory.length);
-			for (var i in this.vm.memory) {
-				write.d(this.vm.memory[i]);
-			}
-		},
-
-		read(read) {
-			this.super$read(read);
-
-			const code = read.str();
-
-			/* Read variables */
-			const varcount = read.i();
-			const names = [], values = [];
-			for (var i = 0; i < varcount; i++) {
-				names.push(read.str());
-				values.push(TypeIO.readObject(read));
-			}
-			this.setScript(code, asm => {
-				for (var i = 0; i < varcount; i++) {
-					var dest = asm.getVar(names[i]);
-					if (dest && !dest.constant) {
-						dest.value = values[i];
-					}
-				}
-			});
-
-			/* Read memory */
-			const memcount = read.i();
-			const memory = [];
-			for (var i = 0; i < memcount; i++) {
-				memcount[i] = read.d();
-			}
-			this.vm.memory = memory;
-		}
+		getVars() {return this._vars},
+		setVars(set) {this._vars = set}
 	});
 
-	ent.code = null;
-	ent.vm = new LExecutor();
-
-	/* Initialise memory */
-	const memory = [];
-	for (var i = 0; i < spock.memory; i++) {
-		memory[i] = 0;
-	}
-	ent.vm.memory = memory;
+	ent._vars = {
+		output: -1,
+		side: -1,
+		source: null,
+		item: null
+	};
 
 	return ent;
 };

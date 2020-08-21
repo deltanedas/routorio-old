@@ -28,10 +28,6 @@ const inverted = extendContent(Conveyor, "inverted-router", {
 		Draw.rect(this.region, req.drawx(), req.drawy(), scl, scl);
 	},
 
-	generateIcons() {
-		return [Core.atlas.find(this.name)];
-	},
-
 	icon(cicon) {
 		return Core.atlas.find(this.name);
 	}

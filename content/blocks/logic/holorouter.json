@@ -1,0 +1,16 @@
+{
+	"category": "logic",
+	"research": "clear-router",
+	"requirements": [
+		"titanium/15",
+		"metaglass/10",
+		"silicon/10"
+	],
+
+	"enableDrawStatus": false,
+	"configurable": true,
+	"hasPower": true,
+	"consumes": {
+		"power": 0.25
+	}
+}

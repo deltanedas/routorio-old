@@ -15,6 +15,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+const viewport = new Rect();
+
+const onScreen = pos => {
+	return viewport.overlaps(pos.x, pos.y, 16, 16);
+};
+
 // Similar to the chain blaster.
 const weapon = new Weapon();
 weapon.name = "chain-router";
@@ -25,8 +31,10 @@ weapon.bullet = Bullets.standardCopper;
 
 const routerpede = extendContent(UnitType, "routerpede", {
 	load() {
+		this.super$load();
 		this.region = Core.atlas.find("router");
 		this.legRegion = Core.atlas.find(this.name + "-leg");
+		this.baseRegion = Core.atlas.find("clear");
 	}
 });
 
@@ -43,7 +51,6 @@ routerpede.constructor = () => {
 			}));
 
 			if (closest) {
-				print("Closest unit is " + closest)
 				// Merge the others segments
 				const segments = closest.routerSegments();
 				for (var i in segments) {
@@ -63,7 +70,7 @@ routerpede.constructor = () => {
 			// Lerping segments isn't in update because why would the server care
 			if (this.segments.length == 0) return;
 
-			const lerping = Mathf.dst(this.velocity().x, this.velocity().y) > 0.01;
+			const lerping = Mathf.dst(this.vel.x, this.vel.y) > 0.01;
 			this.updateseg(0, this, lerping);
 			if (this.segments.length > 0) {
 				for (var i = 1; i < this.segments.length; i++) {
@@ -88,14 +95,14 @@ routerpede.constructor = () => {
 		},
 
 		/* TODO: fix reading
-		writeSave(stream, net) {
-			this.super$writeSave(stream, net === undefined ? false : net);
-			stream.writeByte(this.segments.length);
+		writeSave(write, net) {
+			this.super$write(write, net === undefined ? false : net);
+			write.b(this.segments.length);
 		},
 
-		readSave(stream, version) {
-			this.super$readSave(stream, version);
-			const count = stream.readByte();
+		readSave(read, version) {
+			this.super$readSave(read, version);
+			const count = read.b();
 			// Saving each segment is wasteful, just recreate them
 			for (var i = 0; i < count; i++) {
 				this.push();
@@ -112,15 +119,17 @@ routerpede.constructor = () => {
 			seg.x = to.x - Angles.trnsx(seg.rotation, Vars.tilesize);
 			seg.y = to.y - Angles.trnsy(seg.rotation, Vars.tilesize);
 
+			if (!onScreen(seg)) return;
+
 			const old = {x: this.x, y: this.y, rotation: this.rotation};
 			Object.assign(this, seg);
-			this.super$draw();
+			routerpede.drawMech(this);
+			Draw.rect(routerpede.region, this.x, this.y, this.rotation);
 			Object.assign(this, old);
 		},
 
 		// Add a router to the chain
 		push() {
-			print("Add to " + this)
 			const last = this.segments[this.segments.length - 1] || this;
 			this.segments.push({
 				x: last.x - Angles.trnsx(last.rotation, Vars.tilesize),
@@ -134,8 +143,8 @@ routerpede.constructor = () => {
 		pop() {
 			const seg = this.segments.pop();
 			if (Vars.ui && seg) {
-				ScorchDecal.create(seg.x, seg.y);
-				Effects.effect(Fx.explosion, seg.x, seg.y);
+				Effect.scorch(seg.x, seg.y, 2);
+				Effect.effect(Fx.explosion, seg.x, seg.y);
 				// Less shake than if it fully died
 				Effect.shake(1, 1, seg.x, seg.y);
 			}
@@ -151,8 +160,13 @@ routerpede.constructor = () => {
 };
 // 1 tile radius for absorbing other chain routers
 routerpede.chainRadius = Vars.tilesize;
-routerpede.speed = 0.1;
-routerpede.health = 80;
+routerpede.speed = 0.7;
+routerpede.health = 170;
 routerpede.weapons.add(weapon);
+
+// Update viewport for rendering stuff
+Events.run(Trigger.update, () => {
+	Core.camera.bounds(viewport);
+});
 
 module.exports = routerpede;
