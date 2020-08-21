@@ -1,5 +1,4 @@
 {
-	"type": "UnitFactory",
 	"plans": [{
 		"unit": "sexy-router",
 		"time": 300,
@@ -8,7 +7,7 @@
 	"size": 2,
 	"health": 200,
 	"consumes": {
-		"power": 150.01666666666667
+		"power": 1
 	},
 	"requirements": [
 		"silicon/100",

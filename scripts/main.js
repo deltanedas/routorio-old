@@ -34,10 +34,12 @@ add(["op-router", "double-router", "titanium-double-router",
 	"combat-router", "phase-router", "ubuntium-router",
 	"electric-router", "surge-router", "solar-router",
 	"alien-router", "arc-router", "vulcan-router",
-	"fusion-router", "holorouter"]);
+	"fusion-router", "holorouter", "routoid-assembler",
+	"routoid-liquefactor"]);
 
 // Units
-add(["reverout", "routerpede", "router-chainer"]);
+add(["reverout", "routerpede",
+	"router-chainer", "router-house"]);
 
 // Misc
 require("routorio/manual");
