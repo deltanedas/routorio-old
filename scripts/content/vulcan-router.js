@@ -30,15 +30,12 @@ const VulcanI = {
 
 	run(vm) {
 		const from = vm.building(this.from);
-		print("From " + from)
 		if (!(from && from.block == spock)) {
 			return;
 		}
 
-		print("Key " + this.key)
 		if (this.key == "output") {
 			from.vars.output = vm.num(this.to);
-			print([this.to, vm.num(this.to)])
 			return;
 		}
 
@@ -51,7 +48,7 @@ const VulcanI = {
 
 const VulcanStatement = {
 	new: words => {
-		const st = extend(LStatement, VulcanStatement);
+		const st = extend(LStatement, Object.create(VulcanStatement));
 		st.read(words);
 		return st;
 	},
@@ -69,7 +66,7 @@ const VulcanStatement = {
 			return this.buildt(h);
 		}
 
-		const inst = extend(LExecutor.LInstruction, VulcanI);
+		const inst = extend(LExecutor.LInstruction, Object.create(VulcanI));
 		inst._(h, this.key, this.to, this.from);
 		return inst;
 	},

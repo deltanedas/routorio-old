@@ -15,32 +15,30 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const mat = new Mat();
-mat.setToRotation(45);
-
 const routorio = this.global.routorio;
 
 const routoid = {
 	draw() {
-		// Rotate shadow and router by 45 degrees
-		const old = Draw.trans();
-		Draw.trans(mat);
 		Drawf.shadow(this.x, this.y, 16);
 		Draw.rect(this.region, this.x, this.y, this.rotation);
-		Draw.trans(old);
 	},
 
 	set(x, y, r) {
 		this.x = x;
 		this.y = y;
-		this.rotation = r;
+		this.rotation = r + 45;
 	},
 
-	init(name) {
-		this.name = name;
+	init(breed) {
+		const name = breed ? "routorio-" + breed + "-router" : "router";
+		this.breed = breed;
 		this.region = routorio.holorouter.get(name);
 		this.set(0, 0, 0);
-	}
+	},
+
+	fits: () => true,
+
+	isRoutoid: true
 };
 
 module.exports = routoid;

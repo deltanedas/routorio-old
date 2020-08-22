@@ -38,8 +38,7 @@ const HoloI = {
 
 const HoloStatement = {
 	new: words => {
-		const st = extend(LStatement, HoloStatement);
-		print("New statement")
+		const st = extend(LStatement, Object.create(HoloStatement));
 		st.read(words);
 		return st;
 	},
@@ -56,9 +55,7 @@ const HoloStatement = {
 			return this.buildt(h);
 		}
 
-		const inst = extend(LExecutor.LInstruction, HoloI);
-		print("Init inst " + inst)
-		print("Was " + inst.target);
+		const inst = extend(LExecutor.LInstruction, Object.create(HoloI));
 		inst._(h, this.target, this.texture);
 		return inst;
 	},

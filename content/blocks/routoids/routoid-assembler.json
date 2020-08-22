@@ -1,15 +1,15 @@
 {
-	"category": "units",
+	"category": "production",
 	"research": "payload-conveyor",
 	"requirements": [
 		"copper/200",
-		"graphite/130",
 		"titanium/130",
+		"plastanium/130",
 		"silicon/80"
 	],
 
 	"size": 3,
-	"health": 230,
+	"health": 300,
 
 	"update": true,
 	"solid": true,
@@ -18,7 +18,7 @@
 	"rotate": true,
 	"outputsPayload": true,
 	"consumes": {
-		"power": 2,
+		"power": 3,
 		"items": {
 			"items": ["copper/6", "graphite/3"]
 		}

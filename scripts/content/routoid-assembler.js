@@ -18,21 +18,21 @@
 const routoid = require("routorio/lib/routoid");
 
 const asm = extendContent(PayloadAcceptor, "routoid-assembler", {
-	outputsItems: () => false
+	setStats() {
+		this.super$setStats();
+		this.stats.add(BlockStat.productionTime, this.craftTime / 60, StatUnit.seconds);
+	},
+
+	outputsItems: () => false,
+	// 4 routoids/s
+	craftTime: 15
 });
 
-// 1 routoid/s
-asm.craftTime = 60;
-
-Vars.netClient.addPacketHandler("assemble-routoid", pos => {
-	const matched = pos.match(/\d+,\d+/);
-	if (!matched) return;
-
-	const tile = Vars.world.tile(matched.x, matched.y);
-	if (!tile || tile.block() != asm) return;
-
-	tile.bc().spawn();
-});
+// No breed = vanilla router
+asm.breeds = [null, "alien", "surge",
+	"phase", "electric", "solar", "arc",
+	"fusion", "inverted", "ubuntium",
+	"sexy", "clear"];
 
 asm.entityType = () => {
 	const ent = extendContent(PayloadAcceptor.PayloadAcceptorBuild, asm, {
@@ -43,8 +43,8 @@ asm.entityType = () => {
 
 			if (this.progress >= asm.craftTime) {
 				this.progress = 0;
-				this.payload = extend(Payload, routoid);
-				this.payload.init("router");
+				this.payload = extend(Payload, Object.create(routoid));
+				this.payload.init(asm.breeds[Math.round(Mathf.random(asm.breeds.length))]);
 				this.payVector.setZero();
 				this.consume();
 			}
@@ -52,27 +52,14 @@ asm.entityType = () => {
 			this.moveOutPayload();
 		},
 
-		spawn() {
-			if (Vars.ui) {
-				Tmp.v1.trns(this.rotdeg(), 12);
-				Fx.smeltsmoke.at(this.x + Tmp.v1.x, this.y + Tmp.v1.y);
-			}
-
-			if (!Vars.net.client()) {
-				print("Yay build");
-			}
-			this.payload = null;
+		draw() {
+			Draw.rect(asm.region, this.x, this.y);
+			Draw.rect(asm.outRegion, this.x, this.y, this.rotation * 90);
+			this.drawPayload();
+			Draw.rect(asm.topRegion, this.x, this.y);
 		},
 
-		dumpPayload() {
-			this.spawn();
-/*			if (Vars.net.client) {
-				this.spawn();
-			} else {
-				Call.clientPacketReliable("assemble-routoid",
-					this.tile.x + "," + this.tile.y);
-			} */
-		},
+		dumpPayload() {},
 
 		acceptPayload: (s, p) => false
 	});

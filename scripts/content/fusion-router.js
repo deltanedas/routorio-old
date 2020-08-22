@@ -21,6 +21,10 @@
 
 var fusion, liquid;
 
+// TODO: move to this with Object.create
+const connected = require("routorio/lib/connected");
+
+// TODO: this
 const ReoucterGraph = {
 	new(entity) {
 		const ret = Object.create(ReoucterGraph);
