@@ -1,0 +1,21 @@
+{
+	"category": "production",
+	"research": "routoid-assembler",
+	"requirements": [
+		"titanium/250",
+		"silicon/200",
+		"graphite/180",
+		"surge-alloy/120"
+	],
+
+	"size": 3,
+	"health": 1200,
+	"liquidCapacity": 10,
+
+	"hasPower": true,
+	"hasLiquids": true,
+	"outputsLiquid": true,
+	"consumes": {
+		"power": 10
+	}
+}

@@ -1,9 +1,26 @@
 {
-	"category": "distribution",
+	"category": "production",
+	"research": "payload-conveyor",
+	"requirements": [
+		"copper/200",
+		"titanium/130",
+		"plastanium/130",
+		"silicon/80"
+	],
+
+	"size": 3,
+	"health": 300,
+
+	"update": true,
+	"solid": true,
+	"hasPower": true,
+	"hasItems": true,
+	"rotate": true,
+	"outputsPayload": true,
 	"consumes": {
-		"power": 2,
+		"power": 3,
 		"items": {
-			"items": ["copper/12", "graphite/3"]
+			"items": ["copper/6", "graphite/3"]
 		}
 	}
 }

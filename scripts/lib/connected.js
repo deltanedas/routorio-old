@@ -92,11 +92,8 @@ function building(block) {return {
 		// Server doesn't care about drawing, stop
 		if (!Vars.ui) return;
 
-		print("Blend " + this.blendBits);
 		this.reblendAll();
-		print("Blend " + this.blendBits);
 		this.reblend();
-		print("Blend " + this.blendBits);
 	},
 
 	onRemoved() {
@@ -118,18 +115,12 @@ function building(block) {return {
 			var other = this.tile.getNearby(all[i][0], all[i][1]);
 			if (other && other.block() == this.block) {
 				var ent = other.bc();
-				print("Myself " + this)
-				print("Other " + ent)
-				print("Other " + this.blendBits);
 				ent.reblend();
-				print("Other " + this.blendBits)
 			}
 		}
 	},
 
 	reblend() {
-		print("i am " + this)
-		print("old bits " + this.blendBits)
 		// All edges and outer corners by default
 		var bits = 0;
 
@@ -152,7 +143,6 @@ function building(block) {return {
 
 		Fx.placeBlock.at(this.x, this.y);
 		this.blendBits = bits;
-		print("Reblend " + this);
 	},
 
 	adjacent(i) {

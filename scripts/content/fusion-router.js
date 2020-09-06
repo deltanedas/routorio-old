@@ -21,6 +21,10 @@
 
 var fusion, liquid;
 
+// TODO: move to this with Object.create
+const connected = require("routorio/lib/connected");
+
+// TODO: this
 const ReoucterGraph = {
 	new(entity) {
 		const ret = Object.create(ReoucterGraph);
@@ -167,7 +171,7 @@ fusion.plasma1 = Color.valueOf("#f19a37");
 fusion.plasma2 = Color.valueOf("#b24de7");
 
 fusion.entityType = () => {
-	const ent = extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
+	const ent = extendContent(LiquidRouter.LiquidRouterEntity, fusion, {
 		updateTile() {
 			this.super$updateTile();
 			if (this.warmup > 0.001 && this.warmup < 0.9) {
