@@ -1,0 +1,7 @@
+{
+	"requirements": [
+		"graphite/20",
+		"copper/20",
+		"titanium/10"
+	]
+}

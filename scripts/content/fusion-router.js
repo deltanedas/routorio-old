@@ -15,19 +15,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* Passback-less router with a cool design.
+/* Like an impact reactor, but a router.
    Blendbits are 3 least significant nibbles, edges, outer corners and inner corners.
    The fourth nibble is unused. */
 
 var fusion, liquid;
 
-// TODO: move to this with Object.create
-const connected = require("routorio/lib/connected");
-
-// TODO: this
-const ReoucterGraph = {
+const FusionGraph = {
 	new(entity) {
-		const ret = Object.create(ReoucterGraph);
+		const ret = Object.create(FusionGraph);
 		ret.routers = ObjectSet.with(entity);
 		// Linked list nodes
 		ret.rebuild(entity);
@@ -41,6 +37,8 @@ const ReoucterGraph = {
 			this.routers.add(routers.get(i));
 			routers.get(i).reoucter = this;
 		}
+
+		this.warmup = (this.warmup + reoucter.warmup) / 2;
 	},
 
 	refresh() {
@@ -106,7 +104,9 @@ const ReoucterGraph = {
 
 	begin: null,
 	end: null,
-	last: null
+	last: null,
+
+	warmup: 0
 };
 
 const diags = [
@@ -174,8 +174,8 @@ fusion.entityType = () => {
 	const ent = extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
 		updateTile() {
 			this.super$updateTile();
-			if (this.warmup > 0.001 && this.warmup < 0.9) {
-				this.warmup = Math.max(this.warmup + fusion.coolRate, 0);
+			if (this.warmup() > 0.001 && this.warmup() < 0.9) {
+				this.reoucter.warmup = Math.max(this.warmup() + fusion.coolRate, 0);
 			}
 			this.heat = Mathf.clamp(this.heat + (this.valid() ? fusion.heatRate : fusion.coolRate));
 		},
@@ -239,7 +239,7 @@ fusion.entityType = () => {
 
 			const reoucter = this.reoucter;
 			Core.app.post(() => {
-				if (reoucter) reoucter.refresh();
+				reoucter.refresh();
 
 				// Server doesn't care about drawing, stop
 				if (!Vars.ui) return;
@@ -302,7 +302,9 @@ fusion.entityType = () => {
 		collision(b) {
 			if (b.type.status == StatusEffects.shocked) {
 				const mul = this.liquids.total() / fusion.liquidCapacity;
-				this.warmup = Math.min(this.warmup + mul * (b.damage / 250), 1);
+				this.reoucter.warmup = Math.min(this.warmup() + mul * (b.damage / 250), 1);
+				// More surge routers = less damage
+				b.damage *= this.magnets / 8;
 			}
 			return this.super$collision(b);
 		},
@@ -314,35 +316,51 @@ fusion.entityType = () => {
 			const prox = this.proximity;
 			// Remove potentially broken tiles
 			this.outputs = [];
+			this.magnets = 0;
 
 			/* Add back the remaining tiles */
 			for (var i = 0; i < prox.size; i++) {
 				var near = prox.get(i);
 				if (near.block.hasItems && near.block != fusion) {
-					this.outputs.push(near);
+					if (near.block.id == this.global.routorio["surge-router"].id) {
+						this.magnets++;
+					} else {
+						this.outputs.push(near);
+					}
 				}
 			}
 
 			// Very slow
-			if (reoucter) reoucter.rebuildOutputs();
+			reoucter.rebuildOutputs();
 		},
 
 		read(read, version) {
 			this.super$read(read, version);
+
 			this.blendBits = read.s();
-			this.warmup = read.b() / 255;
+			if (version == 0) {
+				this.reoucter = FusionGraph.new(this);
+				this.reoucter.warmup = read.b() / 255;
+			}
 			this.heat = read.b() / 255;
+			this.reoucter = mapReoucters[read.s()];
 		},
 
 		write(write) {
 			this.super$write(write);
 			write.s(this.blendBits);
-			write.b(this.warmup * 255);
 			write.b(this.heat * 255);
+			write.s(this.reoucter.id);
 		},
+
+		version: () => 1,
 
 		getPowerProduction() {
 			return this.heat * fusion.powerGeneration;
+		},
+
+		warmup() {
+			return this.reoucter.warmup
 		},
 
 		powerBar() {
@@ -356,12 +374,12 @@ fusion.entityType = () => {
 		warmupBar() {
 			return new Bar(
 				"warmup",
-				Pal.ammo,
-				() => this.warmup);
+				fusion.plasma2,
+				() => this.warmup());
 		},
 
 		valid() {
-			return this.warmup > 0.999
+			return this.warmup() > 0.999
 				&& this.liquids.total() > 1
 				&& this.power.status > 0.9;
 		},
@@ -373,7 +391,6 @@ fusion.entityType = () => {
 
 	ent.reoucter = null;
 	ent.blendBits = 0;
-	ent.warmup = 0;
 	ent.heat = 0
 
 	return ent;

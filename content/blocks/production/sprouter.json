@@ -1,0 +1,11 @@
+{
+	"category": "production",
+	"research": "clear-router",
+	"requirements": [
+		"copper/10",
+		"lead/8"
+	],
+
+	"health": 10,
+	"hasShadow": false
+}

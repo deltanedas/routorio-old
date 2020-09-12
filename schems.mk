@@ -12,7 +12,7 @@ dist := clear-router colossus double-router explosive-router \
 	alien-router
 power := arc-router electric-router moderouter solar-router surge-router \
 	phase-router fusion-router
-prod := ubuntium-router
+prod := ubuntium-router routerfruit
 logic := vulcan-router
 
 blocks := $(dist:%=distribution/%) $(power:%=power/%)\
