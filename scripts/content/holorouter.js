@@ -144,7 +144,7 @@ holo.config(java.lang.String, (ent, str) => {
 	ent.texture(str);
 });
 
-holo.entityType = () => {
+holo.buildType = () => {
 	const ent = extendContent(Router.RouterBuild, holo, {
 		/* Drawing */
 

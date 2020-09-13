@@ -34,7 +34,7 @@ asm.breeds = [null, "alien", "surge",
 	"fusion", "inverted", "ubuntium",
 	"sexy", "clear"];
 
-asm.entityType = () => {
+asm.buildType = () => {
 	const ent = extendContent(PayloadAcceptor.PayloadAcceptorBuild, asm, {
 		updateTile() {
 			if (this.consValid() && !this.payload) {

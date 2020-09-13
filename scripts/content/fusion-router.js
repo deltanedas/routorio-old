@@ -170,7 +170,7 @@ fusion.coolRate = -0.0002;
 fusion.plasma1 = Color.valueOf("#f19a37");
 fusion.plasma2 = Color.valueOf("#b24de7");
 
-fusion.entityType = () => {
+fusion.buildType = () => {
 	const ent = extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
 		updateTile() {
 			this.super$updateTile();

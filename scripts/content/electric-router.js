@@ -164,7 +164,7 @@ const edef = {
 	}
 };
 
-elec.entityType = () => {
+elec.buildType = () => {
 	const ent = extendContent(Router.RouterBuild, elec, edef);
 
 	/* Default configuration */

@@ -42,7 +42,7 @@ solar.baseExplosiveness = 5;
 solar.generationType = BlockStat.basePowerGeneration;
 solar.powerGeneration = 1 / 6;
 
-solar.entityType = () => {
+solar.buildType = () => {
 	const ent = extendContent(Router.RouterBuild, solar, {
 		updateTile() {
 			this.super$updateTile();

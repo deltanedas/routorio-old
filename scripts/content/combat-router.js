@@ -22,7 +22,7 @@ const combat = extendContent(ItemTurret, "combat-router", {
 	},
 });
 
-combat.entityType = () => extendContent(ItemTurret.ItemTurretBuild, combat, {
+combat.buildType = () => extendContent(ItemTurret.ItemTurretBuild, combat, {
 	draw() {
 		if (this.team == Vars.player.team()) {
 			this.super$draw();

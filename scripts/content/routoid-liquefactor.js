@@ -36,7 +36,7 @@ const melter = extendContent(PayloadAcceptor, "routoid-liquefactor", {
 	solid: true
 });
 
-melter.entityType = () => extendContent(PayloadAcceptor.PayloadAcceptorBuild, melter, {
+melter.buildType = () => extendContent(PayloadAcceptor.PayloadAcceptorBuild, melter, {
 	updateTile() {
 		this.dumpLiquid(melter.liquid);
 

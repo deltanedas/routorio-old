@@ -25,7 +25,7 @@ const ubuntium = extendContent(Router, "ubuntium-router", {
 	}
 });
 
-ubuntium.entityType = () => extendContent(Router.RouterBuild, ubuntium, {
+ubuntium.buildType = () => extendContent(Router.RouterBuild, ubuntium, {
 	handleItem(source, item) {
 		if (Mathf.chance(amazonChance)) {
 			item = ubuntium.beryllium;

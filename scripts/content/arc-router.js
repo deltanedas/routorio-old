@@ -158,7 +158,7 @@ arc.flags = EnumSet.of(BlockFlag.producer);
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
 
-arc.entityType = () => {
+arc.buildType = () => {
 	const ent = extendContent(Router.RouterBuild, arc, {
 		updateTile() {
 			this.super$updateTile();

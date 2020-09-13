@@ -40,7 +40,7 @@ chainer.plans = [
 		ItemStack.with(Items.silicon, 12, Items.pyratite, 6))
 ];
 
-chainer.entityType = () => {
+chainer.buildType = () => {
 	const ent = extendContent(UnitFactory.UnitFactoryBuild, chainer, {
 		draw() {
 			const dx = this.x, dy = this.y;

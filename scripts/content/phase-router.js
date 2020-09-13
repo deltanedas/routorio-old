@@ -144,7 +144,7 @@ phase = extendContent(Router, "phase-router", {
 
 phase.enableDrawStatus = false;
 
-phase.entityType = () => {
+phase.buildType = () => {
 	const ent = extendContent(Router.RouterBuild, phase, {
 		draw() {
 			if (this.power.status < 1) {

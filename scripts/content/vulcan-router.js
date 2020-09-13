@@ -128,7 +128,7 @@ LogicIO.allStatements.add(extend(Prov, {
 spock = extendContent(Router, "vulcan-router", {
 });
 
-spock.entityType = () => {
+spock.buildType = () => {
 	const ent = extendContent(Router.RouterBuild, spock, {
 		getTileTarget(item, from, set) {
 			const dir = this._vars.output.val;

@@ -37,7 +37,7 @@ const sprout = extendContent(Router, "sprouter", {
 	eatChance: 1 / 10
 });
 
-sprout.entityType = () => extendContent(Router.RouterBuild, sprout, {
+sprout.buildType = () => extendContent(Router.RouterBuild, sprout, {
 	updateTile() {
 		// TODO: Use daytime and falloff at dusk/dawn
 		// TODO: Water nearby will speed up growth and fertilization
