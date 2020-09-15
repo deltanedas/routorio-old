@@ -42,4 +42,5 @@ add(["reverout", "routerpede",
 	"router-chainer", "router-house"]);
 
 // Misc
+add(["weather"]);
 require("routorio/manual");
