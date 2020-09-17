@@ -24,6 +24,7 @@ const opRouter = extendContent(Router, "op-router", {
 		for (var i = 0; i < 4; i++) {
 			this.regions[i] = Core.atlas.find(this.name + "_" + i);
 		}
+		this.region = this.regions[0];
 	},
 
 	getRegion(tile) {
