@@ -9,7 +9,7 @@ endif
 
 dist := clear-router colossus double-router explosive-router \
 	incinerouter inverted-router op-router titanium-double-router \
-	alien-router
+	alien-router rainbow-router
 power := arc-router electric-router moderouter solar-router surge-router \
 	phase-router fusion-router
 prod := ubuntium-router routerfruit

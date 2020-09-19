@@ -35,7 +35,7 @@ add(["op-router", "double-router", "titanium-double-router",
 	"electric-router", "surge-router", "solar-router",
 	"alien-router", "arc-router", "vulcan-router",
 	"fusion-router", "holorouter", "routoid-assembler",
-	"routoid-liquefactor", "sprouter"]);
+	"routoid-liquefactor", "sprouter", "rainbow-router"]);
 
 // Units
 add(["reverout", "routerpede",

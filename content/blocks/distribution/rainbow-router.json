@@ -1,0 +1,12 @@
+{
+	"research": "electric-router",
+	"category": "distribution",
+	"requirements": [
+		"copper/10",
+		"graphite/8",
+		"silicon/6"
+	],
+
+	"configurable": true,
+	"saveConfig": true
+}
