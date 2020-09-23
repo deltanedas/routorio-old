@@ -23,7 +23,8 @@ const add = names => {
 		try {
 			this.global.routorio[name] = require("routorio/content/" + name);
 		} catch (e) {
-			Log.err("Failed to load routorio script @.js: @", name, e);
+			Log.err("Failed to load routorio script @.js: @ (@:@)", name, e, e.fileName, e.lineNumber);
+			Log.err(Object.keys(e) + "");
 		}
 	}
 };
@@ -42,4 +43,5 @@ add(["reverout", "routerpede",
 	"router-chainer", "router-house"]);
 
 // Misc
+add(["items"]);
 require("routorio/manual");

@@ -18,10 +18,12 @@
 // Chance for an item to be turned into Beryllium.
 const amazonChance = 1 / 30;
 
+const routorio = this.global.routorio;
+
 const ubuntium = extendContent(Router, "ubuntium-router", {
 	init() {
 		this.super$init();
-		this.beryllium = Vars.content.getByName(ContentType.item, "routorio-beryllium");
+		this.beryllium = routorio.items.beryllium;
 	}
 });
 
