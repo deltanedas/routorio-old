@@ -3,7 +3,7 @@
 	"size": 4,
 	"reloadTime": 45,
 	"range": 200,
-	"rotatespeed": 10,
+	"rotateSpeed": 10,
 	"maxAmmo": 10,
 	"shots": 6,
 	"burstSpacing": 5,
