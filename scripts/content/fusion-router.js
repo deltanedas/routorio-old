@@ -15,7 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: use common connected router lib func
 // FIXME: implement fusion graph fully to fix crashes
 
 /* Like an impact reactor, but a router.
@@ -126,8 +125,9 @@ const all = [
 ];
 
 const dirs = require("routorio/lib/dirs");
+const connected = require("routorio/lib/connected");
 
-fusion = extendContent(LiquidRouter, "fusion-router", {
+fusion = connected.new(LiquidRouter, "fusion-router", {
 	init() {
 		this.super$init();
 		liquid = Vars.content.getByName(ContentType.liquid, "routorio-liquid-router");
@@ -160,18 +160,17 @@ fusion = extendContent(LiquidRouter, "fusion-router", {
 		this.super$setStats();
 		this.bars.add("poweroutput", ent => ent.powerBar());
 		this.bars.add("warmup", ent => ent.warmupBar());
-	}
-});
+	},
 
-fusion.enableDrawStatus = false;
-fusion.powerGeneration = 50;
-fusion.heatRate = 0.0001;
-fusion.coolRate = -0.0002;
 
-fusion.plasma1 = Color.valueOf("#f19a37");
-fusion.plasma2 = Color.valueOf("#b24de7");
+	enableDrawStatus: false,
+	powerGeneration: 50,
+	heatRate: 0.0001,
+	coolRate: -0.0002,
 
-fusion.buildType = () => extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
+	plasma1: Color.valueOf("#f19a37"),
+	plasma2: Color.valueOf("#b24de7")
+}, {
 	updateTile() {
 		this.super$updateTile();
 		if (this.warmup() > 0.001 && this.warmup() < 0.9) {
@@ -197,49 +196,12 @@ fusion.buildType = () => extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
 		Draw.reset();
 	},
 
-	drawEdges() {
-		const bits = this.blendBits;
-		const x = this.x, y = this.y;
-
-		for (var i = 0; i < 4; i++) {
-			// First nibble has the edges
-			if ((bits & (1 << i)) == 0) {
-				Draw.rect(fusion.edgeRegions[i >> 1], x, y, 90 * -i);
-			}
-		}
-	},
-
-	drawCorners() {
-		const bits = this.blendBits;
-		const x = this.x, y = this.y;
-
-		for (var i = 0; i < 4; i++) {
-			if ((bits & (256 << i)) != 0) {
-				// Third nibble has the inner corners, which take priority
-				Draw.rect(fusion.icornerRegions[i], x, y);
-			} else if ((bits & (16 << i)) == 0) {
-				// Second nibble has the outer corners
-				Draw.rect(fusion.cornerRegions[i], x, y);
-			}
-		}
-	},
-
-	placed() {
-		this.super$placed();
-
-		// Server doesn't care about drawing, stop
-		if (!Vars.ui) return;
-
-		this.reblendAll();
-		this.reblend();
-	},
-
 	onRemoved() {
 		this.super$onRemoved();
 
 		const reoucter = this.reoucter;
 		Core.app.post(() => {
-			reoucter.refresh();
+			if (reoucter) reoucter.refresh();
 
 			// Server doesn't care about drawing, stop
 			if (!Vars.ui) return;
@@ -247,53 +209,9 @@ fusion.buildType = () => extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
 		});
 	},
 
-	reblendAll() {
-		for (var i in all) {
-			var other = this.tile.getNearby(all[i][0], all[i][1]);
-			if (other && other.block() == fusion) {
-				other.bc().reblend();
-			}
-		}
-	},
-
-	reblend() {
-		// All edges and outer corners by default
-		var bits = 0;
-
-		for (var i = 0; i < 4; i++) {
-			var prev = this.adjacent((i + 3) % 4);
-			var current = this.adjacent(i);
-			if (current || prev) {
-				// Can't be a corner
-				bits |= 16 << i;
-				if (current) {
-					// Can't be a straight edge
-					bits |= 1 << i;
-					if (prev && this.interior(i)) {
-						// It's a bend, show inner corner
-						bits |= 256 << i;
-					}
-				}
-			}
-		}
-
-		this.blendBits = bits;
-	},
-
-	adjacent(i) {
-		const other = this.tile.getNearby(dirs[i].x, dirs[i].y);
-		return other && other.block() == fusion;
-	},
-
-	/* Whether a router is a corner of a square or just a bend */
-	interior(i) {
-		const diag = this.tile.getNearby(diags[i][0], diags[i][1]);
-		return diag && diag.block() != fusion;
-	},
-
 	acceptLiquid(source, type, amount) {
 		return type == liquid
-			&& this.liquids.total() + amount < fusion.liquidCapacity;
+			&& ((this.liquids.total() + amount) < fusion.liquidCapacity);
 	},
 
 	canDumpLiquid: (to, l) => to.block == fusion,
@@ -331,9 +249,10 @@ fusion.buildType = () => extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
 		}
 
 		// Very slow
-		reoucter.rebuildOutputs();
+		if (reoucter) reoucter.rebuildOutputs();
 	},
 
+	// TODO: save reoucters
 	read(read, version) {
 		this.super$read(read, version);
 
@@ -386,10 +305,9 @@ fusion.buildType = () => extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
 
 	/* Public fields */
 	getReoucter() { return this._reoucter; },
-	setReoucter(set) { this._reoucter = set; }
+	setReoucter(set) { this._reoucter = set; },
 
 	_reoucter: null,
-	blendBits: 0,
 	heat: 0
 });
 

@@ -120,235 +120,132 @@ const all = [
 ];
 
 const dirs = require("routorio/lib/dirs");
+const connected = require("routorio/lib/connected");
 
-phase = extendContent(Router, "phase-router", {
+phase = connected.new(Router, "phase-router", {
 	load() {
-		this.super$load();
+		this.loadConnected();
+
 		// Center dot
 		this.region = Core.atlas.find(this.name + "-base");
+	},
 
-		/* Edges and corners which depend on the placement */
-		this.edgeRegions = [
-			Core.atlas.find(this.name + "-edge_0"),
-			Core.atlas.find(this.name + "-edge_1")
-		];
-
-		this.cornerRegions = [];
-		this.icornerRegions = [];
-		for (var i = 0; i < 4; i++) {
-			this.cornerRegions[i] = Core.atlas.find(this.name + "-corner_" + i);
-			this.icornerRegions[i] = Core.atlas.find(this.name + "-icorner_" + i);
+	enableDrawStatus: false
+}, {
+	draw() {
+		if (this.power.status < 1) {
+			// Inactive state, draw disconnected version
+			Draw.rect(phase.icon(Cicon.full), this.x, this.y);
+		} else {
+			this.super$draw();
+			this.drawEdges();
+			this.drawCorners();
+			this.drawShine();
 		}
-	}
-});
+	},
 
-phase.enableDrawStatus = false;
+	drawShine() {
+		const shine = (Math.sin((Time.time() / 6 + this.x + this.y) / 10) + 1) / 16;
+		if (shine < 0.01) return;
 
-// TODO: connected.js stuff
-phase.buildType = () => {
-	const ent = extendContent(Router.RouterBuild, phase, {
-		draw() {
-			if (this.power.status < 1) {
-				// Inactive state, draw disconnected version
-				Draw.rect(phase.icon(Cicon.full), this.x, this.y);
-			} else {
-				this.super$draw();
-				this.drawEdges();
-				this.drawCorners();
-				this.drawShine();
-			}
-		},
+		Draw.color(Color.white)
+		Draw.alpha(shine);
+		Draw.blend(Blending.additive);
+		Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
+		Draw.blend();
+		Draw.reset();
+	},
 
-		drawEdges() {
-			const bits = this.blendBits;
-			const x = this.x, y = this.y;
+	onRemoved() {
+		this.super$onRemoved();
 
-			for (var i = 0; i < 4; i++) {
-				// First nibble has the edges
-				if ((bits & (1 << i)) == 0) {
-					Draw.rect(phase.edgeRegions[i >> 1], x, y, 90 * -i);
-				}
-			}
-		},
-
-		drawCorners() {
-			const bits = this.blendBits;
-			const x = this.x, y = this.y;
-
-			for (var i = 0; i < 4; i++) {
-				if ((bits & (256 << i)) != 0) {
-					// Third nibble has the inner corners, which take priority
-					Draw.rect(phase.icornerRegions[i], x, y);
-				} else if ((bits & (16 << i)) == 0) {
-					// Second nibble has the outer corners
-					Draw.rect(phase.cornerRegions[i], x, y);
-				}
-			}
-		},
-
-		drawShine() {
-			const shine = (Math.sin((Time.time() / 6 + this.x + this.y) / 10) + 1) / 16;
-			if (shine < 0.01) return;
-
-			Draw.color(Color.white)
-			Draw.alpha(shine);
-			Draw.blend(Blending.additive);
-			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
-			Draw.blend();
-			Draw.reset();
-		},
-
-		placed() {
-			this.super$placed();
+		const net = this.network;
+		Core.app.post(() => {
+			if (net) net.refresh();
 
 			// Server doesn't care about drawing, stop
 			if (!Vars.ui) return;
-
 			this.reblendAll();
-			this.reblend();
-		},
+		});
+	},
 
-		onRemoved() {
-			this.super$onRemoved();
+	/* Round-robin all outputs in this network */
+	handleItem(source, item) {
+		const network = this.network;
 
-			const net = this.network;
-			Core.app.post(() => {
-				if (net) net.refresh();
-
-				// Server doesn't care about drawing, stop
-				if (!Vars.ui) return;
-				this.reblendAll();
-			});
-		},
-
-		reblendAll() {
-			for (var i in all) {
-				var other = this.tile.getNearby(all[i][0], all[i][1]);
-				if (other && other.block() == phase) {
-					other.bc().reblend();
-				}
-			}
-		},
-
-		reblend() {
-			// All edges and outer corners by default
-			var bits = 0;
-
-			for (var i = 0; i < 4; i++) {
-				var prev = this.adjacent((i + 3) % 4);
-				var current = this.adjacent(i);
-				if (current || prev) {
-					// Can't be a corner
-					bits |= 16 << i;
-					if (current) {
-						// Can't be a straight edge
-						bits |= 1 << i;
-						if (prev && this.interior(i)) {
-							// It's a bend, show inner corner
-							bits |= 256 << i;
-						}
-					}
-				}
+		var ended = false;
+		var node = network.last;
+		while (!ended) {
+			var output = node.to, source = node.from;
+			node = node.next;
+			if (output.acceptItem(source, item)) {
+				output.handleItem(source, item);
+				network.last = node;
+				return;
 			}
 
-			if (this.power.status >= 1) {
-				Fx.placeBlock.at(this.x, this.y);
+			ended = node == network.last;
+		}
+		// acceptItem said yes but handleItem said no
+	},
+
+	acceptItem(source, item) {
+		if (this.power.status < 1) return false;
+		if (!this.network) {
+			this.network = NetworkGraph.new(this);
+		}
+
+		const net = this.network;
+		var node = net.begin;
+		do {
+			var output = node.to, source = node.from;
+			node = node.next;
+
+			if (output.acceptItem(source, item)) {
+				return true;
 			}
-			this.blendBits = bits;
-		},
+		} while (node != net.begin);
 
-		adjacent(i) {
-			const other = this.tile.getNearby(dirs[i].x, dirs[i].y);
-			return other && other.block() == phase;
-		},
+		return false;
+	},
 
-		/* Whether a router is a corner of a square or just a bend */
-		interior(i) {
-			const diag = this.tile.getNearby(diags[i][0], diags[i][1]);
-			return diag && diag.block() != phase;
-		},
+	onProximityUpdate() {
+		this.super$onProximityUpdate();
 
-		/* Round-robin all outputs in this network */
-		handleItem(source, item) {
-			const network = this.network;
+		const net = this.network;
+		const prox = this.proximity;
+		// Remove potentially broken tiles
+		this.outputs = [];
 
-			var ended = false;
-			var node = network.last;
-			while (!ended) {
-				var output = node.to, source = node.from;
-				node = node.next;
-				if (output.acceptItem(source, item)) {
-					output.handleItem(source, item);
-					network.last = node;
-					return;
-				}
-
-				ended = node == network.last;
+		/* Add back the remaining tiles */
+		for (var i = 0; i < prox.size; i++) {
+			var near = prox.get(i);
+			if (near.block.hasItems && near.block != phase) {
+				this.outputs.push(near);
 			}
-			// acceptItem said yes but handleItem said no
-		},
+		}
 
-		acceptItem(source, item) {
-			if (this.power.status < 1) return false;
-			if (!this.network) {
-				this.network = NetworkGraph.new(this);
-			}
+		// Very slow
+		if (net) net.rebuildOutputs();
+	},
 
-			const net = this.network;
-			var node = net.begin;
-			do {
-				var output = node.to, source = node.from;
-				node = node.next;
+	read(read, version) {
+		this.super$read(read, version);
+		this.blendBits = read.s();
+	},
+	write(write) {
+		this.super$write(write);
+		write.s(this.blendBits);
+	},
 
-				if (output.acceptItem(source, item)) {
-					return true;
-				}
-			} while (node != net.begin);
+	/* Public fields */
+	getNetwork() { return this._network; },
+	setNetwork(set) { this._network = set; },
+	getOutputs() { return this._outputs; },
+	setOutputs(set) { this._outputs = set; },
 
-			return false;
-		},
-
-		onProximityUpdate() {
-			this.super$onProximityUpdate();
-
-			const net = this.network;
-			const prox = this.proximity;
-			// Remove potentially broken tiles
-			this.outputs = [];
-
-			/* Add back the remaining tiles */
-			for (var i = 0; i < prox.size; i++) {
-				var near = prox.get(i);
-				if (near.block.hasItems && near.block != phase) {
-					this.outputs.push(near);
-				}
-			}
-
-			// Very slow
-			if (net) net.rebuildOutputs();
-		},
-
-		read(stream, version) {
-			this.super$read(stream, version);
-			this.blendBits = stream.s();
-		},
-		write(stream) {
-			this.super$write(stream);
-			stream.s(this.blendBits);
-		},
-
-		/* Public fields */
-		getNetwork() { return this._network; },
-		setNetwork(set) { this._network = set; },
-		getOutputs() { return this._outputs; },
-		setOutputs(set) { this._outputs = set; }
-	});
-
-	ent.network = null;
-	ent.outputs = [];
-	ent.blendBits = 0;
-
-	return ent;
-};
+	_network: null,
+	_outputs: []
+});
 
 module.exports = phase;

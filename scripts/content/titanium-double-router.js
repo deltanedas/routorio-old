@@ -17,7 +17,7 @@
 
 var lock = false;
 
-const titan = extendContent(Router, "titan-double-router", {
+const titan = extendContent(Router, "titanium-double-router", {
 	load() {
 		this.super$load();
 

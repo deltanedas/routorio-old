@@ -56,7 +56,8 @@ melter.buildType = () => extendContent(PayloadAcceptor.PayloadAcceptorBuild, mel
 	},
 
 	acceptsPayload(source, payload) {
-		return !this.payload && payload.isRoutoid;
+		return !this.payload && payload.isRoutoid
+			&& (this.liquids.total() < melter.liquidCapacity);
 	},
 
 	valid() {

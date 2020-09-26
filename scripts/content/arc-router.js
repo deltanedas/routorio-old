@@ -255,7 +255,7 @@ arc.buildType = () => extendContent(Router.RouterBuild, arc, {
 
 	/* Public fields */
 	get_progress() { return this.progress; },
-	get_rates() { return this.rates; }
+	get_rates() { return this.rates; },
 
 	rates: Object.create(rates.base.bonuses),
 	progress: 0

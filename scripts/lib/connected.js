@@ -35,7 +35,9 @@ const all = [
 const dirs = require("routorio/lib/dirs");
 
 const block = {
-	loadConnect() {
+	loadConnected() {
+		this.super$load();
+
 		/* Edges and corners which depend on the placement */
 		this.edgeRegions = [
 			Core.atlas.find(this.name + "-edge_0"),
@@ -98,23 +100,18 @@ const building = block => {return {
 	onRemoved() {
 		this.super$onRemoved();
 
+		// Server doesn't care about drawing, stop
+		if (!Vars.ui) return;
 		Core.app.post(() => {
-			this.removed();
-
-			// Server doesn't care about drawing, stop
-			if (!Vars.ui) return;
 			this.reblendAll();
 		});
 	},
 
-	removed(){},
-
 	reblendAll() {
 		for (var i in all) {
 			var other = this.tile.getNearby(all[i][0], all[i][1]);
-			if (other && other.block() == this.block) {
-				var ent = other.bc();
-				ent.reblend();
+			if (other && other.block() == block) {
+				other.build.reblend();
 			}
 		}
 	},
@@ -146,7 +143,7 @@ const building = block => {return {
 
 	adjacent(i) {
 		const other = this.tile.getNearby(dirs[i].x, dirs[i].y);
-		return other && other.block() == this.block;
+		return other && other.block() == block;
 	},
 
 	/* Whether a router is a corner of a square or just a bend */
@@ -167,12 +164,19 @@ const building = block => {return {
 };};
 
 module.exports = {
-	new(type, def, block) {
-		const base = typeof(this[type]) == "function"
-			? this[type](block)
-			: Object.create(this[type]);
-		return Object.assign(base, def);
+	new(block, name, bdef, edef) {
+		const ret = extendContent(block, name,
+			Object.assign(Object.create(this.block), bdef));
+		// Get Router.RouterBuild from just Router
+		const build = ret.newBuilding().class;
+		edef = Object.assign(this.building(ret), edef);
+
+		/* The building's variables are stored with the object,
+		   Object.create is used so that they don't share the same variables */
+		ret.buildType = () => extendContent(build, ret, Object.create(edef));
+		return ret;
 	},
+
 	block: block,
 	building: building
 };

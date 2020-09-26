@@ -78,7 +78,9 @@ rainbow.buildType = () => extendContent(Router.RouterBuild, rainbow, {
 			this.configure(new java.lang.Integer(this.colour == i ? -1 : i));
 			Vars.control.input.frag.config.hideConfig();
 		}).size(40).get();
-		button.checked = this.colour == i;
+		button.update(() => {
+			button.checked = this.colour == i;
+		});
 	},
 
 	acceptItem(source, item) {
