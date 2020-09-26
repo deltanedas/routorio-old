@@ -24,19 +24,21 @@ const opRouter = extendContent(Router, "op-router", {
 		for (var i = 0; i < 4; i++) {
 			this.regions[i] = Core.atlas.find(this.name + "_" + i);
 		}
-		this.region = this.regions[0];
-	},
-
-	getRegion(tile) {
-		return this.regions[(tile.x % 2) + 2 * (tile.y % 2)];
-	},
-
-	drawBase(tile){
-		Draw.rect(this.getRegion(tile), tile.drawx(), tile.drawy());
 	},
 
 	icons(){
-		return [Core.atlas.find("routorio-distributor")]; // Vanilla distributor texture
+		// Vanilla distributor texture
+		return [Core.atlas.find("routorio-distributor")];
+	}
+});
+
+opRouter.buildType = () => extendContent(Router.RouterBuild, opRouter, {
+	draw() {
+		Draw.rect(this.region, this.x, this.y);
+	},
+
+	getRegion() {
+		return opRouter.regions[(this.tile.x % 2) + 2 * (this.tile.y % 2)];
 	}
 });
 

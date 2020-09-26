@@ -9,6 +9,8 @@
 		"phase-fabric/80"
 	],
 
+	"buildVisibility": "hidden",
+
 	"liquidCapacity": 15,
 	"hasPower": true,
 	"outputsPower": true,

@@ -15,6 +15,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// FIXME: something changed and routorio instructions arent saved when reopening the processor
+
 var holo;
 
 const HoloI = {
@@ -85,7 +87,7 @@ LAssembler.customParsers.put("holorouter", extend(Func, {
 LogicIO.allStatements.add(extend(Prov, {
 	get: () => HoloStatement.new([
 		"holorouter",
-		"@0",
+		"holorouter1",
 		'"god"'
 	])
 }));
@@ -144,58 +146,53 @@ holo.config(java.lang.String, (ent, str) => {
 	ent.texture(str);
 });
 
-holo.buildType = () => {
-	const ent = extendContent(Router.RouterBuild, holo, {
-		/* Drawing */
-
-		draw() {
-			this.super$draw();
-			if (this.power.status > 0.01) {
-				this.drawHolo();
-			}
-		},
-
-		drawHolo() {
-			// Subtle phasing in and out
-			const phase = (Math.sin(Time.time() / 50) / 5) + 0.8;
-			Draw.alpha(phase * this.power.status * holo.opacity);
-			Draw.rect(this.region, this.x, this.y + this.offset);
-		},
-
-		/* Configuration */
-
-		config() {
-			return this.name;
-		},
-
-		buildConfiguration(t) {
-			t.button(Icon.pencil, () => {
-				holo.dialog.pick(this);
-			});
-		},
-
-		texture(name) {
-			this.name = name;
-			this.region = holo.get(name);
-			this.offset = (this.region.height / 8) + 6;
-		},
-
-		/* I/O */
-
-		read(read, version) {
-			this.super$read(read, version);
-			this.texture(read.str());
-		},
-
-		write(write) {
-			this.super$write(write);
-			write.str(this.name);
+holo.buildType = () => extendContent(Router.RouterBuild, holo, {
+	/* Drawing */
+	draw() {
+		this.super$draw();
+		if (this.power.status > 0.01) {
+			this.drawHolo();
 		}
-	});
+	},
 
-	ent.texture("router");
+	drawHolo() {
+		// Subtle phasing in and out
+		const phase = (Math.sin(Time.time() / 50) / 5) + 0.8;
+		Draw.alpha(phase * this.power.status * holo.opacity);
+		Draw.rect(this.region, this.x, this.y + this.offset);
+	},
 
-	return ent;
-};
+	/* Configuration */
+	config() {
+		return this.name;
+	},
+
+	buildConfiguration(t) {
+		t.button(Icon.pencil, () => {
+			holo.dialog.pick(this);
+		});
+	},
+
+	texture(name) {
+		this.name = name;
+		this.region = holo.get(name);
+		this.offset = (this.region.height / 8) + 6;
+	},
+
+	/* I/O */
+	read(read, version) {
+		this.super$read(read, version);
+		this.texture(read.str());
+	},
+
+	write(write) {
+		this.super$write(write);
+		write.str(this.name);
+	},
+
+	name: "router",
+	region: Core.atlas.find("router"),
+	offset: 10
+});
 
 module.exports = holo;

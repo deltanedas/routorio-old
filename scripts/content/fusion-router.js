@@ -15,6 +15,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: use common connected router lib func
+// FIXME: implement fusion graph fully to fix crashes
+
 /* Like an impact reactor, but a router.
    Blendbits are 3 least significant nibbles, edges, outer corners and inner corners.
    The fourth nibble is unused. */
@@ -143,11 +146,9 @@ fusion = extendContent(LiquidRouter, "fusion-router", {
 
 		this.cornerRegions = [];
 		this.icornerRegions = [];
-		this.plasmaRegions = [];
 		for (var i = 0; i < 4; i++) {
 			this.cornerRegions[i] = Core.atlas.find(this.name + "-corner_" + i);
 			this.icornerRegions[i] = Core.atlas.find(this.name + "-icorner_" + i);
-			this.plasmaRegions[i] = Core.atlas.find(this.name + "-plasma_" + i);
 		}
 	},
 
@@ -170,230 +171,226 @@ fusion.coolRate = -0.0002;
 fusion.plasma1 = Color.valueOf("#f19a37");
 fusion.plasma2 = Color.valueOf("#b24de7");
 
-fusion.buildType = () => {
-	const ent = extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
-		updateTile() {
-			this.super$updateTile();
-			if (this.warmup() > 0.001 && this.warmup() < 0.9) {
-				this.reoucter.warmup = Math.max(this.warmup() + fusion.coolRate, 0);
+fusion.buildType = () => extendContent(LiquidRouter.LiquidRouterBuild, fusion, {
+	updateTile() {
+		this.super$updateTile();
+		if (this.warmup() > 0.001 && this.warmup() < 0.9) {
+			this.reoucter.warmup = Math.max(this.warmup() + fusion.coolRate, 0);
+		}
+		this.heat = Mathf.clamp(this.heat + (this.valid() ? fusion.heatRate : fusion.coolRate));
+	},
+
+	draw() {
+		if (this.liquids.total() > 0.001) {
+			this.drawLiquid();
+		}
+
+		this.drawEdges();
+		this.drawCorners();
+		Draw.rect(fusion.topRegion, this.x, this.y);
+	},
+
+	drawLiquid() {
+		Draw.color(liquid.color, fusion.plasma2, this.warmup * Math.sin(Time.time() / 100));
+		Draw.alpha(this.liquids.total() / fusion.liquidCapacity);
+		Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
+		Draw.reset();
+	},
+
+	drawEdges() {
+		const bits = this.blendBits;
+		const x = this.x, y = this.y;
+
+		for (var i = 0; i < 4; i++) {
+			// First nibble has the edges
+			if ((bits & (1 << i)) == 0) {
+				Draw.rect(fusion.edgeRegions[i >> 1], x, y, 90 * -i);
 			}
-			this.heat = Mathf.clamp(this.heat + (this.valid() ? fusion.heatRate : fusion.coolRate));
-		},
+		}
+	},
 
-		draw() {
-			if (this.liquids.total() > 0.001) {
-				this.drawLiquid();
+	drawCorners() {
+		const bits = this.blendBits;
+		const x = this.x, y = this.y;
+
+		for (var i = 0; i < 4; i++) {
+			if ((bits & (256 << i)) != 0) {
+				// Third nibble has the inner corners, which take priority
+				Draw.rect(fusion.icornerRegions[i], x, y);
+			} else if ((bits & (16 << i)) == 0) {
+				// Second nibble has the outer corners
+				Draw.rect(fusion.cornerRegions[i], x, y);
 			}
+		}
+	},
 
-			this.drawEdges();
-			this.drawCorners();
-			Draw.rect(fusion.topRegion, this.x, this.y);
-		},
+	placed() {
+		this.super$placed();
 
-		drawLiquid() {
-			Draw.color(liquid.color, fusion.plasma2, this.warmup * Math.sin(Time.time() / 100));
-			Draw.alpha(this.liquids.total() / fusion.liquidCapacity);
-			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
-			Draw.reset();
-		},
+		// Server doesn't care about drawing, stop
+		if (!Vars.ui) return;
 
-		drawEdges() {
-			const bits = this.blendBits;
-			const x = this.x, y = this.y;
+		this.reblendAll();
+		this.reblend();
+	},
 
-			for (var i = 0; i < 4; i++) {
-				// First nibble has the edges
-				if ((bits & (1 << i)) == 0) {
-					Draw.rect(fusion.edgeRegions[i >> 1], x, y, 90 * -i);
-				}
-			}
-		},
+	onRemoved() {
+		this.super$onRemoved();
 
-		drawCorners() {
-			const bits = this.blendBits;
-			const x = this.x, y = this.y;
-
-			for (var i = 0; i < 4; i++) {
-				if ((bits & (256 << i)) != 0) {
-					// Third nibble has the inner corners, which take priority
-					Draw.rect(fusion.icornerRegions[i], x, y);
-				} else if ((bits & (16 << i)) == 0) {
-					// Second nibble has the outer corners
-					Draw.rect(fusion.cornerRegions[i], x, y);
-				}
-			}
-		},
-
-		placed() {
-			this.super$placed();
+		const reoucter = this.reoucter;
+		Core.app.post(() => {
+			reoucter.refresh();
 
 			// Server doesn't care about drawing, stop
 			if (!Vars.ui) return;
-
 			this.reblendAll();
-			this.reblend();
-		},
+		});
+	},
 
-		onRemoved() {
-			this.super$onRemoved();
-
-			const reoucter = this.reoucter;
-			Core.app.post(() => {
-				reoucter.refresh();
-
-				// Server doesn't care about drawing, stop
-				if (!Vars.ui) return;
-				this.reblendAll();
-			});
-		},
-
-		reblendAll() {
-			for (var i in all) {
-				var other = this.tile.getNearby(all[i][0], all[i][1]);
-				if (other && other.block() == fusion) {
-					other.bc().reblend();
-				}
+	reblendAll() {
+		for (var i in all) {
+			var other = this.tile.getNearby(all[i][0], all[i][1]);
+			if (other && other.block() == fusion) {
+				other.bc().reblend();
 			}
-		},
+		}
+	},
 
-		reblend() {
-			// All edges and outer corners by default
-			var bits = 0;
+	reblend() {
+		// All edges and outer corners by default
+		var bits = 0;
 
-			for (var i = 0; i < 4; i++) {
-				var prev = this.adjacent((i + 3) % 4);
-				var current = this.adjacent(i);
-				if (current || prev) {
-					// Can't be a corner
-					bits |= 16 << i;
-					if (current) {
-						// Can't be a straight edge
-						bits |= 1 << i;
-						if (prev && this.interior(i)) {
-							// It's a bend, show inner corner
-							bits |= 256 << i;
-						}
+		for (var i = 0; i < 4; i++) {
+			var prev = this.adjacent((i + 3) % 4);
+			var current = this.adjacent(i);
+			if (current || prev) {
+				// Can't be a corner
+				bits |= 16 << i;
+				if (current) {
+					// Can't be a straight edge
+					bits |= 1 << i;
+					if (prev && this.interior(i)) {
+						// It's a bend, show inner corner
+						bits |= 256 << i;
 					}
 				}
 			}
+		}
 
-			this.blendBits = bits;
-		},
+		this.blendBits = bits;
+	},
 
-		adjacent(i) {
-			const other = this.tile.getNearby(dirs[i].x, dirs[i].y);
-			return other && other.block() == fusion;
-		},
+	adjacent(i) {
+		const other = this.tile.getNearby(dirs[i].x, dirs[i].y);
+		return other && other.block() == fusion;
+	},
 
-		/* Whether a router is a corner of a square or just a bend */
-		interior(i) {
-			const diag = this.tile.getNearby(diags[i][0], diags[i][1]);
-			return diag && diag.block() != fusion;
-		},
+	/* Whether a router is a corner of a square or just a bend */
+	interior(i) {
+		const diag = this.tile.getNearby(diags[i][0], diags[i][1]);
+		return diag && diag.block() != fusion;
+	},
 
-		acceptLiquid(source, type, amount) {
-			return type == liquid
-				&& this.liquids.total() + amount < fusion.liquidCapacity;
-		},
+	acceptLiquid(source, type, amount) {
+		return type == liquid
+			&& this.liquids.total() + amount < fusion.liquidCapacity;
+	},
 
-		canDumpLiquid: (to, l) => to.block == fusion,
+	canDumpLiquid: (to, l) => to.block == fusion,
 
-		/* Check for lightning to ignite */
-		collision(b) {
-			if (b.type.status == StatusEffects.shocked) {
-				const mul = this.liquids.total() / fusion.liquidCapacity;
-				this.reoucter.warmup = Math.min(this.warmup() + mul * (b.damage / 250), 1);
-				// More surge routers = less damage
-				b.damage *= this.magnets / 8;
-			}
-			return this.super$collision(b);
-		},
+	/* Check for lightning to ignite */
+	collision(b) {
+		if (b.type.status == StatusEffects.shocked) {
+			const mul = this.liquids.total() / fusion.liquidCapacity;
+			this.reoucter.warmup = Math.min(this.warmup() + mul * (b.damage / 250), 1);
+			// More surge routers = less damage
+			b.damage *= this.magnets / 8;
+		}
+		return this.super$collision(b);
+	},
 
-		onProximityUpdate() {
-			this.super$onProximityUpdate();
+	onProximityUpdate() {
+		this.super$onProximityUpdate();
 
-			const reoucter = this.reoucter;
-			const prox = this.proximity;
-			// Remove potentially broken tiles
-			this.outputs = [];
-			this.magnets = 0;
+		const reoucter = this.reoucter;
+		const prox = this.proximity;
+		// Remove potentially broken tiles
+		this.outputs = [];
+		this.magnets = 0;
 
-			/* Add back the remaining tiles */
-			for (var i = 0; i < prox.size; i++) {
-				var near = prox.get(i);
-				if (near.block.hasItems && near.block != fusion) {
-					if (near.block.id == this.global.routorio["surge-router"].id) {
-						this.magnets++;
-					} else {
-						this.outputs.push(near);
-					}
+		/* Add back the remaining tiles */
+		for (var i = 0; i < prox.size; i++) {
+			var near = prox.get(i);
+			if (near.block.hasItems && near.block != fusion) {
+				if (near.block.id == this.global.routorio["surge-router"].id) {
+					this.magnets++;
+				} else {
+					this.outputs.push(near);
 				}
 			}
+		}
 
-			// Very slow
-			reoucter.rebuildOutputs();
-		},
+		// Very slow
+		reoucter.rebuildOutputs();
+	},
 
-		read(read, version) {
-			this.super$read(read, version);
+	read(read, version) {
+		this.super$read(read, version);
 
-			this.blendBits = read.s();
-			if (version == 0) {
-				this.reoucter = FusionGraph.new(this);
-				this.reoucter.warmup = read.b() / 255;
-			}
-			this.heat = read.b() / 255;
-			this.reoucter = mapReoucters[read.s()];
-		},
+		this.blendBits = read.s();
+		if (version == 0) {
+			this.reoucter = FusionGraph.new(this);
+			this.reoucter.warmup = read.b() / 255;
+		}
+		this.heat = read.b() / 255;
+		this.reoucter = mapReoucters[read.s()];
+	},
 
-		write(write) {
-			this.super$write(write);
-			write.s(this.blendBits);
-			write.b(this.heat * 255);
-			write.s(this.reoucter.id);
-		},
+	write(write) {
+		this.super$write(write);
+		write.s(this.blendBits);
+		write.b(this.heat * 255);
+		write.s(this.reoucter.id);
+	},
 
-		version: () => 1,
+	version: () => 1,
 
-		getPowerProduction() {
-			return this.heat * fusion.powerGeneration;
-		},
+	getPowerProduction() {
+		return this.heat * fusion.powerGeneration;
+	},
 
-		warmup() {
-			return this.reoucter.warmup
-		},
+	warmup() {
+		return this.reoucter.warmup
+	},
 
-		powerBar() {
-			const base = fusion.consumes.getPower().usage;
-			return new Bar(
-				() => Core.bundle.format("bar.poweroutput",
-					Strings.fixed(Math.max(this.powerProduction - base, 0) * 60 * this.timeScale, 1)),
-				() => Pal.powerBar,
-				() => this.heat);
-		},
-		warmupBar() {
-			return new Bar(
-				"warmup",
-				fusion.plasma2,
-				() => this.warmup());
-		},
+	powerBar() {
+		const base = fusion.consumes.getPower().usage;
+		return new Bar(
+			() => Core.bundle.format("bar.poweroutput",
+				Strings.fixed(Math.max(this.powerProduction - base, 0) * 60 * this.timeScale, 1)),
+			() => Pal.powerBar,
+			() => this.heat);
+	},
+	warmupBar() {
+		return new Bar(
+			"warmup",
+			fusion.plasma2,
+			() => this.warmup());
+	},
 
-		valid() {
-			return this.warmup() > 0.999
-				&& this.liquids.total() > 1
-				&& this.power.status > 0.9;
-		},
+	valid() {
+		return this.warmup() > 0.999
+			&& this.liquids.total() > 1
+			&& this.power.status > 0.9;
+	},
 
-		/* Public fields */
-		getReoucter() { return this._reoucter; },
-		setReoucter(set) { this._reoucter = set; }
-	});
+	/* Public fields */
+	getReoucter() { return this._reoucter; },
+	setReoucter(set) { this._reoucter = set; }
 
-	ent.reoucter = null;
-	ent.blendBits = 0;
-	ent.heat = 0
-
-	return ent;
-};
+	_reoucter: null,
+	blendBits: 0,
+	heat: 0
+});
 
 module.exports = fusion;

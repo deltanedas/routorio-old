@@ -158,109 +158,108 @@ arc.flags = EnumSet.of(BlockFlag.producer);
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
 
-arc.buildType = () => {
-	const ent = extendContent(Router.RouterBuild, arc, {
-		updateTile() {
-			this.super$updateTile();
-			this.progress = Math.max(this.progress - 0.005, 0);
-		},
+arc.buildType = () => extendContent(Router.RouterBuild, arc, {
+	updateTile() {
+		this.super$updateTile();
+		this.progress = Math.max(this.progress - 0.005, 0);
+	},
 
-		handleItem(source, item) {
-			if (!this.consumeFuel(item)) {
-				this.super$handleItem(source, item);
+	handleItem(source, item) {
+		if (!this.consumeFuel(item)) {
+			this.super$handleItem(source, item);
+		}
+	},
+
+	consumeFuel(item) {
+		const rates = this.rates;
+		var consumed = false;
+
+		if (Mathf.chance(rates.arc) * arcMultiplier(item)) {
+			this.arc(item);
+		}
+		if (Mathf.chance(rates.burnup)) {
+			if (Vars.ui) {
+				Fx.lancerLaserCharge.at(this.x + Mathf.range(2), this.y + Mathf.range(2),
+					Math.random(0, 360), item.color);
 			}
-		},
+			this.items.take();
+			consumed = true;
+		}
+		this.progress = Math.min(this.progress + 0.2, 1);
+		return consumed;
+	},
 
-		consumeFuel(item) {
-			const rates = this.rates;
-			var consumed = false;
+	arc(item) {
+		const rates = this.rates;
+		const mul = arcMultiplier(item.name);
 
-			if (Mathf.chance(rates.arc) * arcMultiplier(item)) {
-				this.arc(item);
+		const x = this.x, y = this.y;
+
+		Core.app.post(() => {
+			for (var i = 0; i < mul; i++) {
+				Lightning.create(Team.derelict, item.color, 10, x, y,
+					Mathf.random(0, 360), Math.round(Mathf.random(5, 20 * mul)));
 			}
-			if (Mathf.chance(rates.burnup)) {
-				if (Vars.ui) {
-					Fx.lancerLaserCharge.at(this.x + Mathf.range(2), this.y + Mathf.range(2),
-						Math.random(0, 360), item.color);
-				}
-				this.items.take();
-				consumed = true;
-			}
-			this.progress = Math.min(this.progress + 0.2, 1);
-			return consumed;
-		},
+		});
+	},
 
-		arc(item) {
-			const rates = this.rates;
-			const mul = arcMultiplier(item.name);
+	// FIXME: certain placement orders have weird rates
+	calculateRates() {
+		Object.assign(this.rates, rates.base.bonuses);
 
-			const x = this.x, y = this.y;
+		for (var r in rates) {
+			var rate = rates[r];
+			var mul = rate.apply(this.tile);
+			if (mul == 0) continue;
 
-			Core.app.post(() => {
-				for (var i = 0; i < mul; i++) {
-					Lightning.create(Team.derelict, item.color, 10, x, y,
-						Mathf.random(0, 360), Math.round(Mathf.random(5, 20 * mul)));
-				}
-			});
-		},
-
-		calculateRates() {
-			Object.assign(this.rates, rates.base.bonuses);
-
-			for (var r in rates) {
-				var rate = rates[r];
-				var mul = rate.apply(this.tile);
-				if (mul == 0) continue;
-
-				// Do modifiers first to prevent absurd rates
-				if (rate.modifiers) {
-					for (var m in rate.modifiers) {
-						this.rates[m] *= Math.pow(rate.modifiers[m], mul);
-					}
-				}
-
-				if (rate.bonuses) {
-					for (var b in rate.bonuses) {
-						this.rates[b] += rate.bonuses[b] * mul;
-					}
+			// Do modifiers first to prevent absurd rates
+			if (rate.modifiers) {
+				for (var m in rate.modifiers) {
+					this.rates[m] *= Math.pow(rate.modifiers[m], mul);
 				}
 			}
-		},
 
-		getPowerProduction() {
-			return this.rates.gen * this.progress;
-		},
-
-		onProximityUpdate() {
-			this.super$onProximityUpdate();
-			this.calculateRates();
-		},
-
-		onDestroyed() {
-			this.super$onDestroyed();
-			// Spawn lots of arcs
-			for (var i = 0; i < 10; i++) {
-				this.arc(Items.surgealloy);
+			if (rate.bonuses) {
+				for (var b in rate.bonuses) {
+					this.rates[b] += rate.bonuses[b] * mul;
+				}
 			}
-		},
+		}
+	},
 
-		/* Status - Orange */
-		shouldConsume() {
-			return this.progress > 0.5;
-		},
-		/* Status - Red */
-		productionValid() {
-			return this.progress > 0.02;
-		},
+	getPowerProduction() {
+		return this.rates.gen * this.progress;
+	},
 
-		/* Public fields */
-		get_progress() { return this.progress; },
-		get_rates() { return this.rates; }
-	});
-	ent.rates = Object.create(rates.base.bonuses);
-	ent.progress = 0;
-	return ent;
-};
+	onProximityUpdate() {
+		this.super$onProximityUpdate();
+		this.calculateRates();
+	},
+
+	onDestroyed() {
+		this.super$onDestroyed();
+		// Spawn lots of arcs
+		for (var i = 0; i < 10; i++) {
+			this.arc(Items.surgealloy);
+		}
+	},
+
+	/* Status - Orange */
+	shouldConsume() {
+		return this.progress > 0.5;
+	},
+	/* Status - Red */
+	productionValid() {
+		return this.progress > 0.02;
+	},
+
+	/* Public fields */
+	get_progress() { return this.progress; },
+	get_rates() { return this.rates; }
+
+	rates: Object.create(rates.base.bonuses),
+	progress: 0
+});
 
 module.exports = {
 	rates: rates,

@@ -51,7 +51,7 @@ const block = {
 	}
 };
 
-function building(block) {return {
+const building = block => {return {
 	draw() {
 		this.super$draw();
 		this.drawEdges();
@@ -73,7 +73,6 @@ function building(block) {return {
 	drawCorners() {
 		const bits = this.blendBits;
 		const x = this.x, y = this.y;
-		Log.warn("Draw @ @, @", bits, x, y);
 
 		for (var i = 0; i < 4; i++) {
 			if ((bits & (256 << i)) != 0) {
@@ -165,7 +164,7 @@ function building(block) {return {
 		this.super$write(write);
 		write.s(this.blendBits);
 	}
-}};
+};};
 
 module.exports = {
 	new(type, def, block) {

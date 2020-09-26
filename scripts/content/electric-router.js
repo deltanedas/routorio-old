@@ -72,7 +72,7 @@ elec.config(Short, (ent, raw) => {
 	ent.load(raw);
 });
 
-const edef = {
+elec.buildType = () => extendContent(Router.RouterBuild, elec, {
 	updateTile() {
 		if (this.active()) {
 			this.super$updateTile();
@@ -161,19 +161,13 @@ const edef = {
 	read(stream, version) {
 		this.super$read(stream, version);
 		this.load(stream.s());
-	}
-};
-
-elec.buildType = () => {
-	const ent = extendContent(Router.RouterBuild, elec, edef);
+	},
 
 	/* Default configuration */
-	ent.mode = modes.buffer;
-	ent.operation = operations.equals;
-	ent.number = maxNumber;
-
-	return ent;
-};
+	mode: modes.buffer,
+	operation: operations.equals,
+	number: maxNumber
+});
 
 elec.consumes.powerBuffered(maxNumber);
 

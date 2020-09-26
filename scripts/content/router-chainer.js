@@ -40,43 +40,39 @@ chainer.plans = [
 		ItemStack.with(Items.silicon, 12, Items.pyratite, 6))
 ];
 
-chainer.buildType = () => {
-	const ent = extendContent(UnitFactory.UnitFactoryBuild, chainer, {
-		draw() {
-			const dx = this.x, dy = this.y;
-			Draw.rect(chainer.region, dx, dy);
-			Draw.z(Layer.turret);
+chainer.buildType = () => ent = extendContent(UnitFactory.UnitFactoryBuild, chainer, {
+	draw() {
+		const dx = this.x, dy = this.y;
+		Draw.rect(chainer.region, dx, dy);
+		Draw.z(Layer.turret);
 
-			this.rot = Mathf.lerp(this.rot, Math.min(this.efficiency(), 1) * this.timeScale, 0.02);
-			const rot = Time.time() * this.rot;
-			const chaining = this.cons.valid();
+		this.rot = Mathf.lerp(this.rot, Math.min(this.efficiency(), 1) * this.timeScale, 0.02);
+		const rot = Time.time() * this.rot;
+		const chaining = this.cons.valid();
 
-			this.dist = Mathf.lerp(this.dist, this.plan ? this.plan.type.size / 40
-				: 4 * this.rot + 8, 0.04);
+		this.dist = Mathf.lerp(this.dist, this.plan ? this.plan.type.size / 40
+			: 4 * this.rot + 8, 0.04);
 
-			for (var i = 0; i < 8; i++) {
-				var angle = rot + 360 * i / 8;
-				var x = dx + Angles.trnsx(angle, this.dist);
-				var y = dy + Angles.trnsy(angle, this.dist);
+		for (var i = 0; i < 8; i++) {
+			var angle = rot + 360 * i / 8;
+			var x = dx + Angles.trnsx(angle, this.dist);
+			var y = dy + Angles.trnsy(angle, this.dist);
 
-				if (chaining) {
-					Drawf.laser(this.team, chainer.laser, chainer.laserEnd,
-						// imaginary = hide laser
-						x, y, dx, dy, Math.sqrt(Math.sin(angle / 50) / 5));
-					// Surge routers face the center when at max dist
-					Draw.rect(chainer.surge, x, y, Mathf.slerp(0, angle, this.dist / 24));
-				} else {
-					Draw.rect(chainer.router, x, y);
-				}
+			if (chaining) {
+				Drawf.laser(this.team, chainer.laser, chainer.laserEnd,
+					// imaginary = hide laser
+					x, y, dx, dy, Math.sqrt(Math.sin(angle / 50) / 5));
+				// Surge routers face the center when at max dist
+				Draw.rect(chainer.surge, x, y, Mathf.slerp(0, angle, this.dist / 24));
+			} else {
+				Draw.rect(chainer.router, x, y);
 			}
 		}
-	});
+	},
 
 	// Routers start by folding out
-	ent.dist = 0;
-	ent.rot = 0;
-
-	return ent;
-};
+	dist: 0,
+	rot: 0
+});
 
 module.exports = chainer;

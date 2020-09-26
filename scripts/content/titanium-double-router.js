@@ -17,7 +17,7 @@
 
 var lock = false;
 
-const titanium = extendContent(Router, "titanium-double-router", {
+const titan = extendContent(Router, "titan-double-router", {
 	load() {
 		this.super$load();
 
@@ -40,16 +40,16 @@ const titanium = extendContent(Router, "titanium-double-router", {
 	}
 });
 
-titanium.buildType = () => extendContent(Router.RouterBuild, titanium, {
+titan.buildType = () => extendContent(Router.RouterBuild, titan, {
 	placed() {
 		this.super$placed();
-		const x = titanium.calcOffset(this.tile.x);
-		Vars.world.tile(x, this.tile.y).setBlock(titanium, this.team, 0);
+		const x = titan.calcOffset(this.tile.x);
+		Vars.world.tile(x, this.tile.y).setBlock(titan, this.team, 0);
 	},
 
 	onRemoved() {
 		this.super$onRemoved();
-		const x = titanium.calcOffset(this.tile.x);
+		const x = titan.calcOffset(this.tile.x);
 
 		/* Prevent trying to delete the other half infinitely */
 		if (!lock) {
@@ -60,4 +60,4 @@ titanium.buildType = () => extendContent(Router.RouterBuild, titanium, {
 	}
 });
 
-module.exports = titanium;
+module.exports = titan;

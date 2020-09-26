@@ -144,6 +144,7 @@ phase = extendContent(Router, "phase-router", {
 
 phase.enableDrawStatus = false;
 
+// TODO: connected.js stuff
 phase.buildType = () => {
 	const ent = extendContent(Router.RouterBuild, phase, {
 		draw() {

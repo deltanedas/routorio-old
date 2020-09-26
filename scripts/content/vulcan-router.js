@@ -121,47 +121,43 @@ LogicIO.allStatements.add(extend(Prov, {
 		"vulcan",
 		"@output",
 		"side",
-		"@0"
+		"router1"
 	])
 }));
 
 spock = extendContent(Router, "vulcan-router", {
 });
 
-spock.buildType = () => {
-	const ent = extendContent(Router.RouterBuild, spock, {
-		getTileTarget(item, from, set) {
-			const dir = this._vars.output.val;
-			const tile = this.tile.getNearby(dir % 4);
-			if (!tile) return null;
-			return tile.bc().acceptItem(this, item) ? tile.bc() : null;
-		},
+spock.buildType = () => extendContent(Router.RouterBuild, spock, {
+	getTileTarget(item, from, set) {
+		const dir = this._vars.output.val;
+		const tile = this.tile.getNearby(dir % 4);
+		if (!tile) return null;
+		return tile.build.acceptItem(this, item) ? tile.build : null;
+	},
 
-		handleItem(source, item) {
-			this._vars.source = source;
-			this._vars.item = item;
-			this._vars.dir = source.tile.relativeTo(this.tile);
-		},
+	handleItem(source, item) {
+		this._vars.source = source;
+		this._vars.item = item;
+		this._vars.dir = source.tile.relativeTo(this.tile);
+	},
 
-		acceptItem(source, item) {
-			return this.power.status >= 1
-				&& this.code
-				&& this.team == source.team
-				&& this.items.total() == 0;
-		},
+	acceptItem(source, item) {
+		return this.power.status >= 1
+			&& this.code
+			&& this.team == source.team
+			&& this.items.total() == 0;
+	},
 
-		getVars() {return this._vars},
-		setVars(set) {this._vars = set}
-	});
+	getVars() {return this._vars},
+	setVars(set) {this._vars = set},
 
-	ent._vars = {
+	_vars: {
 		output: -1,
 		side: -1,
 		source: null,
 		item: null
-	};
-
-	return ent;
-};
+	}
+});
 
 module.exports = spock;

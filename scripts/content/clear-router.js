@@ -28,12 +28,12 @@ const clear = extendContent(Router, "clear-router", {
 	drawBase(tile){
 		const building = tile.bc();
 		Draw.rect(this.bottomRegion, tile.drawx(), tile.drawy());
-		if (building.items.total() != 0) {
-			Draw.rect(building.items.first().icon(Cicon.full), tile.drawx(), tile.drawy());
-		}
 		Draw.color(colour);
 		Draw.rect(this.topRegion, tile.drawx(), tile.drawy());
 		Draw.color();
+		if (building.items.total() != 0) {
+			Draw.rect(building.items.first().icon(Cicon.full), tile.drawx(), tile.drawy());
+		}
 	}
 });
 

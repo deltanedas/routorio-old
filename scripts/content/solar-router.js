@@ -42,28 +42,26 @@ solar.baseExplosiveness = 5;
 solar.generationType = BlockStat.basePowerGeneration;
 solar.powerGeneration = 1 / 6;
 
-solar.buildType = () => {
-	const ent = extendContent(Router.RouterBuild, solar, {
-		updateTile() {
-			this.super$updateTile();
-			this.progress = Math.max(this.progress - 0.003, 0);
-		},
+solar.buildType = () => extendContent(Router.RouterBuild, solar, {
+	updateTile() {
+		this.super$updateTile();
+		this.progress = Math.max(this.progress - 0.003, 0);
+	},
 
-		handleItem(source, item) {
-			this.super$handleItem(source, item);
-			this.progress = Math.min(this.progress + 0.1, 1);
-		},
+	handleItem(source, item) {
+		this.super$handleItem(source, item);
+		this.progress = Math.min(this.progress + 0.1, 1);
+	},
 
-		getPowerProduction() {
-			return solar.powerGeneration * this.efficiency();
-		},
+	getPowerProduction() {
+		return solar.powerGeneration * this.efficiency();
+	},
 
-		efficiency() {
-			return this.progress * solar.efficiency();
-		}
-	});
-	ent.progress = 0;
-	return ent;
-};
+	efficiency() {
+		return this.progress * solar.efficiency();
+	},
+
+	progress: 0
+});
 
 module.exports = solar;

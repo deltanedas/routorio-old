@@ -34,37 +34,35 @@ asm.breeds = [null, "alien", "surge",
 	"fusion", "inverted", "ubuntium",
 	"sexy", "clear"];
 
-asm.buildType = () => {
-	const ent = extendContent(PayloadAcceptor.PayloadAcceptorBuild, asm, {
-		updateTile() {
-			if (this.consValid() && !this.payload) {
-				this.progress += this.edelta();
-			}
+asm.buildType = () => extendContent(PayloadAcceptor.PayloadAcceptorBuild, asm, {
+	updateTile() {
+		if (this.consValid() && !this.payload) {
+			this.progress += this.edelta();
+		}
 
-			if (this.progress >= asm.craftTime) {
-				this.progress = 0;
-				this.payload = extend(Payload, Object.create(routoid));
-				this.payload.init(asm.breeds[Math.round(Mathf.random(asm.breeds.length))]);
-				this.payVector.setZero();
-				this.consume();
-			}
+		if (this.progress >= asm.craftTime) {
+			this.progress = 0;
+			this.payload = extend(Payload, Object.create(routoid));
+			this.payload.init(asm.breeds[Math.round(Mathf.random(asm.breeds.length))]);
+			this.payVector.setZero();
+			this.consume();
+		}
 
-			this.moveOutPayload();
-		},
+		this.moveOutPayload();
+	},
 
-		draw() {
-			Draw.rect(asm.region, this.x, this.y);
-			Draw.rect(asm.outRegion, this.x, this.y, this.rotation * 90);
-			this.drawPayload();
-			Draw.rect(asm.topRegion, this.x, this.y);
-		},
+	draw() {
+		Draw.rect(asm.region, this.x, this.y);
+		Draw.rect(asm.outRegion, this.x, this.y, this.rotation * 90);
+		this.drawPayload();
+		Draw.rect(asm.topRegion, this.x, this.y);
+	},
 
-		dumpPayload() {},
+	dumpPayload() {},
 
-		acceptPayload: (s, p) => false
-	});
-	ent.progress = 0;
-	return ent;
-};
+	acceptPayload: (s, p) => false,
+
+	progress: 0
+});
 
 module.exports = asm;

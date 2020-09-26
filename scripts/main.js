@@ -24,7 +24,6 @@ const add = names => {
 			this.global.routorio[name] = require("routorio/content/" + name);
 		} catch (e) {
 			Log.err("Failed to load routorio script @.js: @ (@:@)", name, e, e.fileName, e.lineNumber);
-			Log.err(Object.keys(e) + "");
 		}
 	}
 };

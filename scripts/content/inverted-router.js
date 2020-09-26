@@ -17,8 +17,8 @@
 
 const inverted = extendContent(Conveyor, "inverted-router", {
 	drawBase(tile) {
-		const building = tile.bc();
-		const rot = Time.time() * this.speed * 8 * building.timeScale;
+		const build = tile.build;
+		const rot = Time.time() * this.speed * 8 * build.timeScale;
 		// Instead of an animated texture, it rotates when active
 		Draw.rect(this.region, tile.drawx(), tile.drawy(), rot);
 	},
@@ -28,8 +28,8 @@ const inverted = extendContent(Conveyor, "inverted-router", {
 		Draw.rect(this.region, req.drawx(), req.drawy(), scl, scl);
 	},
 
-	icon(cicon) {
-		return Core.atlas.find(this.name);
+	icons() {
+		return [Core.atlas.find(this.name)];
 	}
 });
 
