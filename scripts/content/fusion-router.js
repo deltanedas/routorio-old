@@ -23,6 +23,8 @@
 
 var fusion, liquid;
 
+const dirs = require("routorio/lib/dirs");
+
 const FusionGraph = {
 	new(entity) {
 		const ret = Object.create(FusionGraph);
@@ -111,20 +113,6 @@ const FusionGraph = {
 	warmup: 0
 };
 
-const diags = [
-	[-1, 1],
-	[1, 1],
-	[1, -1],
-	[-1, -1]
-];
-
-const all = [
-	[-1, 1],  [0, 1],  [1, 1],
-	[-1, 0],           [1, 0],
-	[-1, -1], [0, -1], [1, -1]
-];
-
-const dirs = require("routorio/lib/dirs");
 const connected = require("routorio/lib/connected");
 
 fusion = connected.new(LiquidRouter, "fusion-router", {

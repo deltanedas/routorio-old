@@ -21,6 +21,8 @@
 
 var phase;
 
+const dirs = require("routorio/lib/dirs");
+
 const NetworkGraph = {
 	new(entity) {
 		const ret = Object.create(NetworkGraph);
@@ -106,20 +108,6 @@ const NetworkGraph = {
 	last: null
 };
 
-const diags = [
-	[-1, 1],
-	[1, 1],
-	[1, -1],
-	[-1, -1]
-];
-
-const all = [
-	[-1, 1],  [0, 1],  [1, 1],
-	[-1, 0],           [1, 0],
-	[-1, -1], [0, -1], [1, -1]
-];
-
-const dirs = require("routorio/lib/dirs");
 const connected = require("routorio/lib/connected");
 
 phase = connected.new(Router, "phase-router", {
