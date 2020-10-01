@@ -1,3 +1,4 @@
-module.exports = extendContent(UnitType, "sexy-router", {
-	constructor: () => new MechUnit()
-})
+const sexy = extendContent(UnitType, "sexy-router", {});
+sexy.constructor = () => new MechUnit();
+
+module.exports = sexy;
