@@ -21,13 +21,14 @@ const onScreen = pos => {
 	return viewport.overlaps(pos.x, pos.y, 16, 16);
 };
 
-// Similar to the chain blaster.
-const weapon = new Weapon();
-weapon.name = "chain-router";
-weapon.reload = 15;
-weapon.alternate = false;
-weapon.ejectEffect = Fx.coreLand;
-weapon.bullet = Bullets.standardCopper;
+// Similar to the chain blaster, except fires extra shots when chained.
+const weapon = new Weapon("chain-router");
+Object.assign(weapon, {
+	reload: 15,
+	alternate: false,
+	ejectEffect: Fx.coreLand,
+	bullet: Bullets.standardCopper
+});
 
 const routerpede = extendContent(UnitType, "routerpede", {
 	load() {
@@ -35,7 +36,10 @@ const routerpede = extendContent(UnitType, "routerpede", {
 		this.region = Core.atlas.find("router");
 		this.legRegion = Core.atlas.find(this.name + "-leg");
 		this.baseRegion = Core.atlas.find("clear");
-	}
+	},
+
+	speed: 0.7,
+	health: 170
 });
 
 routerpede.constructor = () => extend(MechUnit, {
@@ -69,12 +73,9 @@ routerpede.constructor = () => extend(MechUnit, {
 		// Lerping segments isn't in update because why would the server care
 		if (this.segments.length == 0) return;
 
-		const lerping = Mathf.dst(this.vel.x, this.vel.y) > 0.01;
-		this.updateseg(0, this, lerping);
-		if (this.segments.length > 0) {
-			for (var i = 1; i < this.segments.length; i++) {
-				this.updateseg(i, this.segments[i - 1], lerping);
-			}
+		this.updateseg(0, this);
+		for (var i = 1; i < this.segments.length; i++) {
+			this.updateseg(i, this.segments[i - 1]);
 		}
 	},
 
@@ -107,20 +108,21 @@ routerpede.constructor = () => extend(MechUnit, {
 		}
 	},
 
-	// Lerp and draw a segment
-	updateseg(i, to, lerping) {
+	// Drag and draw a segment
+	updateseg(i, to) {
 		const seg = this.segments[i];
 		// If not moving, dont lerp them
-		if (lerping) {
+		if (Mathf.dist(seg.x, seg.y, to.x, to.y) < Vars.tilesize) {
 			seg.rotation = Mathf.slerp(seg.rotation, to.rotation, 0.07);
+			seg.x = to.x - Angles.trnsx(seg.rotation, Vars.tilesize);
+			seg.y = to.y - Angles.trnsy(seg.rotation, Vars.tilesize);
 		}
-		seg.x = to.x - Angles.trnsx(seg.rotation, Vars.tilesize);
-		seg.y = to.y - Angles.trnsy(seg.rotation, Vars.tilesize);
 
 		if (!onScreen(seg)) return;
 
 		const old = {x: this.x, y: this.y, rotation: this.rotation};
 		Object.assign(this, seg);
+		// Draw legs and router individually vs draw() to avoid recursion
 		routerpede.drawMech(this);
 		Draw.rect(routerpede.region, this.x, this.y, this.rotation);
 		Object.assign(this, old);
@@ -158,12 +160,10 @@ routerpede.constructor = () => extend(MechUnit, {
 
 // 1 tile radius for absorbing other chain routers
 routerpede.chainRadius = Vars.tilesize;
-routerpede.speed = 0.7;
-routerpede.health = 170;
 routerpede.weapons.add(weapon);
 
 // Update viewport for rendering stuff
-Events.run(Trigger.update, () => {
+Events.run(Trigger.preDraw, () => {
 	Core.camera.bounds(viewport);
 });
 

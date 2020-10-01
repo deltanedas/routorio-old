@@ -39,7 +39,8 @@ add(["op-router", "double-router", "titanium-double-router",
 	"routoid-liquefactor", "sprouter", "rainbow-router"]);
 
 // Units
-add(["reverout", "routerpede", "router-chainer"]);
+add(["reverout", "routerpede", "sexy-router",
+	"router-chainer"]);
 
 // Misc
 add(["items"]);
