@@ -33,11 +33,14 @@ const chainer = extendContent(UnitFactory, "router-chainer", {
 	}
 });
 
+// TODO: Use reconstructor for sexy -> chain -> reverout?
 chainer.plans = [
 	new UnitPlan(this.global.routorio.routerpede, 60 * 20,
 		ItemStack.with(Items.copper, 30, Items.graphite, 12)),
 	new UnitPlan(this.global.routorio.reverout, 60 * 30,
-		ItemStack.with(Items.silicon, 12, Items.pyratite, 6))
+		ItemStack.with(Items.silicon, 12, Items.pyratite, 6)),
+	new UnitPlan(extendContent(UnitType, "sexy-router", {}), 60 * 5,
+		ItemStack.with(Items.silicon, 5, Items.copper, 6))
 ];
 
 chainer.buildType = () => ent = extendContent(UnitFactory.UnitFactoryBuild, chainer, {

@@ -1,8 +1,9 @@
 MSCH := pictoschem
 SCHEMATICS := $(XDG_DATA_HOME)/Mindustry/schematics
 # Android, Termux
+PACKAGE := io.anuke.mindustry.be
 ifeq ($(shell uname -o),Android)
-	SCHEMATICS := /sdcard/Android/data/io.anuke.mindustry.be/files/schematics
+	SCHEMATICS := /sdcard/Android/data/$(PACKAGE)/files/schematics
 endif
 
 # Exclude block portions, unit legs, etc
@@ -17,7 +18,7 @@ logic := vulcan-router
 
 blocks := $(dist:%=distribution/%) $(power:%=power/%)\
 	$(prod:%=production/%) $(logic:%=logic/%) \
-	units/router-house units/router-chainer
+	units/router-chainer
 
 units := reverout routerpede sexy-router
 
