@@ -43,7 +43,7 @@ chainer.plans = [
 		ItemStack.with(Items.silicon, 5, Items.copper, 6))
 ];
 
-chainer.buildType = () => ent = extendContent(UnitFactory.UnitFactoryBuild, chainer, {
+chainer.buildType = () => extendContent(UnitFactory.UnitFactoryBuild, chainer, {
 	draw() {
 		const dx = this.x, dy = this.y;
 		Draw.rect(chainer.region, dx, dy);
