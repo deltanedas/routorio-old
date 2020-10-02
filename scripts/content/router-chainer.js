@@ -66,7 +66,7 @@ chainer.buildType = () => extendContent(UnitFactory.UnitFactoryBuild, chainer, {
 					// imaginary = hide laser
 					x, y, dx, dy, Math.sqrt(Math.sin(angle / 50) / 5));
 				// Surge routers face the center when at max dist
-				Draw.rect(chainer.surge, x, y, Mathf.slerp(0, angle, this.dist / 24));
+				Draw.rect(chainer.surge, x, y, angle); //Mathf.slerp(0, angle,this.dist / 24));
 			} else {
 				Draw.rect(chainer.router, x, y);
 			}

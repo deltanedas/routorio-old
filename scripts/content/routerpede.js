@@ -111,12 +111,16 @@ routerpede.constructor = () => extend(MechUnit, {
 	// Drag and draw a segment
 	updateseg(i, to) {
 		const seg = this.segments[i];
-		// If not moving, dont lerp them
-		if (Mathf.dst(seg.x, seg.y, to.x, to.y) >= Vars.tilesize) {
+		const nextAngle = Angles.angle(seg.x, seg.y, to.x, to.y);
+		const nextDist = Mathf.dst(seg.x, seg.y, to.x, to.y);
+
+		// Lerp angle if moving fast
+		if (nextDist > Vars.tilesize) {
 			seg.rotation = Mathf.slerp(seg.rotation, to.rotation, 0.07);
-			seg.x = to.x - Angles.trnsx(seg.rotation, Vars.tilesize);
-			seg.y = to.y - Angles.trnsy(seg.rotation, Vars.tilesize);
 		}
+		const dist = Math.min(Vars.tilesize, nextDist);
+		seg.x = to.x + Angles.trnsx(seg.rotation, dist);
+		seg.y = to.y + Angles.trnsy(seg.rotation, dist);
 
 		if (!onScreen(seg)) return;
 
