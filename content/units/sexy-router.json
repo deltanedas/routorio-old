@@ -4,6 +4,5 @@
 	"drawCell": false,
 	"itemCapacity": 400,
 	"speed": 0.1,
-	"weapons": [],
 	"commandLimit": 512
 }

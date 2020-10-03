@@ -68,7 +68,6 @@ routerpede.constructor = () => extend(MechUnit, {
 
 	draw() {
 		var n = 0;
-		this.super$draw();
 
 		// Lerping segments isn't in update because why would the server care
 		if (this.segments.length == 0) return;
@@ -77,6 +76,8 @@ routerpede.constructor = () => extend(MechUnit, {
 		for (var i = 1; i < this.segments.length; i++) {
 			this.updateseg(i, this.segments[i - 1]);
 		}
+
+		this.super$draw();
 	},
 
 	damage(amount, withEffect) {
