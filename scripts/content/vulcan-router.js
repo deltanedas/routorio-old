@@ -137,6 +137,7 @@ spock.buildType = () => extendContent(Router.RouterBuild, spock, {
 	},
 
 	handleItem(source, item) {
+		this.super$handleItem(source, item);
 		this._vars.source = source;
 		this._vars.item = item;
 		this._vars.side = source.tile.relativeTo(this.tile);
