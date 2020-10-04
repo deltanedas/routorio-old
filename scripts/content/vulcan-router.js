@@ -54,8 +54,6 @@ const VulcanStatement = {
 	},
 
 	read(words) {
-		if (words.length < 3) throw "Invalid argument length";
-
 		this.key = words[1];
 		this.to = words[2];
 		this.from = words[3];
@@ -72,26 +70,31 @@ const VulcanStatement = {
 	},
 
 	buildt(table) {
-		const keyf = this.field(table, this.key, text => {this.key = text})
-			.padRight(0).get();
-		const b = table.button(Icon.pencilSmall, () => {
-			this.showSelectTable(b, (t, hide) => {
-				const list = new Table();
-				for (var i of vars) {
-					const name = "@" + i;
-					list.button(name == "@output" ? "[accent]" + name : name, () => {
-						this.key = name;
-						keyf.text = name;
-						hide.run();
-					}).size(240, 40).row();
-				}
+		const keyf = this.field(table, this.key, text => {
+			this.key = text;
+		}).padRight(0).get();
 
-				const stack = new Stack(list);
-				t.add(stack).colspan(3).expand().left();
-			});
-		}).size(40).padLeft(-1).get();
+		const b = new Button(Styles.logict);
+		b.image(Icon.pencilSmall);
+
+		b.clicked(() => this.showSelectTable(b, (t, hide) => {
+			const list = new Table();
+			for (var i of vars) {
+				const name = "@" + i;
+				list.button(i == "output" ? "[accent]" + name : name, () => {
+					this.key = name;
+					keyf.text = name;
+					hide.run();
+				}).size(240, 40).row();
+			}
+
+			t.add(list).width(240).left();
+		}));
+		table.add(b).size(40).padLeft(-1).color(table.color).get();
 
 		table.label(() => this.key == "@output" ? "=" : "->");
+
+		this.row(table);
 		this.field(table, this.to, text => {this.to = text});
 
 		table.add(" in ");
@@ -100,11 +103,11 @@ const VulcanStatement = {
 
 	write(builder) {
 		builder.append("vulcan ");
-		builder.append(this.key);
+		builder.append(this.key + "");
 		builder.append(" ");
-		builder.append(this.to);
+		builder.append(this.to + "");
 		builder.append(" ");
-		builder.append(this.from);
+		builder.append(this.from + "");
 	},
 
 	name: () => "Vulcan Router",
@@ -112,39 +115,35 @@ const VulcanStatement = {
 };
 
 /* Mimic @RegisterStatement */
-LAssembler.customParsers.put("vulcan", extend(Func, {
-	get: VulcanStatement.new
-}));
+LAssembler.customParsers.put("vulcan", func(VulcanStatement.new));
 
-LogicIO.allStatements.add(extend(Prov, {
-	get: () => VulcanStatement.new([
-		"vulcan",
-		"@output",
-		"side",
-		"router1"
-	])
-}));
+LogicIO.allStatements.add(prov(() => VulcanStatement.new([
+	"vulcan",
+	"@output",
+	"side",
+	"router1"
+])));
 
-spock = extendContent(Router, "vulcan-router", {
-});
+spock = extendContent(Router, "vulcan-router", {});
 
 spock.buildType = () => extendContent(Router.RouterBuild, spock, {
 	getTileTarget(item, from, set) {
-		const dir = this._vars.output.val;
-		const tile = this.tile.getNearby(dir % 4);
+		const dir = this._vars.output;
+		if (dir == -1) return null;
+		const tile = this.tile.getNearby(Mathf.mod(dir, 4));
 		if (!tile) return null;
+		this._vars.output = -1;
 		return tile.build.acceptItem(this, item) ? tile.build : null;
 	},
 
 	handleItem(source, item) {
 		this._vars.source = source;
 		this._vars.item = item;
-		this._vars.dir = source.tile.relativeTo(this.tile);
+		this._vars.side = source.tile.relativeTo(this.tile);
 	},
 
 	acceptItem(source, item) {
 		return this.power.status >= 1
-			&& this.code
 			&& this.team == source.team
 			&& this.items.total() == 0;
 	},

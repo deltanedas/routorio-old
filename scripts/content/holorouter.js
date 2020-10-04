@@ -15,8 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// FIXME: something changed and routorio instructions arent saved when reopening the processor
-
 var holo;
 
 const HoloI = {
@@ -32,7 +30,7 @@ const HoloI = {
 		}
 
 		const name = vm.obj(this.name);
-		if (!name) return;
+		if (!(name instanceof String)) return;
 
 		target.texture(name);
 	}
@@ -46,8 +44,6 @@ const HoloStatement = {
 	},
 
 	read(words) {
-		if (words.length < 2) throw "Invalid argument length";
-
 		this.target = words[1];
 		this.texture = words[2];
 	},
@@ -63,16 +59,16 @@ const HoloStatement = {
 	},
 
 	buildt(table) {
-		this.field(table, this.target, text => {this.building = text});
+		this.field(table, this.target, text => {this.target = text});
 		table.add(" -> ");
 		this.field(table, this.texture, text => {this.texture = text});
 	},
 
 	write(builder) {
 		builder.append("holorouter ");
-		builder.append(this.target);
+		builder.append(this.target + "");
 		builder.append(" ");
-		builder.append(this.texture);
+		builder.append(this.texture + "");
 	},
 
 	name: () => "Holorouter",
@@ -80,17 +76,13 @@ const HoloStatement = {
 };
 
 /* Mimic @RegisterStatement */
-LAssembler.customParsers.put("holorouter", extend(Func, {
-	get: HoloStatement.new
-}));
+LAssembler.customParsers.put("holorouter", func(HoloStatement.new));
 
-LogicIO.allStatements.add(extend(Prov, {
-	get: () => HoloStatement.new([
-		"holorouter",
-		"holorouter1",
-		'"god"'
-	])
-}));
+LogicIO.allStatements.add(prov(() => HoloStatement.new([
+	"holorouter",
+	"holorouter1",
+	'"god"'
+])));
 
 holo = extendContent(Router, "holorouter", {
 	load() {
