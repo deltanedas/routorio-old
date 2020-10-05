@@ -106,7 +106,7 @@ const rates = {
 	mod: {
 		apply: tile => adjacent(tile, block => block.id == mod.id),
 		bonuses: {
-			arc: 0.02,
+			arc: 0.05,
 			gen: 0.25
 		},
 		modifiers: {
@@ -134,14 +134,14 @@ arc = extendContent(Router, "arc-router", {
 			() => Core.bundle.format("stat.arc-chance",
 				Strings.fixed(entity._rates.arc * 100, 2)),
 			() => Pal.lancerLaser,
-			() => entity._rates.arc
+			() => entity._rates.arc / 0.2
 		));
 
 		this.bars.add("fuel-burnup", entity => new Bar(
 			() => Core.bundle.format("stat.fuel-burnup",
 				Math.round(entity._rates.burnup * 100)),
 			() => Items.surgealloy.color,
-			() => entity._rates.burnup
+			() => entity._rates.burnup / 0.31
 		));
 
 		// base
@@ -210,16 +210,16 @@ arc.buildType = () => extendContent(Router.RouterBuild, arc, {
 			var mul = rate.apply(this.tile);
 			if (mul == 0) continue;
 
-			// Do modifiers first to prevent absurd rates
-			if (rate.modifiers) {
-				for (var m in rate.modifiers) {
-					this.rates[m] *= Math.pow(rate.modifiers[m], mul);
-				}
-			}
-
+			// Add first then multiply so moderouters aren't useless
 			if (rate.bonuses) {
 				for (var b in rate.bonuses) {
 					this.rates[b] += rate.bonuses[b] * mul;
+				}
+			}
+
+			if (rate.modifiers) {
+				for (var m in rate.modifiers) {
+					this.rates[m] *= Math.pow(rate.modifiers[m], mul);
 				}
 			}
 		}
