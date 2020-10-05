@@ -20,9 +20,14 @@
 const directions = require("routorio/lib/dirs");
 
 const arcMultipliers = {
+	// Bad materials are nukes.
+	sand: () => 10,
+	coal: () => 8,
+
 	// Conductors increase arcs
 	lead: () => 2,
 	copper: () => 2,
+	scrap: () => 3,
 	"routorio-beryllium": () => 2,
 	titanium: () => 3,
 	silicon: () => 3,
