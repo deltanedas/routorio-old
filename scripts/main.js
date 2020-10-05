@@ -15,16 +15,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-this.global.routorio = {};
+const routorio = {
+	research(content, parname) {
+		const parent = TechTree.all.find(node => node.content == routorio[parname]);
+		const mynode = TechTree.create(parent.content, content);
+		mynode.parent = parent;
+	}
+};
+this.global.routorio = routorio;
 
 const add = names => {
 	for (var i in names) {
 		var name = names[i];
 		try {
-			this.global.routorio[name] = require("routorio/content/" + name);
+			routorio[name] = require("routorio/content/" + name);
 		} catch (e) {
 			Log.err("Failed to load routorio script @.js: @ (@#@)", name,
 				e, e.fileName, new java.lang.Integer(e.lineNumber));
+			routorio[name] = null;
 		}
 	}
 };
@@ -39,8 +47,8 @@ add(["op-router", "double-router", "titanium-double-router",
 	"routoid-liquefactor", "sprouter", "rainbow-router"]);
 
 // Units
-add(["reverout", "routerpede", "sexy-router",
-	"router-chainer"]);
+add(["router-chainer", "sexy-router",
+	"routerpede", "reverout"]);
 
 // Misc
 add(["items"]);

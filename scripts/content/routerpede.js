@@ -15,6 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+const routorio = this.global.routorio;
 const viewport = new Rect();
 
 const onScreen = pos => {
@@ -31,12 +32,21 @@ Object.assign(weapon, {
 });
 
 const routerpede = extendContent(UnitType, "routerpede", {
+	init() {
+		this.super$init();
+		routorio.research(this, "sexy-router");
+	},
+
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find("router");
 		this.legRegion = Core.atlas.find(this.name + "-leg");
 		this.baseRegion = Core.atlas.find("clear");
 	},
+
+	researchRequirements: () => ItemStack.with(
+		Items.copper, 3000,
+		Items.graphite, 4000),
 
 	speed: 0.7,
 	health: 170

@@ -7,7 +7,6 @@
 		"titanium/15"
 		"silicon/15"
 	],
-	"buildCostMultiplier": 8,
 	"health": 130,
 	"sync": true,
 	"hasPower": true,

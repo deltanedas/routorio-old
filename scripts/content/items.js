@@ -3,9 +3,7 @@ const routorio = this.global.routorio;
 const beryllium = extendContent(Item, "beryllium", {
 	init() {
 		this.super$init();
-		const parent = TechTree.all.find(node => node.content == routorio["ubuntium-router"]);
-		const mynode = TechTree.create(parent.content, this);
-		mynode.parent = parent;
+		routorio.research(this, "ubuntium-router");
 	},
 
 	researchRequirements: () => ItemStack.with(

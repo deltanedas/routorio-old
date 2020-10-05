@@ -34,11 +34,9 @@ const arcMultipliers = {
 const arcMultiplier = item => {
 	var mul = arcMultipliers[item.name];
 	if (mul === undefined) {
-		mul = 1;
-	} else {
-		mul = mul();
+		return 1;
 	}
-	return mul;
+	return mul();
 };
 
 const adjacent = (tile, valid) => {

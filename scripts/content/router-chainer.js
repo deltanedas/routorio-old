@@ -18,8 +18,24 @@
 /* Factory for routorio's units */
 
 const UnitPlan = UnitFactory.UnitPlan;
+const routorio = this.global.routorio;
 
 const chainer = extendContent(UnitFactory, "router-chainer", {
+	init() {
+		this.super$init();
+
+		// TODO: Use reconstructor for sexy -> chain -> reverout?
+		// TODO: balance unit costs in respect to dagger -> crawler -> azimuth
+		chainer.plans = [
+			new UnitPlan(routorio["sexy-router"], 60 * 5,
+				ItemStack.with(Items.silicon, 5, Items.copper, 6)),
+			new UnitPlan(routorio.routerpede, 60 * 20,
+				ItemStack.with(Items.silicon, 30, Items.graphite, 80)),
+			new UnitPlan(routorio.reverout, 60 * 30,
+				ItemStack.with(Items.silicon, 120, Items.titanium, 70, Items.graphite, 160))
+		];
+	},
+
 	load() {
 		this.super$load();
 		this.topRegion = this.outRegion = this.outRegion = Core.atlas.find("clear");
@@ -32,16 +48,6 @@ const chainer = extendContent(UnitFactory, "router-chainer", {
 		this.laserEnd = Core.atlas.find("laser-end");
 	}
 });
-
-// TODO: Use reconstructor for sexy -> chain -> reverout?
-chainer.plans = [
-	new UnitPlan(this.global.routorio.routerpede, 60 * 20,
-		ItemStack.with(Items.copper, 30, Items.graphite, 12)),
-	new UnitPlan(this.global.routorio.reverout, 60 * 30,
-		ItemStack.with(Items.silicon, 12, Items.pyratite, 6)),
-	new UnitPlan(this.global.routorio["sexy-router"], 60 * 5,
-		ItemStack.with(Items.silicon, 5, Items.copper, 6))
-];
 
 chainer.buildType = () => extendContent(UnitFactory.UnitFactoryBuild, chainer, {
 	draw() {

@@ -15,6 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+const routorio = this.global.routorio;
 const offset = 1.6 * Vars.tilesize;
 
 const dist = Math.sqrt(2 * offset * offset)
@@ -27,11 +28,21 @@ const rotors = [
 ];
 
 const reverout = extendContent(UnitType, "reverout", {
+	init() {
+		this.super$init();
+		routorio.research(this, "routerpede");
+	},
+
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find(this.name);
 		this.rotor = Core.atlas.find("router");
-	}
+	},
+
+	researchRequirements: () => ItemStack.with(
+		Items.titanium, 7000,
+		Items.silicon, 5000,
+		Items.graphite, 3000)
 });
 
 reverout.constructor = () => extend(BuilderMinerUnit, {
