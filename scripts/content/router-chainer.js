@@ -26,14 +26,13 @@ const chainer = extendContent(UnitFactory, "router-chainer", {
 
 		// TODO: Use reconstructor for sexy -> chain -> reverout?
 		// TODO: balance unit costs in respect to dagger -> crawler -> azimuth
-		chainer.plans = [
+		chainer.plans = Seq.with(
 			new UnitPlan(routorio["sexy-router"], 60 * 5,
 				ItemStack.with(Items.silicon, 5, Items.copper, 6)),
 			new UnitPlan(routorio.routerpede, 60 * 20,
 				ItemStack.with(Items.silicon, 30, Items.graphite, 80)),
 			new UnitPlan(routorio.reverout, 60 * 30,
-				ItemStack.with(Items.silicon, 120, Items.titanium, 70, Items.graphite, 160))
-		];
+				ItemStack.with(Items.silicon, 120, Items.titanium, 70, Items.graphite, 160)));
 	},
 
 	load() {

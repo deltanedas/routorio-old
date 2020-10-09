@@ -236,7 +236,7 @@ arc.buildType = () => extendContent(Router.RouterBuild, arc, {
 
 	onProximityUpdate() {
 		this.super$onProximityUpdate();
-		this.calculateRates();
+		if (!Vars.state.editor) this.calculateRates();
 	},
 
 	onDestroyed() {

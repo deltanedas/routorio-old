@@ -1,0 +1,9 @@
+{
+	"category": "distribution",
+	"research": "clear-router",
+	"requirements": [
+		"copper/6",
+		"metaglass/10",
+		"lead/4"
+	]
+}

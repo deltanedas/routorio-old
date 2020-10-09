@@ -2,5 +2,13 @@
 	"color": "#6e7080",
 	"heatCapacity": 0.1,
 	"temperature": 1.1,
-	"viscosity": 1
+	"viscosity": 1,
+	"research": {
+		"parent": "routoid-assembler",
+		"requirements": [
+			"copper/11000",
+			"silicon/5000",
+			"beryllium/8001"
+		]
+	}
 }

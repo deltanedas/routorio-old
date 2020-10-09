@@ -18,8 +18,7 @@
 const routorio = {
 	research(content, parname) {
 		const parent = TechTree.all.find(node => node.content == routorio[parname]);
-		const mynode = TechTree.create(parent.content, content);
-		mynode.parent = parent;
+		new TechTree.TechNode(parent, content, content.researchRequirements());
 	}
 };
 this.global.routorio = routorio;
@@ -44,7 +43,8 @@ add(["op-router", "double-router", "titanium-double-router",
 	"electric-router", "surge-router", "solar-router",
 	"alien-router", "arc-router", "vulcan-router",
 	"fusion-router", "holorouter", "routoid-assembler",
-	"routoid-liquefactor", "sprouter", "rainbow-router"]);
+	"routoid-liquefactor", "sprouter", "rainbow-router",
+	"routergeist"]);
 
 // Units
 add(["router-chainer", "sexy-router",
