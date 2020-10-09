@@ -1,0 +1,12 @@
+{
+	"research": {
+		"parent": "ubuntium-router",
+		"requirements": [
+			"copper/10000",
+			"graphite/7000",
+			"titanium/4500",
+			"silicon/3000"
+		]
+	},
+	"color": "#c3d6c7"
+}
