@@ -18,10 +18,10 @@
 try {
 	const rtfm = require("rtfm/library");
 
-	rtfm.addSection("Routorio", {
-		"Arc Reoucter": null,
-		"$block.routorio-electric-router.name": null
-	});
+	rtfm.addSection("Routorio", [
+		"Arc Reoucter",
+		"$block.routorio-electric-router.name"
+	]);
 
 	module.exports = true;
 } catch (e) {
