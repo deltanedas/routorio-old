@@ -62,7 +62,7 @@ melter.buildType = () => extendContent(PayloadAcceptor.PayloadAcceptorBuild, mel
 
 	valid() {
 		return this.consValid() && this.progress > 0.1
-			&& this.liquids.get(melter.liquid) <= melter.liquidCapacity;
+			&& this.liquids.get(melter.liquid) < melter.liquidCapacity;
 	},
 
 	progress: 0
