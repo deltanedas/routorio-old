@@ -1,0 +1,14 @@
+{
+	"health": 300,
+	"category": "distribution",
+	"research": "payload-conveyor",
+	"requirements": [
+		"titanium/25",
+		"plastanium/15",
+		"metaglass/10"
+	],
+
+	"canOverdrive": false,
+	"moveTime": 15,
+	"moveForce": 800
+}

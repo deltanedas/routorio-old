@@ -1,0 +1,10 @@
+{
+	"category": "distribution",
+	"research": "double-router",
+	"requirements": [
+		"copper/5",
+		"lead/3"
+	],
+
+	"rotate": true
+}

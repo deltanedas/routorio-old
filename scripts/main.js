@@ -44,7 +44,7 @@ add(["op-router", "double-router", "titanium-double-router",
 	"alien-router", "arc-router", "vulcan-router",
 	"fusion-router", "holorouter", "routoid-assembler",
 	"routoid-liquefactor", "sprouter", "rainbow-router",
-	"routergeist"]);
+	"routergeist", "lobotorout", "payload-conduit"]);
 
 // Units
 add(["router-chainer", "sexy-router",
