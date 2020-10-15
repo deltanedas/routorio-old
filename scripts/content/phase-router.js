@@ -116,9 +116,7 @@ phase = connected.new(Router, "phase-router", {
 
 		// Center dot
 		this.region = Core.atlas.find(this.name + "-base");
-	},
-
-	enableDrawStatus: false
+	}
 }, {
 	draw() {
 		if (this.power.status < 1) {

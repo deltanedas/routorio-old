@@ -1,5 +1,4 @@
-const routorio = this.global.routorio;
-
 module.exports = {
-	beryllium: new Item("beryllium")
+	beryllium: new Item("beryllium"),
+	neutron: new Item("neutron-router")
 };

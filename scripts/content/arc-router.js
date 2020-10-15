@@ -21,6 +21,7 @@ const directions = require("routorio/lib/dirs");
 
 const arcMultipliers = {
 	// Bad materials are nukes.
+	"routorio-neutron-router": () => 1000,
 	sand: () => 10,
 	coal: () => 8,
 
@@ -80,21 +81,22 @@ const rates = {
 			burnup: 1.2
 		}
 	},
-	// increase arcing and power dramatically
-	surge: {
-		apply: tile => adjacent(tile,
-			block => block.id == this.global.routorio["surge-router"].id
-				|| block.lightningChance),
+	// bonuses applied for adjacent Moderouters
+	mod: {
+		apply: tile => adjacent(tile, block => block.id == mod.id),
 		bonuses: {
-			gen: 2
+			arc: 0.05,
+			gen: 0.25
 		},
 		modifiers: {
-			arc: 1.6
+			gen: 1.4
 		}
 	},
+
+	/* Special walls */
 	// decrease arcing
 	plast: {
-		apply: tile => adjacent(tile, block => block.insulated),
+		apply: tile => adjacent(tile, block => block.insulated && block instanceof Wall),
 		bonuses: {
 			arc: -0.02
 		}
@@ -107,15 +109,39 @@ const rates = {
 			burnup: 0.5
 		}
 	},
-	// bonuses applied for adjacent Moderouters
-	mod: {
-		apply: tile => adjacent(tile, block => block.id == mod.id),
+
+	/* Metal walls */
+	// copper walls are decent conductors
+	copper: {
+		apply: tile => adjacent(tile, block => block.name.endsWith("copper-wall")),
 		bonuses: {
-			arc: 0.05,
-			gen: 0.25
+			gen: 0.4
 		},
 		modifiers: {
-			gen: 1.4
+			burnup: 1.2
+		}
+	},
+	// titanium walls are better conductors but are more dangerous
+	titan: {
+		apply: tile => adjacent(tile, block => block.name.endsWith("titanium-wall")),
+		bonuses: {
+			arc: 0.08,
+			gen: 0.6
+		},
+		modifiers: {
+			burnup: 1.1
+		}
+	},
+	// surge is an excellent conductor, increase arcing and power dramatically
+	surge: {
+		apply: tile => adjacent(tile,
+			block => block.id == this.global.routorio["surge-router"].id
+				|| block.lightningChance > 0),
+		bonuses: {
+			gen: 2
+		},
+		modifiers: {
+			arc: 1.6
 		}
 	}
 };
@@ -139,7 +165,7 @@ arc = extendContent(Router, "arc-router", {
 			() => Core.bundle.format("stat.arc-chance",
 				Strings.fixed(entity._rates.arc * 100, 2)),
 			() => Pal.lancerLaser,
-			() => entity._rates.arc / 0.2
+			() => entity._rates.arc / 0.35
 		));
 
 		this.bars.add("fuel-burnup", entity => new Bar(
@@ -177,7 +203,7 @@ arc.buildType = () => extendContent(Router.RouterBuild, arc, {
 		const rates = this.rates;
 		var consumed = false;
 
-		if (Mathf.chance(rates.arc) * arcMultiplier(item)) {
+		if (Mathf.chance(rates.arc * arcMultiplier(item))) {
 			this.arc(item);
 		}
 		if (Mathf.chance(rates.burnup)) {
@@ -206,7 +232,6 @@ arc.buildType = () => extendContent(Router.RouterBuild, arc, {
 		});
 	},
 
-	// FIXME: certain placement orders have weird rates
 	calculateRates() {
 		Object.assign(this.rates, rates.base.bonuses);
 

@@ -8,11 +8,12 @@
 		"phase-fabric/8"
 	],
 
+	"enableDrawStatus": false,
 	"itemCapacity": 0,
 	"instantTransfer": true,
 	"hasPower": true,
 	"outputsPower": true,
 	"consumes": {
-		"power": 0.5,
+		"power": 0.5
 	}
 }

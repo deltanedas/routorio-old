@@ -9,12 +9,19 @@
 		"phase-fabric/80"
 	],
 
-	"buildVisibility": "hidden",
-
+	"hasShadow": false,
+	"unloadable": false,
+	"noUpdateDisabled": true,
+	"hasItems": true,
+	"itemCapacity": 1
 	"liquidCapacity": 15,
 	"hasPower": true,
 	"outputsPower": true,
 	"consumes": {
-		"power": 6
+		"power": 6,
+		"liquid": {
+			"liquid": "liquid-router",
+			"amount": 0.0166666667
+		}
 	}
 }

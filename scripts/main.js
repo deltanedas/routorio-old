@@ -36,6 +36,8 @@ const add = names => {
 	}
 };
 
+add(["items"]);
+
 // Blocks
 add(["op-router", "double-router", "titanium-double-router",
 	"inverted-router", "clear-router", "explosive-router",
@@ -51,5 +53,4 @@ add(["router-chainer", "sexy-router",
 	"routerpede", "reverout"]);
 
 // Misc
-add(["items"]);
 require("routorio/manual");

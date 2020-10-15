@@ -35,14 +35,16 @@ const FusionGraph = {
 		return ret;
 	},
 
-	addReoucter(reoucter) {
-		const routers = reoucter.routers.asArray();
+	addNetwork(network) {
+		const routers = network.routers.asArray();
 		for (var i = 0; i < routers.size; i++) {
 			this.routers.add(routers.get(i));
-			routers.get(i).reoucter = this;
+			routers.get(i).network = this;
 		}
 
-		this.warmup = (this.warmup + reoucter.warmup) / 2;
+		print("add: warmup " + this.warmup + " / " + network.warmup);
+		this.warmup = (this.warmup + network.warmup) / 2;
+		print("add: warmup " + this.warmup);
 	},
 
 	refresh() {
@@ -50,7 +52,7 @@ const FusionGraph = {
 		for (var i = 0; i < routers.size; i++) {
 			var ent = routers.get(i);
 			if (ent.block == fusion) {
-				ent.reoucter = null;
+				ent.network = null;
 			}
 		}
 
@@ -68,23 +70,25 @@ const FusionGraph = {
 			if (tile.block() == fusion) {
 				var ent = tile.bc();
 				if (this.routers.add(ent)) {
-					if (ent.reoucter) {
-						if (ent.reoucter == this) return;
-						this.addReoucter(ent.reoucter);
+					if (ent.network) {
+						if (ent.network == this) return;
+						this.addNetwork(ent.network);
 					}
-					ent.reoucter = this;
+					ent.network = this;
 					this.rebuild(ent);
 				}
 			}
 		}
 	},
 
-	rebuildPorts() {
+	rebuildOutputs() {
 		const routers = this.routers.asArray();
 
-		var last;
+		var last, indices = 0;
 		for (var i = 0; i < routers.size; i++) {
 			var router = routers.get(i);
+			// FIXME: have this iterate in a defined order
+			router.index = indices++;
 			for (var o in router.outputs) {
 				var node = {
 					port: port,
@@ -114,6 +118,8 @@ const FusionGraph = {
 };
 
 const connected = require("routorio/lib/connected");
+const surge = this.global.routorio["surge-router"];
+const neut = this.global.routorio.items.neutron;
 
 fusion = connected.new(LiquidRouter, "fusion-router", {
 	init() {
@@ -150,11 +156,20 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 		this.bars.add("warmup", ent => ent.warmupBar());
 	},
 
-
 	enableDrawStatus: false,
 	powerGeneration: 50,
-	heatRate: 0.0001,
-	coolRate: -0.0002,
+	heatRate: 0.00005,
+	coolRate: -0.00002,
+	shake: 0.5,
+	// 2 mins per router for a neutron router
+	fuseTime: 120 * 60,
+	// 1 min for a blocked fusion router to blow
+	meltdownTime: 180 * 60,
+	// Make room for plasma
+	explosionRadius: 5,
+	explosionDamage: 4000,
+	// 40% of every air tile in the blast radius is ignited
+	plasmaChance: 0.4,
 
 	plasma1: Color.valueOf("#f19a37"),
 	plasma2: Color.valueOf("#b24de7")
@@ -162,9 +177,29 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	updateTile() {
 		this.super$updateTile();
 		if (this.warmup() > 0.001 && this.warmup() < 0.9) {
-			this.reoucter.warmup = Math.max(this.warmup() + fusion.coolRate, 0);
+			this.network.warmup = Math.max(this.warmup() + fusion.coolRate, 0);
 		}
 		this.heat = Mathf.clamp(this.heat + (this.valid() ? fusion.heatRate : fusion.coolRate));
+
+		if (this.heat >= 0.2) {
+			this.fuseTime += this.delta() * this.heat;
+			// Blocking output will violently shake the screen as a warning
+			Effect.shake(fusion.shake * this.fuseTime / fusion.fuseTime, fusion.shake, this);
+			if (this.items.total() == 0) {
+				if (this.fuseTime >= fusion.fuseTime) {
+					this.items.add(neut, 1);
+					this.fuseTime = 0;
+				}
+			} else if (this.fuseTime >= fusion.meltdownTime) {
+				this.meltdown();
+			}
+		}
+
+		if (!this.lastItem && this.items.any()) {
+			this.lastItem = this.items.first();
+		}
+
+		this.dumpNet();
 	},
 
 	draw() {
@@ -178,18 +213,47 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	},
 
 	drawLiquid() {
-		Draw.color(liquid.color, fusion.plasma2, this.warmup * Math.sin(Time.time() / 100));
-		Draw.alpha(this.liquids.total() / fusion.liquidCapacity);
+		Draw.color(liquid.color, fusion.plasma2, this.warmup * this.heat * Mathf.absin(Time.time() / 100, 0.9, 1));
+		var alpha = 0.9 * this.liquids.total() / fusion.liquidCapacity;
+		alpha += Math.sin(0.1 * Time.time() * Math.pow(this.heat + 2, this.heat + 1) + this.index) / 5;
+		Draw.alpha(alpha);
 		Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
 		Draw.reset();
+	},
+
+	meltdown() {
+		Effect.shake(40, 5, this);
+		this.kill();
+	},
+
+	onDestroyed() {
+		this.super$onDestroyed();
+
+		Sounds.explosionbig.at(this.tile);
+		if (this.heat < 0.5 || !Vars.state.rules.reactorExplosions) {
+			return;
+		}
+
+		// 4-8 shockwaves centered around the reactor
+		const max = 8 * this.heat;
+		for (var i = 0; i < max; i++) {
+			const x = this.x + Angles.trnsx(360 * i / max, 20);
+			const y = this.y + Angles.trnsy(360 * i / max, 20);
+			Fx.nuclearShockwave.at(x, y);
+		}
+
+		Damage.damage(this.x, this.y, fusion.explosionRadius * Vars.tilesize,
+			fusion.explosionDamage * 4);
+
+		// TODO: plasma routers
 	},
 
 	onRemoved() {
 		this.super$onRemoved();
 
-		const reoucter = this.reoucter;
+		const network = this.network;
 		Core.app.post(() => {
-			if (reoucter) reoucter.refresh();
+			if (network) network.refresh();
 
 			// Server doesn't care about drawing, stop
 			if (!Vars.ui) return;
@@ -197,9 +261,33 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 		});
 	},
 
-	acceptLiquid(source, type, amount) {
-		return type == liquid
-			&& ((this.liquids.total() + amount) < fusion.liquidCapacity);
+	acceptLiquid(source, type) {
+		return type == liquid && (this.liquids.total() < fusion.liquidCapacity);
+	},
+
+	acceptStack: () => 0,
+	acceptItem: () => false,
+
+	// Searches reactor outputs instead of prox
+	dumpNet() {
+		if (!this.network.last || this.items.total == 0) return;
+
+		const network = this.network;
+		var ended = false;
+		var node = network.last;
+		while (!ended) {
+			var output = node.to, source = node.from;
+			node = node.next;
+print("Try "+ output)
+			if (output.acceptItem(source, neut)) {
+print("yes")
+				network.last = node;
+				output.handleItem(source, neut);
+				this.items.take();
+				return;
+			}
+			ended = node == network.end;
+		}
 	},
 
 	canDumpLiquid: (to, l) => to.block == fusion,
@@ -207,18 +295,24 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	/* Check for lightning to ignite */
 	collision(b) {
 		if (b.type.status == StatusEffects.shocked) {
-			const mul = this.liquids.total() / fusion.liquidCapacity;
-			this.reoucter.warmup = Math.min(this.warmup() + mul * (b.damage / 250), 1);
+			const mul = this.power.status * this.liquids.total() / fusion.liquidCapacity;
+			this.network.warmup = Math.min(this.warmup() + mul * (b.damage / 250), 1);
+			if (this.warmup == 1) {
+				// Convert excess warmup into heat, falls off
+				this.heat = Math.min(this.heat + mul * (b.damage / this.heat), 1);
+			}
+
 			// More surge routers = less damage
 			b.damage *= this.magnets / 8;
 		}
 		return this.super$collision(b);
 	},
 
+	// FIXME: this is ran 6 times for a block place
 	onProximityUpdate() {
 		this.super$onProximityUpdate();
 
-		const reoucter = this.reoucter;
+		const network = this.network;
 		const prox = this.proximity;
 		// Remove potentially broken tiles
 		this.outputs = [];
@@ -228,46 +322,56 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 		for (var i = 0; i < prox.size; i++) {
 			var near = prox.get(i);
 			if (near.block.hasItems && near.block != fusion) {
-				if (near.block.id == this.global.routorio["surge-router"].id) {
+				print("Potential output " + near.tile)
+				if (near.block.id == surge.id) {
 					this.magnets++;
-				} else {
-					this.outputs.push(near);
 				}
+				this.outputs.push(near);
 			}
 		}
 
 		// Very slow
-		if (reoucter) reoucter.rebuildOutputs();
+		if (network) network.rebuildOutputs();
 	},
 
-	// TODO: save reoucters
 	read(read, version) {
 		this.super$read(read, version);
 
 		this.blendBits = read.s();
-		if (version == 0) {
-			this.reoucter = FusionGraph.new(this);
-			this.reoucter.warmup = read.b() / 255;
+		if (version != 1) {
+			this.network.warmup = read.b() / 128;
+			print("read: warmup " + this.network.warmup);
 		}
-		this.heat = read.b() / 255;
-		this.reoucter = mapReoucters[read.s()];
+		this.heat = read.b() / 128;
+		if (version == 1) read.s();
+		if (version > 2) {
+			this.fuseTime = read.f();
+		}
+
+		// (Slowly) remerge every network
+		Core.app.post(() => {
+			this.network.refresh();
+		});
 	},
 
 	write(write) {
 		this.super$write(write);
 		write.s(this.blendBits);
-		write.b(this.heat * 255);
-		write.s(this.reoucter.id);
+		// Heat is averaged between networks
+		write.b(this.network.warmup * 128);
+		print("write: warmup " + this.network.warmup);
+		write.b(this.heat * 128);
+		write.f(this.fuseTime);
 	},
 
-	version: () => 1,
+	version: () => 3,
 
 	getPowerProduction() {
 		return this.heat * fusion.powerGeneration;
 	},
 
 	warmup() {
-		return this.reoucter.warmup
+		return this.network.warmup
 	},
 
 	powerBar() {
@@ -291,12 +395,23 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 			&& this.power.status > 0.9;
 	},
 
-	/* Public fields */
-	getReoucter() { return this._reoucter; },
-	setReoucter(set) { this._reoucter = set; },
+	created() {
+		this.super$created();
+		if (!this.network) {
+			this.network = FusionGraph.new(this);
+		}
+	},
 
-	_reoucter: null,
-	heat: 0
+	/* Public fields */
+	getNetwork() { return this._network; },
+	setNetwork(set) { this._network = set; },
+	getIndex() { return this._index; },
+	setIndex(set) { this._index = set; },
+
+	_network: null,
+	heat: 0,
+	_index: 0,
+	fuseTime: 0
 });
 
 module.exports = fusion;
