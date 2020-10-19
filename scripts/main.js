@@ -53,4 +53,5 @@ add(["router-chainer", "sexy-router",
 	"routerpede", "reverout"]);
 
 // Misc
+add(["orbital-ion-router"]);
 require("routorio/manual");
