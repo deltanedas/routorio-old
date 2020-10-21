@@ -27,7 +27,7 @@ explode.buildType = () => extendContent(Router.RouterBuild, explode, {
 		this.super$onProximityUpdate();
 
 		for (var i in dirs) {
-			var near = this.tile.getNearby(i);
+			var near = this.tile.nearby(i);
 			if (near && near.block() instanceof Router) {
 				this.snekDetected();
 				// Prevent stack overflow from explosive routers exploding

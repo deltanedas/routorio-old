@@ -48,7 +48,7 @@ const arcMultiplier = item => {
 const adjacent = (tile, valid) => {
 	var adj = 0;
 	for (var i in directions) {
-		var near = tile.getNearby(i);
+		var near = tile.nearby(i);
 		if (!near) continue;
 		if (valid(near.block())) adj++;
 	}

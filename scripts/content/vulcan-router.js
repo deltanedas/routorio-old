@@ -130,7 +130,7 @@ spock.buildType = () => extendContent(Router.RouterBuild, spock, {
 	getTileTarget(item, from, set) {
 		const dir = this._vars.output;
 		if (dir == -1) return null;
-		const tile = this.tile.getNearby(Mathf.mod(dir, 4));
+		const tile = this.tile.nearby(Mathf.mod(dir, 4));
 		if (!tile || !tile.build) return null;
 		this._vars.output = -1;
 		return tile.build.acceptItem(this, item) ? tile.build : null;

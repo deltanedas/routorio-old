@@ -36,7 +36,7 @@ alien.buildType = () => extendContent(Router.RouterBuild, alien, {
 		for (var i in dirs) {
 			var dir = Math.round(Mathf.random(0, 3));
 
-			var other = this.tile.getNearby(dir);
+			var other = this.tile.nearby(dir);
 			if (!other) continue;
 
 			if (other.block() == Blocks.air ||

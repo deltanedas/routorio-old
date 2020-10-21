@@ -58,7 +58,7 @@ const NetworkGraph = {
 
 	rebuild(root) {
 		for (var i in dirs) {
-			var tile = root.tile.getNearby(i);
+			var tile = root.tile.nearby(i);
 			if (!tile) return;
 
 			if (tile.block() == phase) {

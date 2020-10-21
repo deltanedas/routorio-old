@@ -12,7 +12,7 @@ spook.buildType = () => new JavaAdapter(Router.RouterBuild, ControlBlock, {
 		const rot = Math.floor(Mathf.angle(this.player.aimX() - this.x,
 			this.player.aimY() - this.y) / 90);
 		if (set) this.rotation = rot;
-		const other = this.tile.getNearbyEntity(rot);
+		const other = this.tile.nearbyEntity(rot);
 		return (other != null && other.acceptItem(this, item)) ? other : null;
 	},
 
