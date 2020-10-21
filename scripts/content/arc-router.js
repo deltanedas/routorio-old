@@ -153,7 +153,14 @@ mod = new Router("moderouter");
 arc = extendContent(Router, "arc-router", {
 	setStats() {
 		this.super$setStats();
+		// base
+		this.stats.add(Stat.basePowerGeneration, rates.base.bonuses.gen * 60, StatUnit.powerSecond);
+		this.stats.add(Stat.powerDamage, Core.bundle.get("stat.arc-chance"), rates.base.bonuses.arc * 100);
+		this.stats.add(Stat.input, Core.bundle.get("stat.fuel-burnup"), rates.base.bonuses.burnup * 100);
+	},
 
+	setBars() {
+		this.super$setBars();
 		this.bars.add("power", entity => new Bar(
 			() => Core.bundle.format("bar.poweroutput",
 				Strings.fixed(entity.powerProduction * entity.timeScale * 60, 1)),
@@ -174,11 +181,6 @@ arc = extendContent(Router, "arc-router", {
 			() => Items.surgealloy.color,
 			() => entity._rates.burnup / 0.31
 		));
-
-		// base
-		this.stats.add(BlockStat.basePowerGeneration, rates.base.bonuses.gen * 60, StatUnit.powerSecond);
-		this.stats.add(BlockStat.powerDamage, Core.bundle.get("stat.arc-chance"), rates.base.bonuses.arc * 100);
-		this.stats.add(BlockStat.input, Core.bundle.get("stat.fuel-burnup"), rates.base.bonuses.burnup * 100);
 	}
 });
 

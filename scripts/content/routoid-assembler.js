@@ -20,7 +20,7 @@ const routoid = require("routorio/lib/routoid");
 const asm = extendContent(PayloadAcceptor, "routoid-assembler", {
 	setStats() {
 		this.super$setStats();
-		this.stats.add(BlockStat.productionTime, this.craftTime / 60, StatUnit.seconds);
+		this.stats.add(Stat.productionTime, this.craftTime / 60, StatUnit.seconds);
 	},
 
 	outputsItems: () => false,

@@ -18,15 +18,17 @@
 const solar = extendContent(Router, "solar-router", {
 	setStats() {
 		this.super$setStats();
+		this.stats.add(this.generationType, this.powerGeneration * 60, StatUnit.powerSecond);
+	},
 
+	setBars() {
+		this.super$setBars();
 		this.bars.add("power", entity => new Bar(
 			() => Core.bundle.format("bar.poweroutput",
 				Strings.fixed(entity.powerProduction * 60 * entity.timeScale, 1)),
 			() => Pal.powerBar,
 			() => entity.efficiency()
 		));
-
-		this.stats.add(this.generationType, this.powerGeneration * 60, StatUnit.powerSecond);
 	},
 
 	efficiency() {

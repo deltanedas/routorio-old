@@ -150,8 +150,8 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 		return [Core.atlas.find(this.name)]
 	},
 
-	setStats() {
-		this.super$setStats();
+	setBars() {
+		this.super$setBars();
 		this.bars.add("poweroutput", ent => ent.powerBar());
 		this.bars.add("warmup", ent => ent.warmupBar());
 	},

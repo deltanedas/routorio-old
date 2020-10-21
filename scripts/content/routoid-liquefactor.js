@@ -23,8 +23,8 @@ const melter = extendContent(PayloadAcceptor, "routoid-liquefactor", {
 
 	setStats() {
 		this.super$setStats();
-		this.stats.add(BlockStat.productionTime, this.meltTime / 60, StatUnit.seconds);
-//		this.stats.add(BlockStat.output, this.liquid, this.amount, false);
+		this.stats.add(Stat.productionTime, this.meltTime / 60, StatUnit.seconds);
+//		this.stats.add(Stat.output, this.liquid, this.amount, false);
 	},
 
 	meltTime: 60 * 12,
