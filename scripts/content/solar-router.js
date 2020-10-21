@@ -39,7 +39,7 @@ const solar = extendContent(Router, "solar-router", {
 });
 
 solar.baseExplosiveness = 5;
-solar.generationType = BlockStat.basePowerGeneration;
+solar.generationType = Stat.basePowerGeneration;
 solar.powerGeneration = 1 / 6;
 
 solar.buildType = () => extendContent(Router.RouterBuild, solar, {

@@ -183,7 +183,7 @@ arc = extendContent(Router, "arc-router", {
 });
 
 arc.enableDrawStatus = true;
-arc.flags = EnumSet.of(BlockFlag.producer);
+arc.flags = EnumSet.of(BlockFlag.generator);
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
 
