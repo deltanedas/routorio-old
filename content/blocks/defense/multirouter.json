@@ -1,0 +1,10 @@
+{
+	"category": "turret",
+	"research": "poly",
+	"requirements": [
+		"copper/10",
+		"lead/20",
+		"sand/500",
+		"metaglass/10"
+	]
+}
