@@ -178,7 +178,7 @@ arc = extendContent(Router, "arc-router", {
 		this.bars.add("fuel-burnup", entity => new Bar(
 			() => Core.bundle.format("stat.fuel-burnup",
 				Math.round(entity._rates.burnup * 100)),
-			() => Items.surgealloy.color,
+			() => Items.surgeAlloy.color,
 			() => entity._rates.burnup / 0.31
 		));
 	}
@@ -270,7 +270,7 @@ arc.buildType = () => extendContent(Router.RouterBuild, arc, {
 		this.super$onDestroyed();
 		// Spawn lots of arcs
 		for (var i = 0; i < 10; i++) {
-			this.arc(Items.surgealloy);
+			this.arc(Items.surgeAlloy);
 		}
 	},
 

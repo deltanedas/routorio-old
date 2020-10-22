@@ -33,7 +33,7 @@ surge.buildType = () => extendContent(Router.RouterBuild, surge, {
 
 		if (Vars.ui && Mathf.chance(surge.sparkChance)) {
 			Fx.lancerLaserCharge.at(this.x + Mathf.range(2), this.y + Mathf.range(2),
-				Math.random(0, 360), Items.surgealloy.color);
+				Math.random(0, 360), Items.surgeAlloy.color);
 		}
 	}
 });
