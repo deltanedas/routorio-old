@@ -270,7 +270,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 
 	// Searches reactor outputs instead of prox
 	dumpNet() {
-		if (!this.network.last || this.items.total == 0) return;
+		if (!this.network || !this.network.last || this.items.total == 0) return;
 
 		const network = this.network;
 		var ended = false;
