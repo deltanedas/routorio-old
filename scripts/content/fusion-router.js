@@ -371,7 +371,7 @@ print("yes")
 	},
 
 	warmup() {
-		return this.network.warmup
+		return this.network ? this.network.warmup : 0;
 	},
 
 	powerBar() {
