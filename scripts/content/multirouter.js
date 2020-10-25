@@ -40,7 +40,7 @@ multi.buildType = () => extendContent(Router.RouterBuild, multi, {
 		this.super$updateTile();
 
 		Units.nearby(Team.crux, this.x, this.y, multi.range, unit => {
-			if (unit.type == UnitTypes.poly) {
+			if (unit.type == UnitTypes.poly || unit.type == UnitTypes.mega) {
 				unit.kill();
 			}
 		});
