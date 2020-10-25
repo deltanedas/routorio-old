@@ -42,9 +42,7 @@ const FusionGraph = {
 			routers.get(i).network = this;
 		}
 
-		print("add: warmup " + this.warmup + " / " + network.warmup);
 		this.warmup = (this.warmup + network.warmup) / 2;
-		print("add: warmup " + this.warmup);
 	},
 
 	refresh() {
@@ -56,7 +54,7 @@ const FusionGraph = {
 			}
 		}
 
-		ent = this.routers.first();
+		ent = routers.peek();
 		this.routers.clear();
 		this.rebuild(ent);
 		this.rebuildOutputs();
@@ -159,7 +157,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	enableDrawStatus: false,
 	powerGeneration: 50,
 	heatRate: 0.00005,
-	coolRate: -0.00002,
+	coolRate: -0.00004,
 	shake: 0.5,
 	// 2 mins per router for a neutron router
 	fuseTime: 120 * 60,
@@ -270,9 +268,10 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 
 	// Searches reactor outputs instead of prox
 	dumpNet() {
-		if (!this.network || !this.network.last || this.items.total == 0) return;
-
+print([this.network, this.network ? this.network.last : "h", this.items.total()])
 		const network = this.network;
+		if (!network || !network.last || this.items.total() == 0) return;
+
 		var ended = false;
 		var node = network.last;
 		while (!ended) {
@@ -294,7 +293,7 @@ print("yes")
 
 	/* Check for lightning to ignite */
 	collision(b) {
-		if (b.type.status == StatusEffects.shocked) {
+		if (this.network && b.type.status == StatusEffects.shocked) {
 			const mul = this.power.status * this.liquids.total() / fusion.liquidCapacity;
 			this.network.warmup = Math.min(this.warmup() + mul * (b.damage / 250), 1);
 			if (this.warmup == 1) {
@@ -340,8 +339,12 @@ print("yes")
 		this.blendBits = read.s();
 		if (version != 1) {
 			this.network.warmup = read.b() / 128;
-			print("read: warmup " + this.network.warmup);
+			// some weird signing shit idk
+			if (this.warmup() < 0) {
+				this.network.warmup = -this.warmup();
+			}
 		}
+		// Heat is averaged between networks
 		this.heat = read.b() / 128;
 		if (version == 1) read.s();
 		if (version > 2) {
@@ -357,9 +360,9 @@ print("yes")
 	write(write) {
 		this.super$write(write);
 		write.s(this.blendBits);
-		// Heat is averaged between networks
 		write.b(this.network.warmup * 128);
 		print("write: warmup " + this.network.warmup);
+		// Heat is averaged between networks
 		write.b(this.heat * 128);
 		write.f(this.fuseTime);
 	},

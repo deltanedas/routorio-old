@@ -21,7 +21,7 @@ const directions = require("routorio/lib/dirs");
 
 const arcMultipliers = {
 	// Bad materials are nukes.
-	"routorio-neutron-router": () => 1000,
+	"routorio-neutron-router": () => 100,
 	sand: () => 10,
 	coal: () => 8,
 
@@ -38,7 +38,7 @@ const arcMultipliers = {
 };
 
 const arcMultiplier = item => {
-	var mul = arcMultipliers[item.name];
+	const mul = arcMultipliers[item.name];
 	if (mul === undefined) {
 		return 1;
 	}
@@ -222,12 +222,11 @@ arc.buildType = () => extendContent(Router.RouterBuild, arc, {
 
 	arc(item) {
 		const rates = this.rates;
-		const mul = arcMultiplier(item.name);
-
+		const mul = arcMultiplier(item);
 		const x = this.x, y = this.y;
 
 		Core.app.post(() => {
-			for (var i = 0; i < mul; i++) {
+			for (var i = 0; i < Math.sqrt(mul); i++) {
 				Lightning.create(Team.derelict, item.color, 10, x, y,
 					Mathf.random(0, 360), Math.round(Mathf.random(5, 20 * mul)));
 			}
