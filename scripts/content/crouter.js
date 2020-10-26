@@ -55,9 +55,9 @@ crouter.buildType = () => extendContent(StackConveyor.StackConveyorBuild, croute
 	},
 
 	updateTile() {
-		// Instead of having a cooldown, require the router to be full and depend on ALL inputs
-		if (this.items.total() < crouter.itemCapacity) return;
-
+		if (this.cooldown > 0) this.cooldown = Mathf.clamp(this.cooldown - crouter.speed * this.edelta(),
+			0, crouter.recharge);
+		if (this.cooldown > 0 || this.items.total() < crouter.itemCapacity) return;
 		if (!this.lastItem) {
 			this.lastItem = this.items.first();
 		}

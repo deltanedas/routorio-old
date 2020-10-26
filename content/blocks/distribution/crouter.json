@@ -9,7 +9,7 @@
 	],
 
 	"health": 80,
-	"speed": 0.06666666,
+	"speed": 0.133333333,
 	"itemCapacity": 10,
 	"insulated": true,
 	"rotate": false
