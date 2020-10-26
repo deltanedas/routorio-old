@@ -96,7 +96,8 @@ const rates = {
 	/* Special walls */
 	// decrease arcing
 	plast: {
-		apply: tile => adjacent(tile, block => block.insulated && block instanceof Wall),
+		apply: tile => adjacent(tile, block => (block.insulated && block instanceof Wall)
+			|| block.id == this.global.routorio.crouter.id),
 		bonuses: {
 			arc: -0.02
 		}

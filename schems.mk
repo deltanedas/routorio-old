@@ -6,11 +6,11 @@ ifeq ($(shell uname -o),Android)
 	SCHEMATICS := /sdcard/Android/data/$(PACKAGE)/files/schematics
 endif
 
-# Exclude block portions, unit legs, etc
+# Exclude block portions, unit legs, etc.
 
 dist := clear-router colossus double-router explosive-router \
 	incinerouter inverted-router op-router titanium-double-router \
-	alien-router rainbow-router
+	alien-router rainbow-router crouter
 power := arc-router electric-router moderouter solar-router surge-router \
 	phase-router fusion-router
 prod := ubuntium-router routerfruit
