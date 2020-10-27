@@ -206,7 +206,7 @@ phase = connected.new(Router, "phase-router", {
 		/* Add back the remaining tiles */
 		for (var i = 0; i < prox.size; i++) {
 			var near = prox.get(i);
-			if (near.block.hasItems && near.block != phase) {
+			if (near.block.acceptsItems && near.block != phase) {
 				this.outputs.push(near);
 			}
 		}
