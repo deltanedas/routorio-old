@@ -1,7 +1,7 @@
 {
 	"type": "Router",
 	"size": 4,
-	"health": 1200,
+	"health": 10000,
 	"research": "double-router",
 	"category": "distribution",
 	"requirements": [
