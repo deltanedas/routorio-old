@@ -5,8 +5,8 @@
 	"research": "double-router",
 	"category": "distribution",
 	"requirements": [
-		"copper/40",
-		"lead/30",
-		"thorium/10"
+		"copper/80",
+		"lead/50",
+		"thorium/100"
 	]
 }
