@@ -37,7 +37,7 @@ const chainer = extendContent(UnitFactory, "router-chainer", {
 
 	load() {
 		this.super$load();
-		this.topRegion = this.outRegion = this.outRegion = Core.atlas.find("clear");
+		this.topRegion = this.outRegion = Core.atlas.find("clear");
 
 		this.region = Core.atlas.find(this.name + "-base");
 		this.router = Core.atlas.find("router");

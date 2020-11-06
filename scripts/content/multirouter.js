@@ -5,15 +5,21 @@ const multi = extendContent(Router, "multirouter", {
 	},
 
 	drawPlace(x, y, rot, valid) {
-		const build = Vars.world.build(x, y);
-		if (build) {
-			build.drawSelect();
-		}
-	}
-});
+		const tile = Vars.world.tile(x, y);
+		if (!tile) return;
+		this.drawRange(tile);
+	},
 
-// brazil radius
-multi.range = 10 * Vars.tilesize;
+	drawRange(tile) {
+		Lines.stroke(1);
+		Draw.color(Color.coral);
+		Drawf.circles(tile.drawx(), tile.drawy(), this.range);
+		Draw.reset();
+	},
+
+	// brazil radius
+	range: 10 * Vars.tilesize
+});
 
 multi.buildType = () => extendContent(Router.RouterBuild, multi, {
 	draw() {
@@ -30,10 +36,7 @@ multi.buildType = () => extendContent(Router.RouterBuild, multi, {
 	},
 
 	drawSelect() {
-		Lines.stroke(1);
-		Draw.color(Color.coral);
-		Drawf.circles(this.x, this.y, multi.range);
-		Draw.reset();
+		multi.drawRange(this.tile);
 	},
 
 	updateTile() {
