@@ -20,7 +20,7 @@ const offset = 1.6 * Vars.tilesize;
 
 const dist = Math.sqrt(2 * offset * offset)
 
-const rotors = [
+const routors = [
 	1, 1,
 	1, -1,
 	-1, -1,
@@ -45,7 +45,7 @@ const reverout = extendContent(UnitType, "reverout", {
 		Items.graphite, 3000)
 });
 
-reverout.constructor = () => extend(BuilderMinerUnit, {
+reverout.constructor = () => extend(BuilderUnit, {
 	draw() {
 		this.super$draw();
 
@@ -55,8 +55,8 @@ reverout.constructor = () => extend(BuilderMinerUnit, {
 		var x, y;
 
 		for (var i = 0; i < 8; i += 2) {
-			x = rotors[i] * offset;
-			y = rotors[i + 1] * offset;
+			x = routors[i] * offset;
+			y = routors[i + 1] * offset;
 			Draw.rect(reverout.rotor,
 				this.x + Angles.trnsx(r, x, y),
 				this.y + Angles.trnsy(r, x, y),
