@@ -72,7 +72,7 @@ const HoloStatement = {
 	},
 
 	name: () => "Holorouter",
-	category: () => LCategory.operations
+	color: () => Pal.logicOperations
 };
 
 /* Mimic @RegisterStatement */

@@ -111,7 +111,7 @@ const VulcanStatement = {
 	},
 
 	name: () => "Vulcan Router",
-	category: () => LCategory.operations
+	color: () => Pal.logicOperations
 };
 
 /* Mimic @RegisterStatement */
