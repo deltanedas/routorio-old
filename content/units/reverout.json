@@ -1,5 +1,5 @@
 {
-	"type": "BuilderMinerUnit",
+	"type": "BuilderUnit",
 	"speed": 1.9,
 	"flying": true,
 	"health": 1000,
