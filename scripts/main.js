@@ -55,3 +55,4 @@ add(["router-chainer", "sexy-router",
 
 // Misc
 require("routorio/manual");
+require("routorio/icon");
