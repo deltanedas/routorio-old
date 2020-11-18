@@ -17,20 +17,21 @@ lobo.buildType = () => extendContent(Router.RouterBuild, lobo, {
 		Draw.rect(lobo.edgeRegion, this.x, this.y, this.rotation * 90 + 90);
 	},
 
-	// FIXME: this doesn't work at all
+	created() {
+		this.super$created();
+		this.target = this.rotation;
+	},
+
 	getTileTarget(item, from, set) {
 		const prox = this.proximity;
-		var counter = this.target;
+		const counter = this.target;
 		for (var i = 0; i < prox.size; i++) {
-			if (i + counter == this.rotation - 1) continue;
+			var other = prox.get((i + counter) % prox.size);
+			if (this.relativeTo(other) == this.rotation) continue;
 
-			const other = prox.get((i + counter) % prox.size);
-			print("Other " + other)
 			if (set) this.target = (this.target + 1) % prox.size;
 			if (other.tile == from && from.block() == Blocks.overflowGate) continue;
-			print("Good?")
 			if (other.acceptItem(this, item)) return other;
-			print("Next!")
 		}
 
 		return null;
