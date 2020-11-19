@@ -16,6 +16,7 @@
 */
 
 /* "vulcan" instruction */
+// TODO: Overhaul by setting 4 bits for every side, or flipping each bit
 
 var spock;
 

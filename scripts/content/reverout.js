@@ -45,7 +45,7 @@ const reverout = extendContent(UnitType, "reverout", {
 		Items.graphite, 3000)
 });
 
-reverout.constructor = () => extend(BuilderUnit, {
+reverout.constructor = () => extend(UnitEntity, {
 	draw() {
 		this.super$draw();
 

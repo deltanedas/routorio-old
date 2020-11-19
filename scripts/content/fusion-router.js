@@ -54,9 +54,9 @@ const FusionGraph = {
 			}
 		}
 
-		ent = routers.peek();
+		ent = routers.length == 0 ? null : routers.peek();
 		this.routers.clear();
-		this.rebuild(ent);
+		if (ent) this.rebuild(ent);
 		this.rebuildOutputs();
 	},
 

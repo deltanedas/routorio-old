@@ -1,5 +1,5 @@
 {
-	"type": "BuilderUnit",
+	"type": "UnitEntity",
 	"speed": 1.9,
 	"flying": true,
 	"health": 1000,
