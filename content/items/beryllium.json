@@ -1,6 +1,6 @@
 {
 	"research": {
-		"parent": "ubuntium-router",
+		"parent": "titanium",
 		"requirements": [
 			"copper/10000",
 			"graphite/7000",

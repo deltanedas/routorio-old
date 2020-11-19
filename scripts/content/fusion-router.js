@@ -54,9 +54,9 @@ const FusionGraph = {
 			}
 		}
 
-		ent = routers.length == 0 ? null : routers.peek();
+		ent = routers.peek();
 		this.routers.clear();
-		if (ent) this.rebuild(ent);
+		this.rebuild(ent);
 		this.rebuildOutputs();
 	},
 
@@ -267,6 +267,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	acceptItem: () => false,
 
 	// Searches reactor outputs instead of prox
+	// TODO fix
 	dumpNet() {
 print([this.network, this.network ? this.network.last : "h", this.items.total()])
 		const network = this.network;
@@ -361,7 +362,6 @@ print("yes")
 		this.super$write(write);
 		write.s(this.blendBits);
 		write.b(this.network.warmup * 128);
-		print("write: warmup " + this.network.warmup);
 		// Heat is averaged between networks
 		write.b(this.heat * 128);
 		write.f(this.fuseTime);
