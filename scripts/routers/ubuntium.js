@@ -15,24 +15,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// Chance for an item to be turned into Beryllium.
-const amazonChance = 1 / 30;
-
-const routorio = this.global.routorio;
+const bery = this.global.routorio.beryllium;
 
 const ubuntium = extendContent(Router, "ubuntium-router", {
-	init() {
-		this.super$init();
-		this.beryllium = routorio.items.beryllium;
-	}
 });
+
+// Chance for an item to be turned into Beryllium.
+ubuntium.chance = 1 / 30;
 
 ubuntium.buildType = () => extendContent(Router.RouterBuild, ubuntium, {
 	handleItem(source, item) {
-		if (Mathf.chance(amazonChance)) {
-			item = ubuntium.beryllium;
+		if (Mathf.chance(ubuntium.chance)) {
+			item = bery;
 		}
-		this.super$handleItem(source,item);
+		this.super$handleItem(source, item);
 	}
 });
 

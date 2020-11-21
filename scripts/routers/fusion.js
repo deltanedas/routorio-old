@@ -117,7 +117,7 @@ const FusionGraph = {
 
 const connected = require("routorio/lib/connected");
 const surge = this.global.routorio["surge-router"];
-const neut = this.global.routorio.items.neutron;
+const neut = this.global.routorio.neutron;
 
 fusion = connected.new(LiquidRouter, "fusion-router", {
 	init() {

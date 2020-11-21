@@ -1,0 +1,14 @@
+{
+	"type": "MechUnit",
+	"research": {
+		"parent": "sexy-router",
+		"requirements": [
+			"silicon/6000",
+			"graphite/4000",
+			"copper/2000"
+		]
+	},
+
+	"speed": 0.7,
+	"health": 150
+}

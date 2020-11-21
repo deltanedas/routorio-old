@@ -58,7 +58,8 @@ chainer.buildType = () => extendContent(UnitFactory.UnitFactoryBuild, chainer, {
 		const rot = Time.time() * this.rot;
 		const chaining = this.cons.valid();
 
-		this.dist = Mathf.lerp(this.dist, this.plan ? this.plan.type.size / 40
+		this.dist = Mathf.lerp(this.dist, this.plan
+			? this.plan.type.size / 40
 			: 4 * this.rot + 8, 0.04);
 
 		for (var i = 0; i < 8; i++) {

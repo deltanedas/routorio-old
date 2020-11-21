@@ -1,5 +1,14 @@
 {
 	"type": "UnitEntity",
+	"research": {
+		"parent": "routerpede",
+		"requirements": [
+			"titanium/7000",
+			"silicon/5000",
+			"graphite/3000"
+		]
+	},
+
 	"speed": 1.9,
 	"flying": true,
 	"health": 1000,

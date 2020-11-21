@@ -16,13 +16,15 @@
 */
 
 const routorio = this.global.routorio;
+const register = require("routorio/lib/register");
+
 const viewport = new Rect();
 
-const onScreen = pos => {
+function onScreen(pos) {
 	return viewport.overlaps(pos.x, pos.y, 16, 16);
-};
+}
 
-// Similar to the chain blaster, except fires extra shots when chained.
+// Similar to the chain blaster, except TODO fires extra shots when chained.
 const weapon = new Weapon("chain-router");
 Object.assign(weapon, {
 	reload: 15,
@@ -32,24 +34,12 @@ Object.assign(weapon, {
 });
 
 const routerpede = extendContent(UnitType, "routerpede", {
-	init() {
-		this.super$init();
-		routorio.research(this, "sexy-router");
-	},
-
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find("router");
 		this.legRegion = Core.atlas.find(this.name + "-leg");
 		this.baseRegion = Core.atlas.find("clear");
-	},
-
-	researchRequirements: () => ItemStack.with(
-		Items.copper, 3000,
-		Items.graphite, 4000),
-
-	speed: 0.7,
-	health: 170
+	}
 });
 
 routerpede.constructor = () => extend(MechUnit, {
@@ -119,6 +109,8 @@ routerpede.constructor = () => extend(MechUnit, {
 		}
 	},
 
+	classId: () => routerpede.classId,
+
 	// Drag and draw a segment
 	updateseg(i, to) {
 		const seg = this.segments[i];
@@ -181,5 +173,7 @@ routerpede.weapons.add(weapon);
 Events.run(Trigger.preDraw, () => {
 	Core.camera.bounds(viewport);
 });
+
+register(routerpede);
 
 module.exports = routerpede;

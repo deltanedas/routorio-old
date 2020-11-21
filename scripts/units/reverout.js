@@ -15,9 +15,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const routorio = this.global.routorio;
-const offset = 1.6 * Vars.tilesize;
+// TODO: add little router guns
+/* .===.
+   |--\|
+   |.o||
+   |..'|
+   .===.
+    .=.
+    |o|
+    .=. */
+const register = require("routorio/lib/register");
 
+const offset = 1.6 * Vars.tilesize;
 const dist = Math.sqrt(2 * offset * offset)
 
 const routors = [
@@ -28,21 +37,11 @@ const routors = [
 ];
 
 const reverout = extendContent(UnitType, "reverout", {
-	init() {
-		this.super$init();
-		routorio.research(this, "routerpede");
-	},
-
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find(this.name);
 		this.rotor = Core.atlas.find("router");
-	},
-
-	researchRequirements: () => ItemStack.with(
-		Items.titanium, 7000,
-		Items.silicon, 5000,
-		Items.graphite, 3000)
+	}
 });
 
 reverout.constructor = () => extend(UnitEntity, {
@@ -62,7 +61,11 @@ reverout.constructor = () => extend(UnitEntity, {
 				this.y + Angles.trnsy(r, x, y),
 				r + Time.time() * 20);
 		}
-	}
+	},
+
+	classId: () => reverout.classId
 });
+
+register(reverout);
 
 module.exports = reverout;

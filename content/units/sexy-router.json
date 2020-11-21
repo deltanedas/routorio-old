@@ -1,5 +1,13 @@
 {
 	"type": "MechUnit",
+	"research": {
+		"parent": "router-chainer",
+		"requirements": [
+			"silicon/4000",
+			"copper/2400"
+		]
+	},
+
 	"health": 1,
 	"drawCell": false,
 	"itemCapacity": 400,
