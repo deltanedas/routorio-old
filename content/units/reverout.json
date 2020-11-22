@@ -1,5 +1,5 @@
 {
-	"type": "UnitEntity",
+	"type": "flying",
 	"research": {
 		"parent": "routerpede",
 		"requirements": [
@@ -18,9 +18,10 @@
 	"baseRotateSpeed": 0.3,
 	"range": 300,
 	"weapons": [{
-		"name": "router-missiles",
-		"reload": 45,
-		"shots": 5,
+		"name": "reverout-weapon",
+		"x": 4,
+		"reload": 20,
+		"shots": 3,
 		"spacing": 4,
 		"bullet": {
 			"type": "BasicBulletType",

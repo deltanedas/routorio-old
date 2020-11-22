@@ -105,7 +105,7 @@ const rates = {
 	// decrease fuel burnup
 	phase: {
 		apply: tile => adjacent(tile, block => block.deflect
-			|| block.id == this.global.routorio["phase-router"].id),
+			|| block.id == this.global.routorio.phase.id),
 		modifiers: {
 			burnup: 0.5
 		}
@@ -136,7 +136,7 @@ const rates = {
 	// surge is an excellent conductor, increase arcing and power dramatically
 	surge: {
 		apply: tile => adjacent(tile,
-			block => block.id == this.global.routorio["surge-router"].id
+			block => block.id == this.global.routorio.surge.id
 				|| block.lightningChance > 0),
 		bonuses: {
 			gen: 2

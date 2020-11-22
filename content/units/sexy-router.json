@@ -1,5 +1,5 @@
 {
-	"type": "MechUnit",
+	"type": "mech",
 	"research": {
 		"parent": "router-chainer",
 		"requirements": [

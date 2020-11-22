@@ -17,7 +17,7 @@
 
 const dirs = require("routorio/lib/dirs");
 
-const clear = this.global.routorio["clear-router"]
+const clear = this.global.routorio.clear;
 
 const alien = extendContent(Router, "alien-router", {});
 alien.buildType = () => extendContent(Router.RouterBuild, alien, {
