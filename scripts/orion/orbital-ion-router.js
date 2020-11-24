@@ -57,7 +57,8 @@ const orion = extend(Planet, "orbital-ion-router", Planets.serpulo, 0, 0.5, {
 	init() {
 		this.super$init();
 
-		(this, routorio);
+		const parent = TechTree.all.find(node => node.content == routorio.phase);
+		new TechTree.TechNode(parent, this, this.researchRequirements());
 	},
 
 	onUnlock() {
