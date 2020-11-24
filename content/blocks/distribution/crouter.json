@@ -1,0 +1,16 @@
+{
+	"category": "distribution",
+	"research": "plastanium-conveyor",
+	"requirements": [
+		"plastanium/3",
+		"silicon/3",
+		"graphite/3",
+		"copper/3"
+	],
+
+	"health": 80,
+	"speed": 0.133333333,
+	"itemCapacity": 10,
+	"insulated": true,
+	"rotate": false
+}

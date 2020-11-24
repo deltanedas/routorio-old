@@ -15,43 +15,44 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const routorio = {
-	research(content, parname) {
-		const parent = TechTree.all.find(node => node.content == routorio[parname]);
-		new TechTree.TechNode(parent, content, content.researchRequirements());
-	}
-};
-this.global.routorio = routorio;
+const routorio = this.global.routorio = {};
 
-const add = names => {
+const add = (type, names) => {
 	for (var i in names) {
 		var name = names[i];
 		try {
-			routorio[name] = require("routorio/content/" + name);
+			routorio[name] = require("routorio/" + type + "/" + name);
 		} catch (e) {
-			Log.err("Failed to load routorio script @.js: @ (@#@)", name,
-				e, e.fileName, new java.lang.Integer(e.lineNumber));
+			Log.err("Failed to load routorio script @/@.js: @ (@#@)",
+				type, name, e, e.fileName,
+				new java.lang.Integer(e.lineNumber));
 			routorio[name] = null;
 		}
 	}
 };
 
-add(["items"]);
+/* Items */
+add("items", ["beryllium", "neutron", "liquid"]);
 
-// Blocks
-add(["op-router", "double-router", "titanium-double-router",
-	"inverted-router", "clear-router", "explosive-router",
-	"combat-router", "phase-router", "ubuntium-router",
-	"electric-router", "surge-router", "solar-router",
-	"alien-router", "arc-router", "vulcan-router",
-	"fusion-router", "holorouter", "routoid-assembler",
-	"routoid-liquefactor", "sprouter", "rainbow-router",
-	"routergeist", "lobotorout", "payload-conduit"]);
+/* Blocks */
+add("routers", ["op", "half", "double",
+	"inverted", "clear", "explosive",
+	"phase", "ubuntium", "electric",
+	"surge", "solar", "alien",
+	"arc", "vulcan", "fusion",
+	"holorouter", "sprouter", "rainbow",
+	"routergeist", "lobotorout", "crouter"]);
+add("payloads", ["payload-conduit",
+	"routoid-assembler", "routoid-liquefactor"]);
+add("combat", ["combat", "multirouter"]);
 
-// Units
-add(["router-chainer", "sexy-router",
+/* Units */
+add("units", ["router-chainer", "sexy-router",
 	"routerpede", "reverout"]);
 
-// Misc
-add(["orbital-ion-router"]);
-require("routorio/manual");
+/* Orion */
+add("orion", ["orbital-ion-router",
+	"ion-uplink", "ion-interface"]);
+
+/* Misc */
+add("misc", ["manual", "icon"]);

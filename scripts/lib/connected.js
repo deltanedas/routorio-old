@@ -109,7 +109,7 @@ const building = block => {return {
 
 	reblendAll() {
 		for (var i in all) {
-			var other = this.tile.getNearby(all[i][0], all[i][1]);
+			var other = this.tile.nearby(all[i][0], all[i][1]);
 			if (other && other.block() == block) {
 				other.build.reblend();
 			}
@@ -142,13 +142,13 @@ const building = block => {return {
 	},
 
 	adjacent(i) {
-		const other = this.tile.getNearby(dirs[i].x, dirs[i].y);
+		const other = this.tile.nearby(dirs[i].x, dirs[i].y);
 		return other && other.block() == block;
 	},
 
 	/* Whether a router is a corner of a square or just a bend */
 	interior(i) {
-		const diag = this.tile.getNearby(diags[i][0], diags[i][1]);
+		const diag = this.tile.nearby(diags[i][0], diags[i][1]);
 		return diag && diag.block() != this.block;
 	},
 

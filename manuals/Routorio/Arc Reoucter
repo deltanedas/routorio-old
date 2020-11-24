@@ -16,32 +16,32 @@ Arcs do a lot of damage so make sure to have lots of menders on-site.
 [coral][[coral][] = Fuel burnup
 [yellow][[yellow][] = Power generation
 
-[stat]xN = Multiplied by N[]
-[stat]+/-N% = Modified by N%[]
+[stat]xN = Multiplied by N
++/-N% = Modified by N%[]
 
 Multiplication is done first.
 
 # Block affinities
 The [sky]Arc Router[]'s stats change when adjacent to these blocks:
-	Moderouter: [red]+5%[], [yellow]x1.4 + 25%
-	[sky]Arc Router[]: [red]+1%[], [yellow]+50%[], [coral]x1.2
+	Moderouter: [red]+5%[], [yellow]x1.4 + 25%[]
+	[sky]Arc Router[]: [red]+1%[], [yellow]+50%[], [coral]x1.2[]
 
-	Plastanium: [red]-2%
-	Phase Fabric: [coral]x0.5
+	Plastanium: [red]-2%[]
+	Phase Fabric: [coral]x0.5[]
 
 	Copper: [coral]x1.2[], [yellow]+40%[]
-	Titanium: [red]+8%[], [coral]x1.1[], [yellow]+60%
-	Surge Alloy: [red]x1.6[], [yellow]+200%
+	Titanium: [red]+8%[], [coral]x1.1[], [yellow]+60%[]
+	Surge Alloy: [red]x1.6[], [yellow]+200%[]
 
 # Item affinities
 These items modify arc amount and damage.
 
-[stat]These should only be used to kickstart fusion routers.
-Neutron Router: 1000x :)
+[stat]These should only be used to kickstart fusion routers.[]
+Neutron Router: 100x :)
 Sand: 10x
 Coal: 8x
 
-[stat]These will do but aren't the best
+[stat]These will do but aren't the best[]
 Lead: 2x
 Copper: 2x
 Scrap: 3x
@@ -50,6 +50,6 @@ Titanium: 3x
 Silicon: 3x
 Surge Alloy: 4x
 
-Plastanium: 0.5x (uses RNG to cancel arcs)
+[green]Plastanium: 0.5x (uses RNG to cancel arcs)[]
 
 Everything else is 1x, and should be used if plastanium is not available.

@@ -3,6 +3,7 @@
 	"category": "power",
 	"research": "arc-router",
 	"requirements": [
+		"surge-alloy/300",
 		"titanium/300",
 		"metaglass/200",
 		"beryllium/145",

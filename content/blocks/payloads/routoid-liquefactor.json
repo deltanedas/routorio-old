@@ -1,6 +1,6 @@
 {
 	"category": "production",
-	"research": "routoid-assembler",
+	"research": "liquid-router",
 	"requirements": [
 		"titanium/250",
 		"silicon/200",
