@@ -47,6 +47,8 @@ const FusionGraph = {
 
 	refresh() {
 		const routers = this.routers.asArray();
+		if (!routers.size) return;
+
 		for (var i = 0; i < routers.size; i++) {
 			var ent = routers.get(i);
 			if (ent.block == fusion) {

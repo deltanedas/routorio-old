@@ -43,6 +43,8 @@ const NetworkGraph = {
 
 	refresh() {
 		const routers = this.routers.asArray();
+		if (!routers.size) return;
+
 		for (var i = 0; i < routers.size; i++) {
 			var ent = routers.get(i);
 			if (ent.block == phase) {
@@ -50,7 +52,7 @@ const NetworkGraph = {
 			}
 		}
 
-		ent = this.routers.first();
+		ent = this.routers.peek();
 		this.routers.clear();
 		this.rebuild(ent);
 		this.rebuildOutputs();
