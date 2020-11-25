@@ -44,8 +44,8 @@ const HoloStatement = {
 	},
 
 	read(words) {
-		this.target = words[1];
-		this.texture = words[2];
+		this.target = words[1] || "holorouter1";
+		this.texture = words[2] || '"god"';
 	},
 
 	build(h) {
@@ -60,19 +60,19 @@ const HoloStatement = {
 
 	buildt(table) {
 		this.field(table, this.target, text => {this.target = text});
-		table.add(" -> ");
-		this.field(table, this.texture, text => {this.texture = text});
+		table.add(" = ");
+		this.field(table, this.texture, text => {this.texture = text}).width(0).left().growX();
 	},
 
 	write(builder) {
 		builder.append("holorouter ");
-		builder.append(this.target + "");
+		builder.append(this.target);
 		builder.append(" ");
-		builder.append(this.texture + "");
+		builder.append(this.texture);
 	},
 
 	name: () => "Holorouter",
-	color: () => Pal.logicOperations
+	color: () => Pal.logicBlocks
 };
 
 /* Mimic @RegisterStatement */

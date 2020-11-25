@@ -73,7 +73,7 @@ const VulcanStatement = {
 	buildt(table) {
 		const keyf = this.field(table, this.key, text => {
 			this.key = text;
-		}).padRight(0).get();
+		}).width(150).padRight(0).left().get();
 
 		const b = new Button(Styles.logict);
 		b.image(Icon.pencilSmall);
@@ -91,11 +91,12 @@ const VulcanStatement = {
 
 			t.add(list).width(240).left();
 		}));
-		table.add(b).size(40).padLeft(-1).color(table.color).get();
+		table.add(b).size(40).padLeft(-1).color(table.color);
 
-		table.label(() => this.key == "@output" ? "=" : "->");
-
+		// takes 2 columns so that it doesnt do a weird ui thing
+		table.label(() => this.key == "@output" ? "=" : "->").left().marginLeft(10);
 		this.row(table);
+
 		this.field(table, this.to, text => {this.to = text});
 
 		table.add(" in ");
@@ -112,7 +113,7 @@ const VulcanStatement = {
 	},
 
 	name: () => "Vulcan Router",
-	color: () => Pal.logicOperations
+	color: () => Pal.logicBlocks
 };
 
 /* Mimic @RegisterStatement */
