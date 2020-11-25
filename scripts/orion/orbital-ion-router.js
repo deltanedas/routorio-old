@@ -23,7 +23,7 @@ const routorio = this.global.routorio;
 const bery = routorio.beryllium;
 const neut = routorio.neutron;
 
-const orion = extend(Planet, "orbital-ion-router", Planets.serpulo, 0, 0.5, {
+const orion = extend(Planet, "orbital-ion-router", Planets.serpulo, 1, 0.5, {
 	// Optimisation
 	getLastSector() {
 		return this.sectors.get(0);
@@ -51,7 +51,7 @@ const orion = extend(Planet, "orbital-ion-router", Planets.serpulo, 0, 0.5, {
 		// Make a smaller mesh TODO: use an actual satellite obj
 		this.radius = 0.1;
 		this.super$load();
-		this.radius = 0.5;
+		this.radius = 0.8;
 	},
 
 	init() {
@@ -70,6 +70,9 @@ const orion = extend(Planet, "orbital-ion-router", Planets.serpulo, 0, 0.5, {
 		return this.accessible;
 	},
 
+	// allow renaming
+//	preset(id, preset) {},
+
 	// Give it a database entry
 	isHidden: () => false,
 	displayInfo(table) {
@@ -86,9 +89,9 @@ const orion = extend(Planet, "orbital-ion-router", Planets.serpulo, 0, 0.5, {
 	orbitRadius: 3
 });
 
-const ptile = new PlanetGrid.Ptile(0, 6);
+const ptile = new PlanetGrid.Ptile(0, 4);
 const corners = ptile.corners;
-for (var i = 0; i < 6; i++) {
+for (var i = 0; i < 4; i++) {
 	corners[i] = new PlanetGrid.Corner(i);
 	// TODO
 	corners[i].v = new Vec3();
@@ -101,16 +104,16 @@ ptile.edges = [];
 
 orion.sectorApproxRadius = ptile.v.dst(ptile.corners[0].v);
 
-orion.grid = extendContent(PlanetGrid, 1, {
+orion.grid = extend(PlanetGrid, 1, {
 	tiles: [ptile],
 	edges: [],
 	corners: ptile.corners,
 
 	// For sector drawing thing
-	size: 0.1
+//	size: 0.1
 });
 
-orion.sectors.add(new JavaAdapter(Sector, {
+orion.sectors.add(extend(Sector, orion, ptile, {
 	// Use random name
 	name() {
 		return this.info.name ? this.info.name : this.newName();
@@ -123,6 +126,9 @@ orion.sectors.add(new JavaAdapter(Sector, {
 		return name;
 	},
 
+	unlocked: () => orion.accessible,
+	locked: () => !orion.accessible,
+
 	// There's only one sector, so no neighbours
 	inRange: () => Seq.with(),
 	neighbours: () => Seq.with(),
@@ -130,7 +136,10 @@ orion.sectors.add(new JavaAdapter(Sector, {
 	hasEnemyBase: () => false,
 	isUnderAttack: () => false,
 	isCaptured: () => true
-}, orion, ptile));
+
+	// Allow renaming
+//	preset: null
+}));
 
 /// TODO: Ion Uplink, Ion Interface
 // steal Lunchpad code
