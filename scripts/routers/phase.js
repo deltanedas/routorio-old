@@ -52,7 +52,7 @@ const NetworkGraph = {
 			}
 		}
 
-		ent = this.routers.peek();
+		ent = this.routers.first();
 		this.routers.clear();
 		this.rebuild(ent);
 		this.rebuildOutputs();
