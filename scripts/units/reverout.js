@@ -59,7 +59,7 @@ reverout.constructor = () => extend(UnitEntity, {
 			Draw.rect(reverout.rotor,
 				this.x + Angles.trnsx(r, x, y),
 				this.y + Angles.trnsy(r, x, y),
-				r + Time.time() * 20);
+				r + Time.time * 20);
 		}
 	},
 

@@ -55,7 +55,7 @@ chainer.buildType = () => extendContent(UnitFactory.UnitFactoryBuild, chainer, {
 		Draw.z(Layer.turret);
 
 		this.rot = Mathf.lerp(this.rot, Math.min(this.efficiency(), 1) * this.timeScale, 0.02);
-		const rot = Time.time() * this.rot;
+		const rot = Time.time * this.rot;
 		const chaining = this.cons.valid();
 
 		this.dist = Mathf.lerp(this.dist, this.plan

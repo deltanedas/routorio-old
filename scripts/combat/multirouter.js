@@ -27,7 +27,7 @@ multi.buildType = () => extendContent(Router.RouterBuild, multi, {
 
 		Draw.z(Layer.flyingUnit);
 		for (var i = 0; i < 3; i++) {
-			var rot = Time.time() * 3 + i * 120;
+			var rot = Time.time * 3 + i * 120;
 			var x = this.x + Angles.trnsx(rot, multi.range);
 			var y = this.y + Angles.trnsy(rot, multi.range);
 			Draw.rect(multi.region, x, y, rot + 90);

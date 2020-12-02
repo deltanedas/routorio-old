@@ -213,9 +213,9 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	},
 
 	drawLiquid() {
-		Draw.color(liquid.color, fusion.plasma2, this.warmup * this.heat * Mathf.absin(Time.time() / 100, 0.9, 1));
+		Draw.color(liquid.color, fusion.plasma2, this.warmup * this.heat * Mathf.absin(Time.time / 100, 0.9, 1));
 		var alpha = 0.9 * this.liquids.total() / fusion.liquidCapacity;
-		alpha += Math.sin(0.1 * Time.time() * Math.pow(this.heat + 2, this.heat + 1) + this.index) / 5;
+		alpha += Math.sin(0.1 * Time.time * Math.pow(this.heat + 2, this.heat + 1) + this.index) / 5;
 		Draw.alpha(alpha);
 		Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
 		Draw.reset();

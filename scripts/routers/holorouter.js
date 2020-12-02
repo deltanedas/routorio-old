@@ -149,7 +149,7 @@ holo.buildType = () => extendContent(Router.RouterBuild, holo, {
 
 	drawHolo() {
 		// Subtle phasing in and out
-		const phase = (Math.sin(Time.time() / 50) / 5) + 0.8;
+		const phase = (Math.sin(Time.time / 50) / 5) + 0.8;
 		Draw.alpha(phase * this.power.status * holo.opacity);
 		Draw.rect(this.region, this.x, this.y + this.offset);
 	},

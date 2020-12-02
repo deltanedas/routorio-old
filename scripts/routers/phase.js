@@ -133,7 +133,7 @@ phase = connected.new(Router, "phase-router", {
 	},
 
 	drawShine() {
-		const shine = (Math.sin((Time.time() / 6 + this.x + this.y) / 10) + 1) / 16;
+		const shine = (Math.sin((Time.time / 6 + this.x + this.y) / 10) + 1) / 16;
 		if (shine < 0.01) return;
 
 		Draw.color(Color.white)
