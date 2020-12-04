@@ -25,6 +25,8 @@ try {
 
 	module.exports = true;
 } catch (e) {
-	Log.warn("Please install [#00aaff]DeltaNedas/rtfm[] to view routorio's manual pages.");
+	if (!Vars.headless) {
+		Log.warn("Please install [#00aaff]DeltaNedas/rtfm[] to view routorio's manual pages.");
+	}
 	module.exports = false;
 }
