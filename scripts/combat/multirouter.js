@@ -1,4 +1,4 @@
-const multi = extendContent(Router, "multirouter", {
+const multi = extend(Router, "multirouter", {
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find("router");
@@ -21,7 +21,7 @@ const multi = extendContent(Router, "multirouter", {
 	range: 10 * Vars.tilesize
 });
 
-multi.buildType = () => extendContent(Router.RouterBuild, multi, {
+multi.buildType = () => extend(Router.RouterBuild, multi, {
 	draw() {
 		this.super$draw();
 

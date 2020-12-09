@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const melter = extendContent(PayloadAcceptor, "routoid-liquefactor", {
+const melter = extend(PayloadAcceptor, "routoid-liquefactor", {
 	init() {
 		this.super$init();
 		this.liquid = Vars.content.getByName(ContentType.liquid, "routorio-liquid-router");
@@ -36,7 +36,7 @@ const melter = extendContent(PayloadAcceptor, "routoid-liquefactor", {
 	solid: true
 });
 
-melter.buildType = () => extendContent(PayloadAcceptor.PayloadAcceptorBuild, melter, {
+melter.buildType = () => extend(PayloadAcceptor.PayloadAcceptorBuild, melter, {
 	updateTile() {
 		this.dumpLiquid(melter.liquid);
 

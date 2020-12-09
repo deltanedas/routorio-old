@@ -15,11 +15,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const surge = extendContent(Router, "surge-router", {});
+const surge = extend(Router, "surge-router", {});
 
 surge.sparkChance = 0.1;
 
-surge.buildType = () => extendContent(Router.RouterBuild, surge, {
+surge.buildType = () => extend(Router.RouterBuild, surge, {
 	updateTile() {
 		// Only route items when there is power, but the amount doesn't matter
 		if (this.cons.valid()) {

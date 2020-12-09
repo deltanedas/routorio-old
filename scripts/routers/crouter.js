@@ -1,4 +1,4 @@
-const crouter = extendContent(StackConveyor, "crouter", {
+const crouter = extend(StackConveyor, "crouter", {
 	load() {
 		this.super$load();
 
@@ -43,7 +43,7 @@ const crouter = extendContent(StackConveyor, "crouter", {
 	}
 });
 
-crouter.buildType = () => extendContent(StackConveyor.StackConveyorBuild, crouter, {
+crouter.buildType = () => extend(StackConveyor.StackConveyorBuild, crouter, {
 	draw() {
 		Draw.rect(crouter.baseRegion, this.x, this.y);
 

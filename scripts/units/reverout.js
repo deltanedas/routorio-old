@@ -36,7 +36,7 @@ const routors = [
 	-1, 1
 ];
 
-const reverout = extendContent(UnitType, "reverout", {
+const reverout = extend(UnitType, "reverout", {
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find(this.name);

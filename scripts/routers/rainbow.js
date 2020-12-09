@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const rainbow = extendContent(Router, "rainbow-router", {
+const rainbow = extend(Router, "rainbow-router", {
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find("router");
@@ -37,7 +37,7 @@ rainbow.config(java.lang.Integer, (build, colour) => {
 
 var scrollPos = 0;
 
-rainbow.buildType = () => extendContent(Router.RouterBuild, rainbow, {
+rainbow.buildType = () => extend(Router.RouterBuild, rainbow, {
 	draw() {
 		Draw.rect(rainbow.region, this.x, this.y);
 		if (this.colour != -1) {

@@ -1,4 +1,4 @@
-const sexy = extendContent(UnitType, "sexy-router", {});
+const sexy = extend(UnitType, "sexy-router", {});
 
 sexy.constructor = () => extend(MechUnit, {});
 

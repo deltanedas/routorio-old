@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const solar = extendContent(Router, "solar-router", {
+const solar = extend(Router, "solar-router", {
 	setStats() {
 		this.super$setStats();
 		this.stats.add(this.generationType, this.powerGeneration * 60, StatUnit.powerSecond);
@@ -44,7 +44,7 @@ solar.baseExplosiveness = 5;
 solar.generationType = Stat.basePowerGeneration;
 solar.powerGeneration = 1 / 6;
 
-solar.buildType = () => extendContent(Router.RouterBuild, solar, {
+solar.buildType = () => extend(Router.RouterBuild, solar, {
 	updateTile() {
 		this.super$updateTile();
 		this.progress = Math.max(this.progress - 0.003, 0);

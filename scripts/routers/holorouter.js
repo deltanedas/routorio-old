@@ -84,13 +84,13 @@ LogicIO.allStatements.add(prov(() => HoloStatement.new([
 	'"god"'
 ])));
 
-holo = extendContent(Router, "holorouter", {
+holo = extend(Router, "holorouter", {
 	load() {
 		this.super$load();
 
 		var texture, field;
 
-		this.dialog = extendContent(BaseDialog, "$select-hologram", {
+		this.dialog = extend(BaseDialog, "$select-hologram", {
 			pick(ent) {
 				this.ent = ent;
 				this.text = ent.config();
@@ -138,7 +138,7 @@ holo.config(java.lang.String, (ent, str) => {
 	ent.texture(str);
 });
 
-holo.buildType = () => extendContent(Router.RouterBuild, holo, {
+holo.buildType = () => extend(Router.RouterBuild, holo, {
 	/* Drawing */
 	draw() {
 		this.super$draw();

@@ -39,7 +39,7 @@ operations.max = operations.not;
 // Short - mode | operation
 const maxNumber = 0xFFF;
 
-const elec = extendContent(Router, "electric-router", {
+const elec = extend(Router, "electric-router", {
 	load() {
 		this.super$load();
 		this.background = new TextureRegionDrawable(Core.atlas.find("router"));
@@ -72,7 +72,7 @@ elec.config(Short, (ent, raw) => {
 	ent.load(raw);
 });
 
-elec.buildType = () => extendContent(Router.RouterBuild, elec, {
+elec.buildType = () => extend(Router.RouterBuild, elec, {
 	updateTile() {
 		if (this.active()) {
 			this.super$updateTile();

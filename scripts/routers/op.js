@@ -17,7 +17,7 @@
 
 /* Turns router into a UV locked distributor quarter. */
 
-const opRouter = extendContent(Router, "op-router", {
+const opRouter = extend(Router, "op-router", {
 	load() {
 		this.super$load();
 		this.regions = [];
@@ -32,7 +32,7 @@ const opRouter = extendContent(Router, "op-router", {
 	}
 });
 
-opRouter.buildType = () => extendContent(Router.RouterBuild, opRouter, {
+opRouter.buildType = () => extend(Router.RouterBuild, opRouter, {
 	draw() {
 		Draw.rect(this.region, this.x, this.y);
 	},

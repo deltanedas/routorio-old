@@ -18,9 +18,9 @@
 /* Factory for routorio's units */
 
 const UnitPlan = UnitFactory.UnitPlan;
-const routorio = this.global.routorio;
+const routorio = global.routorio;
 
-const chainer = extendContent(UnitFactory, "router-chainer", {
+const chainer = extend(UnitFactory, "router-chainer", {
 	init() {
 		// TODO: Use reconstructor for sexy -> chain -> reverout?
 		// TODO: balance unit costs in respect to dagger -> crawler -> azimuth
@@ -48,7 +48,7 @@ const chainer = extendContent(UnitFactory, "router-chainer", {
 	}
 });
 
-chainer.buildType = () => extendContent(UnitFactory.UnitFactoryBuild, chainer, {
+chainer.buildType = () => extend(UnitFactory.UnitFactoryBuild, chainer, {
 	draw() {
 		const dx = this.x, dy = this.y;
 		Draw.rect(chainer.region, dx, dy);

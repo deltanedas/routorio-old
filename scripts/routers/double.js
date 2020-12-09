@@ -17,7 +17,7 @@
 
 var lock = false;
 
-const double = extendContent(Router, "titanium-double-router", {
+const double = extend(Router, "titanium-double-router", {
 	load() {
 		this.super$load();
 
@@ -40,7 +40,7 @@ const double = extendContent(Router, "titanium-double-router", {
 	}
 });
 
-double.buildType = () => extendContent(Router.RouterBuild, double, {
+double.buildType = () => extend(Router.RouterBuild, double, {
 	placed() {
 		this.super$placed();
 		const x = double.calcOffset(this.tile.x);

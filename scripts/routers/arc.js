@@ -97,7 +97,7 @@ const rates = {
 	// decrease arcing
 	plast: {
 		apply: tile => adjacent(tile, block => (block.insulated && block instanceof Wall)
-			|| block.id == this.global.routorio.crouter.id),
+			|| block.id == global.routorio.crouter.id),
 		bonuses: {
 			arc: -0.02
 		}
@@ -105,7 +105,7 @@ const rates = {
 	// decrease fuel burnup
 	phase: {
 		apply: tile => adjacent(tile, block => block.deflect
-			|| block.id == this.global.routorio.phase.id),
+			|| block.id == global.routorio.phase.id),
 		modifiers: {
 			burnup: 0.5
 		}
@@ -136,7 +136,7 @@ const rates = {
 	// surge is an excellent conductor, increase arcing and power dramatically
 	surge: {
 		apply: tile => adjacent(tile,
-			block => block.id == this.global.routorio.surge.id
+			block => block.id == global.routorio.surge.id
 				|| block.lightningChance > 0),
 		bonuses: {
 			gen: 2
@@ -151,7 +151,7 @@ const rates = {
 // Just here to make it easy to check for it.
 mod = new Router("moderouter");
 
-arc = extendContent(Router, "arc-router", {
+arc = extend(Router, "arc-router", {
 	setStats() {
 		this.super$setStats();
 		// base
@@ -190,7 +190,7 @@ arc.flags = EnumSet.of(BlockFlag.generator);
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
 
-arc.buildType = () => extendContent(Router.RouterBuild, arc, {
+arc.buildType = () => extend(Router.RouterBuild, arc, {
 	updateTile() {
 		this.super$updateTile();
 		this.progress = Math.max(this.progress - 0.005, 0);

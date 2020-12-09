@@ -18,7 +18,7 @@
 // How to colour the -top texture
 const colour = new Color(1, 1, 1, 0.5);
 
-const clear = extendContent(Router, "clear-router", {
+const clear = extend(Router, "clear-router", {
 	load() {
 		this.super$load();
 		this.bottomRegion = Core.atlas.find("routorio-clear-router-bottom");

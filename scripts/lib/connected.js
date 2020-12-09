@@ -165,7 +165,7 @@ const building = block => {return {
 
 module.exports = {
 	new(block, name, bdef, edef) {
-		const ret = extendContent(block, name,
+		const ret = extend(block, name,
 			Object.assign(Object.create(this.block), bdef));
 		// Get Router.RouterBuild from just Router
 		const build = ret.newBuilding().class;
@@ -173,7 +173,7 @@ module.exports = {
 
 		/* The building's variables are stored with the object,
 		   Object.create is used so that they don't share the same variables */
-		ret.buildType = () => extendContent(build, ret, Object.create(edef));
+		ret.buildType = () => extend(build, ret, Object.create(edef));
 		return ret;
 	},
 

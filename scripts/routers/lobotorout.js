@@ -2,7 +2,7 @@
 
 // TODO: Blend like a router, not a conveyor
 
-const lobo = extendContent(Router, "lobotorout", {
+const lobo = extend(Router, "lobotorout", {
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find("router");
@@ -10,7 +10,7 @@ const lobo = extendContent(Router, "lobotorout", {
 	}
 });
 
-lobo.buildType = () => extendContent(Router.RouterBuild, lobo, {
+lobo.buildType = () => extend(Router.RouterBuild, lobo, {
 	draw() {
 		// No rotation
 		Draw.rect(lobo.region, this.x, this.y);

@@ -126,9 +126,9 @@ LogicIO.allStatements.add(prov(() => VulcanStatement.new([
 	"router1"
 ])));
 
-spock = extendContent(Router, "vulcan-router", {});
+spock = extend(Router, "vulcan-router", {});
 
-spock.buildType = () => extendContent(Router.RouterBuild, spock, {
+spock.buildType = () => extend(Router.RouterBuild, spock, {
 	getTileTarget(item, from, set) {
 		const dir = this._vars.output;
 		if (dir == -1) return null;

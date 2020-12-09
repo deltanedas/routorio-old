@@ -17,12 +17,14 @@
 
 const dirs = require("routorio/lib/dirs");
 
-const clear = this.global.routorio.clear;
+const clear = global.routorio.clear;
 
-const alien = extendContent(Router, "alien-router", {});
-alien.buildType = () => extendContent(Router.RouterBuild, alien, {
+const alien = extend(Router, "alien-router", {});
+
+alien.buildType = () => extend(Router.RouterBuild, alien, {
 	updateTile() {
 		this.super$updateTile();
+		if (Vars.net.client()) return;
 
 		const items = this.items;
 		if (Mathf.chance(alien.spreadChance)) {
@@ -40,11 +42,11 @@ alien.buildType = () => extendContent(Router.RouterBuild, alien, {
 			if (!other) continue;
 
 			if (other.block() == Blocks.air ||
-				(other.block() instanceof Router
-				&& other.block().id != alien.id)) {
+					(other.block() instanceof Router
+					&& other.block().id != alien.id)) {
 				if (fed) {
 					Core.app.post(() => {
-						Call.setTile(other, alien, this.team, 0);
+						other.setNet(alien, this.team, 0);
 					});
 				}
 				return;
@@ -53,7 +55,7 @@ alien.buildType = () => extendContent(Router.RouterBuild, alien, {
 
 		// This alien router couldn't spread and is a failure
 		Core.app.post(() => {
-			Call.setTile(this.tile, clear, this.team, 0);
+			this.tile.setNet(clear, this.team, 0);
 		});
 	}
 });

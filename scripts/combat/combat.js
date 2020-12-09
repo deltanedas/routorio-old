@@ -15,14 +15,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const combat = extendContent(ItemTurret, "combat-router", {
+const combat = extend(ItemTurret, "combat-router", {
 	load() {
 		this.super$load();
 		this.facade = Core.atlas.find("routorio-totally-4-distributors");
 	},
 });
 
-combat.buildType = () => extendContent(ItemTurret.ItemTurretBuild, combat, {
+combat.buildType = () => extend(ItemTurret.ItemTurretBuild, combat, {
 	draw() {
 		if (this.team == Vars.player.team()) {
 			this.super$draw();

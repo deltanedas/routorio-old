@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const routorio = this.global.routorio;
+const routorio = global.routorio;
 const register = require("routorio/lib/register");
 
 const viewport = new Rect();
@@ -33,7 +33,7 @@ Object.assign(weapon, {
 	bullet: Bullets.standardCopper
 });
 
-const routerpede = extendContent(UnitType, "routerpede", {
+const routerpede = extend(UnitType, "routerpede", {
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find("router");

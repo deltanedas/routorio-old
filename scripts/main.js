@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const routorio = this.global.routorio = {};
+const routorio = global.routorio = {};
 
 const add = (type, names) => {
 	for (var i in names) {
@@ -41,7 +41,7 @@ add("routers", ["op", "half", "double",
 	"surge", "solar", "alien",
 	"arc", "vulcan", "fusion",
 	"holorouter", "sprouter", "rainbow",
-	"routergeist", "lobotorout", "crouter"]);
+	"lobotorout", "crouter", "xmas"]);
 add("payloads", ["payload-conduit",
 	"routoid-assembler", "routoid-liquefactor"]);
 add("combat", ["combat", "multirouter"]);

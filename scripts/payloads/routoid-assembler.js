@@ -17,7 +17,7 @@
 
 const routoid = require("routorio/lib/routoid");
 
-const asm = extendContent(PayloadAcceptor, "routoid-assembler", {
+const asm = extend(PayloadAcceptor, "routoid-assembler", {
 	setStats() {
 		this.super$setStats();
 		this.stats.add(Stat.productionTime, this.craftTime / 60, StatUnit.seconds);
@@ -34,7 +34,7 @@ asm.breeds = [null, "alien", "surge",
 	"fusion", "inverted", "ubuntium",
 	"sexy", "clear"];
 
-asm.buildType = () => extendContent(PayloadAcceptor.PayloadAcceptorBuild, asm, {
+asm.buildType = () => extend(PayloadAcceptor.PayloadAcceptorBuild, asm, {
 	updateTile() {
 		if (this.consValid() && !this.payload) {
 			this.progress += this.edelta();

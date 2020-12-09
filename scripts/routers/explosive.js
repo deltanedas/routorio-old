@@ -17,12 +17,12 @@
 
 const dirs = require("routorio/lib/dirs");
 
-const explode = extendContent(Router, "explosive-router", {});
+const explode = extend(Router, "explosive-router", {});
 
 explode.radius = 10;
 explode.damage = 100;
 
-explode.buildType = () => extendContent(Router.RouterBuild, explode, {
+explode.buildType = () => extend(Router.RouterBuild, explode, {
 	onProximityUpdate() {
 		this.super$onProximityUpdate();
 

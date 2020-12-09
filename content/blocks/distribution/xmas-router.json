@@ -1,0 +1,8 @@
+{
+	"category": "distribution",
+	"research": "router",
+	"requirements": [
+		"graphite/10",
+		"copper/5"
+	]
+}

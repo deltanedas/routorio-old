@@ -1,6 +1,6 @@
 /* Faster, more forceful payload conduit */
 
-const cond = extendContent(PayloadConveyor, "payload-conduit", {
+const cond = extend(PayloadConveyor, "payload-conduit", {
 	load() {
 		this.super$load();
 		this.realEdge = this.edgeRegion;
@@ -17,7 +17,7 @@ const cond = extendContent(PayloadConveyor, "payload-conduit", {
 	icons: () => [Core.atlas.find(this.name + "-icon")]
 });
 
-cond.buildType = () => extendContent(PayloadConveyor.PayloadConveyorBuild, cond, {
+cond.buildType = () => extend(PayloadConveyor.PayloadConveyorBuild, cond, {
 	draw() {
 		this.super$draw();
 		Draw.rect(cond.glassRegion, this.x, this.y, this.rotation * 90);

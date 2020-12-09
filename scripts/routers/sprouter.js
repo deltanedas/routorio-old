@@ -15,10 +15,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const fruit = extendContent(Router, "routerfruit", {
+const fruit = extend(Router, "routerfruit", {
 });
 
-const sprout = extendContent(Router, "sprouter", {
+const sprout = extend(Router, "sprouter", {
 	load() {
 		this.super$load();
 		this.region = Core.atlas.find("routorio-sprouter-plant");
@@ -37,7 +37,7 @@ const sprout = extendContent(Router, "sprouter", {
 	eatChance: 1 / 10
 });
 
-sprout.buildType = () => extendContent(Router.RouterBuild, sprout, {
+sprout.buildType = () => extend(Router.RouterBuild, sprout, {
 	updateTile() {
 		// TODO: Use daytime and falloff at dusk/dawn
 		// TODO: Water nearby will speed up growth and fertilization

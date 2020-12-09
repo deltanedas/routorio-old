@@ -15,10 +15,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const inverted = extendContent(Conveyor, "inverted-router", {
+const inverted = extend(Conveyor, "inverted-router", {
 	drawBase(tile) {
 		const build = tile.build;
-		const rot = Time.time() * this.speed * 8 * build.timeScale;
+		const rot = Time.time * this.speed * 8 * build.timeScale;
 		// Instead of an animated texture, it rotates when active
 		Draw.rect(this.region, tile.drawx(), tile.drawy(), rot);
 	},

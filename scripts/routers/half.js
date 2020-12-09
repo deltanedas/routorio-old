@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const double = extendContent(Router, "double-router", {
+const double = extend(Router, "double-router", {
 	load() {
 		this.super$load();
 		this.regions = [
