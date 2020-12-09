@@ -46,8 +46,7 @@ const xmas = extend(Router, "xmas-router", {
 	},
 
 	ready() {
-		return true;
-//		return isDec() && LocalDate.now().dayOfMonth > 24;
+		return isDec() && LocalDate.now().dayOfMonth > 24;
 	},
 
 	open(tile, team) {
