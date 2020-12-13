@@ -1,7 +1,7 @@
 # Routorio
 Reality-shatterring router expansion mod for Mindustry.
 
-Also check out (ReVision)[https://github.com/Slava0135/reVision]
+Also check out [ReVision](https://github.com/Slava0135/reVision)
 
 # Schematics
 Schematics of every block can be created with `make -f schems.mk`.
