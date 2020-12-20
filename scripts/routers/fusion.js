@@ -68,7 +68,7 @@ const FusionGraph = {
 			if (!tile) return;
 
 			if (tile.block() == fusion) {
-				var ent = tile.bc();
+				var ent = tile.build;
 				if (this.routers.add(ent)) {
 					if (ent.network) {
 						if (ent.network == this) return;

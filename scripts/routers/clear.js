@@ -26,7 +26,7 @@ const clear = extend(Router, "clear-router", {
 	},
 
 	drawBase(tile){
-		const building = tile.bc();
+		const building = tile.build;
 		Draw.rect(this.bottomRegion, tile.drawx(), tile.drawy());
 		Draw.color(colour);
 		Draw.rect(this.topRegion, tile.drawx(), tile.drawy());

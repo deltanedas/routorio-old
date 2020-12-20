@@ -64,7 +64,7 @@ const NetworkGraph = {
 			if (!tile) return;
 
 			if (tile.block() == phase) {
-				var ent = tile.bc();
+				var ent = tile.build;
 				if (this.routers.add(ent)) {
 					if (ent.network) {
 						if (ent.network == this) return;
