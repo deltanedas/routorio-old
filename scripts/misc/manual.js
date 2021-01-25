@@ -20,7 +20,8 @@ try {
 
 	rtfm.addSection("Routorio", [
 		"Arc Reoucter",
-		"$block.routorio-electric-router.name"
+		"$block.routorio-electric-router.name",
+		"Speed"
 	]);
 
 	module.exports = true;

@@ -157,7 +157,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	},
 
 	getDependencies(cons) {
-		super.getDependencies(cons);
+		this.super$getDependencies(cons);
 
 		cons.get(liquid);
 	},
