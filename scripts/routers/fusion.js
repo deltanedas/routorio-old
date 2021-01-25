@@ -122,11 +122,6 @@ const surge = global.routorio.surge;
 const neut = global.routorio.neutron;
 
 fusion = connected.new(LiquidRouter, "fusion-router", {
-	init() {
-		this.super$init();
-		liquid = Vars.content.getByName(ContentType.liquid, "routorio-liquid-router");
-	},
-
 	load() {
 		this.super$load();
 		// Center dot
@@ -159,6 +154,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	getDependencies(cons) {
 		this.super$getDependencies(cons);
 
+		liquid = Vars.content.getByName(ContentType.liquid, "routorio-liquid-router");
 		cons.get(liquid);
 	},
 
