@@ -24,6 +24,13 @@ const ubuntium = extend(Router, "ubuntium-router", {
 ubuntium.chance = 1 / 30;
 
 ubuntium.buildType = () => extend(Router.RouterBuild, ubuntium, {
+	// require unlocking beryllium before ubuntium router, it's not counted as consumption
+	getDependencies(cons) {
+		super.getDependencies(cons);
+
+		cons.get(very);
+	},
+
 	handleItem(source, item) {
 		if (Mathf.chance(ubuntium.chance)) {
 			item = bery;

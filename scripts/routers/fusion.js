@@ -156,6 +156,12 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 		this.bars.add("warmup", ent => ent.warmupBar());
 	},
 
+	getDependencies(cons) {
+		super.getDependencies(cons);
+
+		cons.get(liquid);
+	},
+
 	enableDrawStatus: false,
 	powerGeneration: 50,
 	heatRate: 0.00005,
