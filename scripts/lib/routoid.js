@@ -20,13 +20,13 @@ const routorio = global.routorio;
 const routoid = {
 	draw() {
 		Drawf.shadow(this.x, this.y, 16);
-		Draw.rect(this.region, this.x, this.y, this.rotation);
+		Draw.rect(this.region, this.x, this.y, this.rotation());
 	},
 
 	set(x, y, r) {
 		this.x = x;
 		this.y = y;
-		this.rotation = r + 45;
+		this._rotation = r + 45;
 	},
 
 	init(breed) {
@@ -34,6 +34,10 @@ const routoid = {
 		this.breed = breed;
 		this.region = routorio.holorouter.get(name);
 		this.set(0, 0, 0);
+	},
+
+	rotation() {
+		return this._rotation;
 	},
 
 	fits: () => true,
