@@ -19,25 +19,27 @@ const routorio = global.routorio;
 
 const routoid = {
 	draw() {
-		Drawf.shadow(this.x, this.y, 16);
-		Draw.rect(this.region, this.x, this.y, this.rotation());
+		// .x is a function, must use getX()
+		const x = this.x(), y = this.y();
+		Drawf.shadow(x, y, 16);
+		Draw.rect(this.region, x, y, this.rotation() + 45);
 	},
 
-	set(x, y, r) {
-		this.x = x;
-		this.y = y;
-		this._rotation = r + 45;
+	set(x, y, rotation) {
+		this._x = x;
+		this._y = y;
+		this._rotation = rotation;
 	},
+
+	x() { return this._x; },
+	y() { return this._y; },
+	rotation() { return this._rotation; },
 
 	init(breed) {
 		const name = breed ? "routorio-" + breed + "-router" : "router";
 		this.breed = breed;
 		this.region = routorio.holorouter.get(name);
 		this.set(0, 0, 0);
-	},
-
-	rotation() {
-		return this._rotation;
 	},
 
 	fits: () => true,

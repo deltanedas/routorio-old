@@ -89,9 +89,10 @@ const FusionGraph = {
 			var router = routers.get(i);
 			// FIXME: have this iterate in a defined order
 			router.index = indices++;
-			for (var o in router.outputs) {
+			for (var output of router.outputs) {
 				var node = {
-					port: port,
+					to: output,
+					from: router,
 					prev: node
 				};
 
@@ -103,8 +104,10 @@ const FusionGraph = {
 				last = node;
 			}
 		}
+		// no outputs
 		if (!node) return;
 
+		// outputs!
 		this.end = node;
 		this.end.next = this.begin;
 		this.begin.prev = node;
@@ -166,14 +169,16 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	// 2 mins per router for a neutron router
 	fuseTime: 120 * 60,
 	// 1 min for a blocked fusion router to blow
-	meltdownTime: 180 * 60,
+	meltdownTime: 60 * 60,
 	// Make room for plasma
 	explosionRadius: 5,
 	explosionDamage: 4000,
-	// 40% of every air tile in the blast radius is ignited
+	// 40% of tiles in the blast radius are ignited
 	plasmaChance: 0.4,
+	// lerp factor is (heat + warmup) * dissipation
+	fluxDissipation: 0.02,
 
-	plasma1: Color.valueOf("#f19a37"),
+	plasma1: Color.valueOf("#379af1"),
 	plasma2: Color.valueOf("#b24de7")
 }, {
 	updateTile() {
@@ -193,7 +198,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 					this.fuseTime = 0;
 				}
 			} else if (this.fuseTime >= fusion.meltdownTime) {
-				this.meltdown();
+				this.kill();
 			}
 		}
 
@@ -202,6 +207,27 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 		}
 
 		this.dumpNet();
+
+		if (Vars.ui) {
+			this.updateFlux();
+		}
+	},
+
+	updateFlux() {
+		this.flux = this.nextFlux;
+		var flux = this.flux;
+		// TODO: check neighbours for greaterflux
+		// TODO: if neighbour has index + 1, lerp to its flux
+		for (var other of this.proximity) {
+			if (other.block.id == fusion.id) {
+				if (other.index == this.index + 1) {
+					flux = other.flux;
+				}
+			}
+		}
+
+		Math.lerp(flux, other.flux, (this.heat + this.warmup) * plasma.fluxDissipation);
+		this.nextFlux = Math.lerp(this.nextFlux, flux;
 	},
 
 	draw() {
@@ -215,22 +241,20 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	},
 
 	drawLiquid() {
-		Draw.color(liquid.color, fusion.plasma2, this.warmup * this.heat * Mathf.absin(Time.time / 100, 0.9, 1));
+		// TODO: bloom for heat > 0.5
+		const base = Tmp.c1.set(liquid.color).lerp(fusion.plasma1, this.heat);
+		Draw.color(base, fusion.plasma2, this.flux);
 		var alpha = 0.9 * this.liquids.total() / fusion.liquidCapacity;
-		alpha += Math.sin(0.1 * Time.time * Math.pow(this.heat + 2, this.heat + 1) + this.index) / 5;
+		alpha += Math.sin(0.1 * Time.time * Math.pow(this.heat + 2, this.heat + 1) + this.flux) / 5;
 		Draw.alpha(alpha);
 		Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
 		Draw.reset();
 	},
 
-	meltdown() {
-		Effect.shake(40, 5, this);
-		this.kill();
-	},
-
 	onDestroyed() {
 		this.super$onDestroyed();
 
+		Effect.shake(40, 5, this);
 		Sounds.explosionbig.at(this.tile);
 		if (this.heat < 0.5 || !Vars.state.rules.reactorExplosions) {
 			return;
@@ -247,7 +271,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 		Damage.damage(this.x, this.y, fusion.explosionRadius * Vars.tilesize,
 			fusion.explosionDamage * 4);
 
-		// TODO: plasma routers
+		// TODO: fill some of the explosion with plasma routers
 	},
 
 	onRemoved() {
@@ -258,8 +282,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 			if (network) network.refresh();
 
 			// Server doesn't care about drawing, stop
-			if (!Vars.ui) return;
-			this.reblendAll();
+			if (Vars.ui) this.reblendAll();
 		});
 	},
 
@@ -271,9 +294,7 @@ fusion = connected.new(LiquidRouter, "fusion-router", {
 	acceptItem: () => false,
 
 	// Searches reactor outputs instead of prox
-	// TODO fix
 	dumpNet() {
-print([this.network, this.network ? this.network.last : "h", this.items.total()])
 		const network = this.network;
 		if (!network || !network.last || this.items.total() == 0) return;
 
@@ -282,14 +303,13 @@ print([this.network, this.network ? this.network.last : "h", this.items.total()]
 		while (!ended) {
 			var output = node.to, source = node.from;
 			node = node.next;
-print("Try "+ output)
 			if (output.acceptItem(source, neut)) {
-print("yes")
 				network.last = node;
 				output.handleItem(source, neut);
 				this.items.take();
 				return;
 			}
+
 			ended = node == network.end;
 		}
 	},
@@ -319,20 +339,20 @@ print("yes")
 		const network = this.network;
 		const prox = this.proximity;
 		// Remove potentially broken tiles
-		this.outputs = [];
+		const outputs = [];
 		this.magnets = 0;
 
 		/* Add back the remaining tiles */
 		for (var i = 0; i < prox.size; i++) {
 			var near = prox.get(i);
 			if (near.block.hasItems && near.block != fusion) {
-				print("Potential output " + near.tile)
 				if (near.block.id == surge.id) {
 					this.magnets++;
 				}
-				this.outputs.push(near);
+				outputs.push(near);
 			}
 		}
+		this.outputs = outputs;
 
 		// Very slow
 		if (network) network.rebuildOutputs();
@@ -343,6 +363,7 @@ print("yes")
 
 		this.blendBits = read.s();
 		if (version != 1) {
+			// TODO: just write a network ID here
 			this.network.warmup = read.b() / 128;
 			// some weird signing shit idk
 			if (this.warmup() < 0) {
@@ -363,7 +384,7 @@ print("yes")
 	},
 
 	write(write) {
-		this.super$write(write);
+		this.super$write(writem 3);
 		write.s(this.blendBits);
 		write.b(this.network.warmup * 128);
 		// Heat is averaged between networks
@@ -406,6 +427,8 @@ print("yes")
 		this.super$created();
 		if (!this.network) {
 			this.network = FusionGraph.new(this);
+			// start the flux cycle
+			this.flux = 1;
 		}
 	},
 
@@ -414,10 +437,16 @@ print("yes")
 	setNetwork(set) { this._network = set; },
 	getIndex() { return this._index; },
 	setIndex(set) { this._index = set; },
+	getOutputs() { return this._outputs; },
+	setOutputs(set) { this._outputs = set; },
+	getFlux() { return this._flux; },
+	setFlux(set) { this._flux = set; },
 
 	_network: null,
-	heat: 0,
 	_index: 0,
+	_outputs: [],
+	_flux: 0
+	heat: 0,
 	fuseTime: 0
 });
 
