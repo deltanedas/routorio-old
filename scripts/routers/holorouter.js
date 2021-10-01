@@ -90,6 +90,12 @@ holo = extend(Router, "holorouter", {
 
 		var texture, field;
 
+		Events.on(ClientLoadEvent, () => {
+			this.loadDialog();
+		});
+	},
+
+	loadDialog() {
 		this.dialog = extend(BaseDialog, "$select-hologram", {
 			pick(ent) {
 				this.ent = ent;

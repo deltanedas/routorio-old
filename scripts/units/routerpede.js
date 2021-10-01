@@ -29,7 +29,7 @@ const weapon = new Weapon("chain-router");
 Object.assign(weapon, {
 	reload: 15,
 	alternate: false,
-	ejectEffect: Fx.coreLand,
+	ejectEffect: Fx.coreLandDust,
 	bullet: Bullets.standardCopper
 });
 
@@ -151,7 +151,7 @@ routerpede.constructor = () => extend(MechUnit, {
 		const seg = this.segments.pop();
 		if (Vars.ui && seg) {
 			Effect.scorch(seg.x, seg.y, 2);
-			Effect.effect(Fx.explosion, seg.x, seg.y);
+			Effect.create(Fx.explosion, seg.x, seg.y);
 			// Less shake than if it fully died
 			Effect.shake(1, 1, seg.x, seg.y);
 		}

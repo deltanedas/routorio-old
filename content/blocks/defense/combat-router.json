@@ -18,7 +18,7 @@
 			"height": 8,
 			"hitEffect": "blastExplosion",
 			"shootEffect": "shootSmall",
-			"smokeEffect": "coreLand",
+			"smokeEffect": "coreLandDust",
 			"ammoMultiplier": 1,
 			"knockback": 0.15,
 			"hitShake": 0.25,

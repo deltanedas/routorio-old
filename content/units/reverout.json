@@ -31,7 +31,7 @@
 			"height": 6,
 			"hitEffect": "blastExplosion",
 			"shootEffect": "shootSmall",
-			"smokeEffect": "coreLand",
+			"smokeEffect": "coreLandDust",
 			"ammoMultiplier": 1,
 			"homingPower": 3,
 			"homingRange": 60,
