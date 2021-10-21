@@ -39,9 +39,10 @@ add("routers", ["op", "half", "double",
 	"inverted", "clear", "explosive",
 	"phase", "ubuntium", "electric",
 	"surge", "solar", "alien",
-	"arc", "vulcan", "fusion",
-	"holorouter", "sprouter", "rainbow",
-	"lobotorout", "crouter", "xmas"]);
+	"arc", "vulcan", "plasma",
+	"fusion", "holorouter", "sprouter",
+	"rainbow", "lobotorout", "crouter",
+	"xmas"]);
 add("payloads", ["payload-conduit",
 	"routoid-assembler", "routoid-liquefactor"]);
 add("combat", ["combat", "multirouter"]);

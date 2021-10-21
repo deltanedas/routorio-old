@@ -1,5 +1,4 @@
 {
-	"size": 1,
 	"requirements": ["copper/10"],
 	"category": "distribution",
 	"research": "router"

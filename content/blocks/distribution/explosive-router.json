@@ -1,5 +1,4 @@
 {
-	"size": 1,
 	"requirements": ["copper/6", "graphite/3"],
 	"category": "distribution",
 	"research": "shock-mine",

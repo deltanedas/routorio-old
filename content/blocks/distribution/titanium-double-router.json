@@ -1,5 +1,4 @@
 {
-	"size": 1,
 	"requirements": ["copper/3", "lead/3", "titanium/3"],
 	"category": "distribution",
 	"research": "double-router"
