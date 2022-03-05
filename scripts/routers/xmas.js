@@ -93,6 +93,8 @@ if (!Vars.headless) {
 // Break after xmas eve to open
 Events.on(BlockBuildEndEvent, e => {
 	if (!e.breaking || Vars.net.client()) return;
+	// just in case something with no building is destroyed
+	if (!e.tile.build) return;
 	const block = e.tile.build.cblock;
 	if (!block || block.id != xmas.id) return;
 	if (!xmas.ready()) return;
