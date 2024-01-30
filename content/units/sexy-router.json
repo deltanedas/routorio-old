@@ -11,6 +11,5 @@
 	"health": 1,
 	"drawCell": false,
 	"itemCapacity": 400,
-	"speed": 0.1,
-	"commandLimit": 512
+	"speed": 0.1
 }

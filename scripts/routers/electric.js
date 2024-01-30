@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ elec.buildType = () => extend(Router.RouterBuild, elec, {
 		table.background(elec.background);
 
 		const modeb = table.button(elec.buttons.modes[this.mode],
-			Styles.clearTransi, () => {
+			Styles.clearTogglei, () => {
 			// Cycle through modes
 			this.mode = (this.mode + 1) % modeCount;
 			this.configure(this.config());
@@ -92,7 +92,7 @@ elec.buildType = () => extend(Router.RouterBuild, elec, {
 		}).size(40).get();
 
 		const opb = table.button(elec.buttons.operations[this.operation],
-			Styles.clearTransi, () => {
+			Styles.clearTogglei, () => {
 			// Cycle through operations
 			this.operation = (this.operation + 1) % operationCount;
 			this.configure(this.config());
@@ -169,6 +169,6 @@ elec.buildType = () => extend(Router.RouterBuild, elec, {
 	number: maxNumber
 });
 
-elec.consumes.powerBuffered(maxNumber);
+elec.consume(new ConsumePower(0, maxNumber, true));
 
 module.exports = elec

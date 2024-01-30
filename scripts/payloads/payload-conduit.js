@@ -10,8 +10,9 @@ const cond = extend(PayloadConveyor, "payload-conduit", {
 		this.glassRegion = Core.atlas.find(this.name + "-glass");
 	},
 
-	icon(cicon) {
-		return Core.atlas.find(this.name + "-icon");
+	loadIcon() {
+		this.fullIcon = Core.atlas.find(this.name + "-icon");
+		this.uiIcon = this.fullIcon;
 	},
 
 	icons: () => [Core.atlas.find(this.name + "-icon")]

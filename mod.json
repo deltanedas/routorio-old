@@ -1,9 +1,9 @@
 {
 	"name": "routorio",
 	"displayName": "[gray]rout[#b8341f]orio",
-	"author": "DeltaNedas",
-	"description": "Reality-shattering [gray]router[] expansion mod.\n[stat]Optionally requires [#00aaff]DeltaNedas/rtfm[] for manual pages.[]\n10/10 IGN\n  - Router\n[coral]Ukranian translation by Prostaчок_ua\nAlso try out Slava1035/reVision!",
-	"version": "2.36.4",
-	"minGameVersion": 131,
-	"repo": "DeltaNedas/routorio"
+	"author": "deltanedas",
+	"description": "Reality-shattering [gray]router[] expansion mod.\n[stat]Optionally requires [#00aaff]deltanedas/rtfm[] for manual pages.[]\n10/10 IGN\n  - Router\n[coral]Ukranian translation by Prostaчок_ua\nAlso try out Slava1035/reVision!",
+	"version": "2.37.0",
+	"minGameVersion": 136,
+	"repo": "deltanedas/routorio-old"
 }

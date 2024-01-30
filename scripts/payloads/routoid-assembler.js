@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 const routoid = require("routorio/lib/routoid");
 
-const asm = extend(PayloadAcceptor, "routoid-assembler", {
+const asm = extend(PayloadBlock, "routoid-assembler", {
 	setStats() {
 		this.super$setStats();
 		this.stats.add(Stat.productionTime, this.craftTime / 60, StatUnit.seconds);
@@ -34,14 +34,14 @@ asm.breeds = [null, "alien", "surge",
 	"fusion", "inverted", "ubuntium",
 	"sexy", "clear"];
 
-asm.buildType = () => extend(PayloadAcceptor.PayloadAcceptorBuild, asm, {
+asm.buildType = () => extend(PayloadBlock.PayloadBlockBuild, asm, {
 	updateTile() {
-		if (this.consValid() && !this.payload) {
-			this.progress += this.edelta();
+		if (this.efficiency > 0 && !this.payload) {
+			this.asmProgress += this.edelta();
 		}
 
-		if (this.progress >= asm.craftTime) {
-			this.progress = 0;
+		if (this.asmProgress >= asm.craftTime) {
+			this.asmProgress = 0;
 			this.payload = extend(Payload, Object.create(routoid));
 			this.payload.init(asm.breeds[Math.round(Mathf.random(asm.breeds.length))]);
 			this.payVector.setZero();
@@ -62,7 +62,7 @@ asm.buildType = () => extend(PayloadAcceptor.PayloadAcceptorBuild, asm, {
 
 	acceptPayload: (s, p) => false,
 
-	progress: 0
+	asmProgress: 0
 });
 
 module.exports = asm;

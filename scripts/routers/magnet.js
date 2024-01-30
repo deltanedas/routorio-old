@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -15,27 +15,28 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const surge = extend(Router, "surge-router", {});
+const magnet = extend(Router, "magnet-router", {});
 
-surge.sparkChance = 0.1;
+magnet.sparkChance = 0.1;
 
-surge.buildType = () => extend(Router.RouterBuild, surge, {
+magnet.buildType = () => extend(Router.RouterBuild, magnet, {
 	updateTile() {
 		// Only route items when there is power, but the amount doesn't matter
-		if (this.cons.valid()) {
+		// magnet routers serve as a heavy initial power cost
+		if (this.efficiency > 0.0) {
 			this.super$updateTile();
 		}
 	},
 
-	// Add random spark effects
+	// Add random spark effects when routing
 	handleItem(source, item) {
 		this.super$handleItem(source, item);
 
-		if (Vars.ui && Mathf.chance(surge.sparkChance)) {
+		if (Vars.ui && Mathf.chance(magnet.sparkChance)) {
 			Fx.lancerLaserCharge.at(this.x + Mathf.range(2), this.y + Mathf.range(2),
 				Math.random(0, 360), Items.surgeAlloy.color);
 		}
 	}
 });
 
-module.exports = surge;
+module.exports = magnet;

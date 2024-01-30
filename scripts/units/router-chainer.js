@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -54,9 +54,9 @@ chainer.buildType = () => extend(UnitFactory.UnitFactoryBuild, chainer, {
 		Draw.rect(chainer.region, dx, dy);
 		Draw.z(Layer.turret);
 
-		this.rot = Mathf.lerp(this.rot, Math.min(this.efficiency(), 1) * this.timeScale, 0.02);
+		this.rot = Mathf.lerp(this.rot, Math.min(this.efficiency, 1) * this.timeScale, 0.02);
 		const rot = Time.time * this.rot;
-		const chaining = this.cons.valid();
+		const chaining = this.efficiency > 0;
 
 		this.dist = Mathf.lerp(this.dist, this.plan
 			? this.plan.type.size / 40
@@ -68,7 +68,7 @@ chainer.buildType = () => extend(UnitFactory.UnitFactoryBuild, chainer, {
 			var y = dy + Angles.trnsy(angle, this.dist);
 
 			if (chaining) {
-				Drawf.laser(this.team, chainer.laser, chainer.laserEnd,
+				Drawf.laser(chainer.laser, chainer.laserEnd,
 					// imaginary = hide laser
 					x, y, dx, dy, Math.sqrt(Math.sin(angle / 50) / 5));
 				// Surge routers face the center when at max dist

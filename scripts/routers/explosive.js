@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -52,10 +52,10 @@ explode.buildType = () => extend(Router.RouterBuild, explode, {
 
 		Sounds.explosionbig.at(this.tile);
 		Effect.shake(40, 16, x, y);
-		Fx.nuclearShockwave.at(x, y);
+		Fx.reactorExplosion.at(x, y);
 		for (var i = 0; i < 4; i++) {
 			Time.run(Math.random(40), () => {
-				Fx.nuclearcloud.at(x + Mathf.range(4), y + Mathf.range(4));
+				Fx.reactorsmoke.at(x + Mathf.range(4), y + Mathf.range(4));
 			});
 		}
 	}

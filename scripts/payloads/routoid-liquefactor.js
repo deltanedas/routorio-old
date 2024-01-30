@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const melter = extend(PayloadAcceptor, "routoid-liquefactor", {
+const melter = extend(PayloadBlock, "routoid-liquefactor", {
 	init() {
 		this.super$init();
 		this.liquid = Vars.content.getByName(ContentType.liquid, "routorio-liquid-router");
@@ -36,22 +36,26 @@ const melter = extend(PayloadAcceptor, "routoid-liquefactor", {
 	solid: true
 });
 
-melter.buildType = () => extend(PayloadAcceptor.PayloadAcceptorBuild, melter, {
+melter.buildType = () => extend(PayloadBlock.PayloadBlockBuild, melter, {
 	updateTile() {
 		this.dumpLiquid(melter.liquid);
 
-		if (this.valid()) {
-			this.cons.trigger();
-			this.progress -= this.edelta();
+		if (this.efficiency <= 0)
+			return;
 
-			this.liquids.add(melter.liquid, melter.amount);
-		} else if (this.payload) {
+		if (this.valid()) {
+			var progress = this.edelta();
+			this.meltProgress -= progress;
+
+			var space = melter.liquidCapacity - this.liquids.get(melter.liquid);
+			this.liquids.add(melter.liquid, Math.min(space, progress * melter.amount));
+		} else if (this.payload && this.meltProgress < 0.1) {
 			if (Vars.ui) {
 				Fx.smeltsmoke.at(this.x + Mathf.range(2), this.y + Mathf.range(2));
 			}
 
 			this.payload = null;
-			this.progress = melter.meltTime;
+			this.meltProgress = melter.meltTime;
 		}
 	},
 
@@ -61,11 +65,11 @@ melter.buildType = () => extend(PayloadAcceptor.PayloadAcceptorBuild, melter, {
 	},
 
 	valid() {
-		return this.consValid() && this.progress > 0.1
+		return this.meltProgress > 0.1
 			&& this.liquids.get(melter.liquid) < melter.liquidCapacity;
 	},
 
-	progress: 0
+	meltProgress: 0
 });
 
 module.exports = melter;

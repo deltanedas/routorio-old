@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,8 +18,7 @@
 const rainbow = extend(Router, "rainbow-router", {
 	load() {
 		this.super$load();
-		this.region = Core.atlas.find("router");
-		this.drawable = new TextureRegionDrawable(this.region);
+		this.drawable = new TextureRegionDrawable(Core.atlas.find("router"));
 	},
 
 	minimapColor(tile) {
@@ -39,12 +38,12 @@ var scrollPos = 0;
 
 rainbow.buildType = () => extend(Router.RouterBuild, rainbow, {
 	draw() {
-		Draw.rect(rainbow.region, this.x, this.y);
 		if (this.colour != -1) {
 			Draw.color(rainbow.colours[this.colour]);
-			Draw.alpha(0.75);
-			Fill.rect(this.x, this.y, Vars.tilesize, Vars.tilesize);
+			Draw.rect(Blocks.router.region, this.x, this.y);
 			Draw.color();
+		} else {
+			Draw.rect(rainbow.region, this.x, this.y);
 		}
 	},
 
@@ -74,9 +73,9 @@ rainbow.buildType = () => extend(Router.RouterBuild, rainbow, {
 	},
 
 	button(t, i) {
-		const button = t.button(Tex.whiteui.tint(rainbow.colours[i]), Styles.clearToggleTransi, 24, () => {
+		const button = t.button(Tex.whiteui.tint(rainbow.colours[i]), Styles.clearNoneTogglei, 24, () => {
 			this.configure(new java.lang.Integer(this.colour == i ? -1 : i));
-			Vars.control.input.frag.config.hideConfig();
+			Vars.control.input.config.hideConfig();
 		}).size(40).get();
 		button.update(() => {
 			button.checked = this.colour == i;

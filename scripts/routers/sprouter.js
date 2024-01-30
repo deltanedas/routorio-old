@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ sprout.buildType = () => extend(Router.RouterBuild, sprout, {
 		Drawf.shadow(this.x, this.y, 32 * this.size());
 		Draw.rect(sprout.region, this.x, this.y);
 
-		const scl = 8 * this.growth / this.growTime;
+		const scl = Vars.tilesize * this.growth / this.growTime;
 		const rot = Mathf.lerp(this.lastRot, scl * 180, 0.02);
 		this.lastRot = rot;
 		Draw.rect(fruit.region, this.x, this.y, scl, scl, rot);
@@ -66,7 +66,7 @@ sprout.buildType = () => extend(Router.RouterBuild, sprout, {
 			this.growth += sprout.itemValue;
 			this.heal(1);
 			if (Vars.ui) {
-				Fx.healBlockFull.at(this.x, this.y, this.size(), Blocks.mender.baseColor);
+				Fx.healBlockFull.at(this.x, this.y, this.size(), Blocks.mender.baseColor, sprout);
 			}
 		} else {
 			this.super$handleItem(source, item);

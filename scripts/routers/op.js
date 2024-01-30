@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@ const opRouter = extend(Router, "op-router", {
 		}
 	},
 
-	icons(){
-		// Vanilla distributor texture
+	icons() {
+		// Vanilla distributor texture ("distributor" is overriden to be 4 routers)
 		return [Core.atlas.find("routorio-distributor")];
 	}
 });

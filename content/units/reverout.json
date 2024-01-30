@@ -21,8 +21,11 @@
 		"name": "reverout-weapon",
 		"x": 4,
 		"reload": 20,
-		"shots": 3,
-		"spacing": 4,
+		"shoot": {
+			"type": "ShootSpread",
+			"shots": 3,
+			"spread": 4
+		},
 		"bullet": {
 			"type": "BasicBulletType",
 			"speed": 10,

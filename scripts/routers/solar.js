@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -23,11 +23,11 @@ const solar = extend(Router, "solar-router", {
 
 	setBars() {
 		this.super$setBars();
-		this.bars.add("power", entity => new Bar(
+		this.addBar("power", entity => new Bar(
 			() => Core.bundle.format("bar.poweroutput",
 				Strings.fixed(entity.powerProduction * 60 * entity.timeScale, 1)),
 			() => Pal.powerBar,
-			() => entity.efficiency()
+			() => entity.powerProduction / this.powerGeneration
 		));
 	},
 
@@ -47,23 +47,19 @@ solar.powerGeneration = 1 / 6;
 solar.buildType = () => extend(Router.RouterBuild, solar, {
 	updateTile() {
 		this.super$updateTile();
-		this.progress = Math.max(this.progress - 0.003, 0);
+		this.sun = Math.max(this.sun - 0.003 * this.delta(), 0);
 	},
 
 	handleItem(source, item) {
 		this.super$handleItem(source, item);
-		this.progress = Math.min(this.progress + 0.1, 1);
+		this.sun = Math.min(this.sun + 0.1, 1);
 	},
 
 	getPowerProduction() {
-		return solar.powerGeneration * this.efficiency();
+		return solar.powerGeneration * this.sun * solar.efficiency();
 	},
 
-	efficiency() {
-		return this.progress * solar.efficiency();
-	},
-
-	progress: 0
+	sun: 0
 });
 
 module.exports = solar;

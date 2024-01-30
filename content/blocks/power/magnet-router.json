@@ -11,5 +11,6 @@
 		"power": 0.25
 	},
 	"buildCostMultiplier": 4,
-	"hasPower": true
+	"hasPower": true,
+	"outputsPower": true
 }

@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -38,11 +38,10 @@ add("items", ["beryllium", "neutron", "liquid"]);
 add("routers", ["op", "half", "double",
 	"inverted", "clear", "explosive",
 	"phase", "ubuntium", "electric",
-	"surge", "solar", "alien",
+	"magnet", "solar", "alien",
 	"arc", "vulcan", "plasma",
 	"fusion", "holorouter", "sprouter",
-	"rainbow", "lobotorout", "crouter",
-	"xmas"]);
+	"rainbow", "lobotorout", "xmas"]);
 add("payloads", ["payload-conduit",
 	"routoid-assembler", "routoid-liquefactor"]);
 add("combat", ["combat", "multirouter"]);

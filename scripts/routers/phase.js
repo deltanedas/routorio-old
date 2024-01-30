@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ const NetworkGraph = {
 	},
 
 	addNetwork(net) {
-		const routers = net.routers.asArray();
+		const routers = net.routers.toSeq();
 		for (var i = 0; i < routers.size; i++) {
 			this.routers.add(routers.get(i));
 			routers.get(i).network = this;
@@ -42,7 +42,7 @@ const NetworkGraph = {
 	},
 
 	refresh() {
-		const routers = this.routers.asArray();
+		const routers = this.routers.toSeq();
 		if (!routers.size) return;
 
 		for (var i = 0; i < routers.size; i++) {
@@ -78,7 +78,7 @@ const NetworkGraph = {
 	},
 
 	rebuildOutputs() {
-		const routers = this.routers.asArray();
+		const routers = this.routers.toSeq();
 
 		var last;
 		for (var i = 0; i < routers.size; i++) {
@@ -123,7 +123,7 @@ phase = connected.new(Router, "phase-router", {
 	draw() {
 		if (this.power.status < 1) {
 			// Inactive state, draw disconnected version
-			Draw.rect(phase.icon(Cicon.full), this.x, this.y);
+			Draw.rect(phase.fullIcon, this.x, this.y);
 		} else {
 			this.super$draw();
 			this.drawEdges();

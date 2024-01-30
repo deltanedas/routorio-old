@@ -2,7 +2,9 @@
 	"category": "distribution",
 	"alwaysReplace": false,
 	"solid": true,
+	"update": true,
 	"breakable": false,
 	"rebuildable": false,
-	"destructible": false
+	"destructible": false,
+	"replaceable": false
 }

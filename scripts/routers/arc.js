@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,39 +19,47 @@
 
 const directions = require("routorio/lib/dirs");
 
-const arcMultipliers = {
-	// Bad materials are nukes.
-	"routorio-neutron-router": () => 100,
-	sand: () => 10,
-	coal: () => 8,
+const itemMultipliers = {
+	arc: {
+		// Bad materials are nukes.
+		"routorio-neutron-router": 100,
+		sand: 10,
+		coal: 8,
 
-	// Conductors increase arcs
-	lead: () => 2,
-	copper: () => 2,
-	scrap: () => 3,
-	"routorio-beryllium": () => 2,
-	titanium: () => 3,
-	silicon: () => 3,
-	"surge-alloy": () => 4,
-	// Plastanium reduces arcs
-	plastanium: () => Math.round(Math.random(0, 1))
+		// Metals increase arcs
+		lead: 2,
+		copper: 2,
+		scrap: 3,
+		"routorio-beryllium": 2,
+		titanium: 3,
+		silicon: 3,
+		"surge-alloy": 4,
+		// Plastanium reduces arc damage and, randomly, the count
+		plastanium: 0.5
+	},
+	power: {
+		// Conductors increase power
+		lead: 1.5,
+		copper: 2,
+		scrap: 1.25,
+		titanium: 4,
+		silicon: 5,
+		"surge-alloy": 8
+	}
 };
 
-const arcMultiplier = item => {
-	const mul = arcMultipliers[item.name];
-	if (mul === undefined) {
-		return 1;
-	}
-	return mul();
+const getMultiplier = (kind, item) => {
+	const mul = itemMultipliers[kind][item.name];
+	return mul || 1;
 };
 
 const adjacent = (tile, valid) => {
 	var adj = 0;
 	for (var i in directions) {
 		var near = tile.nearby(i);
-		if (!near) continue;
-		if (valid(near.block())) adj++;
+		if (near && valid(near.block())) adj++;
 	}
+
 	return adj;
 };
 
@@ -96,15 +104,14 @@ const rates = {
 	/* Special walls */
 	// decrease arcing
 	plast: {
-		apply: tile => adjacent(tile, block => (block.insulated && block instanceof Wall)
-			|| block.id == global.routorio.crouter.id),
+		apply: tile => adjacent(tile, block => (block.insulated && block instanceof Wall)),
 		bonuses: {
 			arc: -0.02
 		}
 	},
 	// decrease fuel burnup
 	phase: {
-		apply: tile => adjacent(tile, block => block.deflect
+		apply: tile => adjacent(tile, block => block.chanceDeflect > 0
 			|| block.id == global.routorio.phase.id),
 		modifiers: {
 			burnup: 0.5
@@ -135,9 +142,7 @@ const rates = {
 	},
 	// surge is an excellent conductor, increase arcing and power dramatically
 	surge: {
-		apply: tile => adjacent(tile,
-			block => block.id == global.routorio.surge.id
-				|| block.lightningChance > 0),
+		apply: tile => adjacent(tile, block => block.lightningChance > 0),
 		bonuses: {
 			gen: 2
 		},
@@ -154,31 +159,31 @@ mod = new Router("moderouter");
 arc = extend(Router, "arc-router", {
 	setStats() {
 		this.super$setStats();
-		// base
+		// base stats, see bars for active stats
 		this.stats.add(Stat.basePowerGeneration, rates.base.bonuses.gen * 60, StatUnit.powerSecond);
-		this.stats.add(Stat.powerDamage, Core.bundle.get("stat.arc-chance"), rates.base.bonuses.arc * 100);
-		this.stats.add(Stat.input, Core.bundle.get("stat.fuel-burnup"), rates.base.bonuses.burnup * 100);
+		this.stats.add(new Stat("arcChance", StatCat.power), rates.base.bonuses.arc * 100, StatUnit.percent);
+		this.stats.add(new Stat("fuelBurnup", StatCat.items), rates.base.bonuses.burnup * 100, StatUnit.percent);
 	},
 
 	setBars() {
 		this.super$setBars();
-		this.bars.add("power", entity => new Bar(
+		this.addBar("power", entity => new Bar(
 			() => Core.bundle.format("bar.poweroutput",
 				Strings.fixed(entity.powerProduction * entity.timeScale * 60, 1)),
 			() => Pal.powerBar,
-			() => entity._progress
+			() => entity._activity / entity._maxActivity
 		));
 
-		this.bars.add("arc-chance", entity => new Bar(
-			() => Core.bundle.format("stat.arc-chance",
-				Strings.fixed(entity._rates.arc * 100, 2)),
+		this.addBar("arc-chance", entity => new Bar(
+			() => Core.bundle.format("bar.arc-chance",
+				Strings.fixed(entity._rates.arc * 100, 1)),
 			() => Pal.lancerLaser,
 			() => entity._rates.arc / 0.35
 		));
 
-		this.bars.add("fuel-burnup", entity => new Bar(
-			() => Core.bundle.format("stat.fuel-burnup",
-				Math.round(entity._rates.burnup * 100)),
+		this.addBar("fuel-burnup", entity => new Bar(
+			() => Core.bundle.format("bar.fuel-burnup",
+				Strings.fixed(entity._rates.burnup * 100, 1)),
 			() => Items.surgeAlloy.color,
 			() => entity._rates.burnup / 0.31
 		));
@@ -186,14 +191,15 @@ arc = extend(Router, "arc-router", {
 });
 
 arc.enableDrawStatus = true;
-arc.flags = EnumSet.of(BlockFlag.generator);
+// FIXME: casts to Enum for some reason instead of BlockFlag
+//arc.flags = EnumSet.of(BlockFlag.generator);
 arc.minColor = Color.white;
 arc.maxColor = new Color(1.35, 1.35, 1.5);
 
 arc.buildType = () => extend(Router.RouterBuild, arc, {
 	updateTile() {
 		this.super$updateTile();
-		this.progress = Math.max(this.progress - 0.005, 0);
+		this.activity = Math.max(this.activity - 0.005 * this.delta(), 0);
 	},
 
 	handleItem(source, item) {
@@ -206,9 +212,20 @@ arc.buildType = () => extend(Router.RouterBuild, arc, {
 		const rates = this.rates;
 		var consumed = false;
 
-		if (Mathf.chance(rates.arc * arcMultiplier(item))) {
-			this.arc(item);
+		// fractional part is chance the rest is guaranteed arcs
+		if (Mathf.chance(rates.arc)) {
+			const mul = getMultiplier("arc", item);
+			const chance = mul % 1;
+
+			for (var i = 0; i < mul - chance; i++) {
+				this.arc(item, mul);
+			}
+
+			if (Mathf.chance(chance)) {
+				this.arc(item, mul);
+			}
 		}
+
 		if (Mathf.chance(rates.burnup)) {
 			if (Vars.ui) {
 				Fx.lancerLaserCharge.at(this.x + Mathf.range(2), this.y + Mathf.range(2),
@@ -217,19 +234,22 @@ arc.buildType = () => extend(Router.RouterBuild, arc, {
 			this.items.take();
 			consumed = true;
 		}
-		this.progress = Math.min(this.progress + 0.2, 1);
+
+		// maxActivity uses the latest item so switching between surge and coal will instantly ruin output
+		this.maxActivity = getMultiplier("power", item);
+		this.activity = Math.min(this.activity + 0.2, this.maxActivity);
 		return consumed;
 	},
 
-	arc(item) {
+	arc(item, mul) {
 		const rates = this.rates;
-		const mul = arcMultiplier(item);
+		const maxLength = 20 * mul;
 		const x = this.x, y = this.y;
 
 		Core.app.post(() => {
 			for (var i = 0; i < Math.sqrt(mul); i++) {
 				Lightning.create(Team.derelict, item.color, 10, x, y,
-					Mathf.random(0, 360), Math.round(Mathf.random(5, 20 * mul)));
+					Mathf.random(0, 360), Math.round(Mathf.random(5, maxLength)));
 			}
 		});
 	},
@@ -258,7 +278,7 @@ arc.buildType = () => extend(Router.RouterBuild, arc, {
 	},
 
 	getPowerProduction() {
-		return this.rates.gen * this.progress;
+		return this.rates.gen * this.activity;
 	},
 
 	onProximityUpdate() {
@@ -269,31 +289,34 @@ arc.buildType = () => extend(Router.RouterBuild, arc, {
 	onDestroyed() {
 		this.super$onDestroyed();
 		// Spawn lots of arcs
+		var mul = getMultiplier("arc", Items.surgeAlloy);
 		for (var i = 0; i < 10; i++) {
-			this.arc(Items.surgeAlloy);
+			this.arc(Items.surgeAlloy, mul);
 		}
 	},
 
 	/* Status - Orange */
 	shouldConsume() {
-		return this.progress > 0.5;
+		return this.activity > 0.5;
 	},
 	/* Status - Red */
 	productionValid() {
-		return this.progress > 0.02;
+		return this.activity > 0.02;
 	},
 
 	/* Public fields */
-	get_progress() { return this.progress; },
+	get_activity() { return this.activity; },
+	get_maxActivity() { return this.maxActivity; },
 	get_rates() { return this.rates; },
 
 	rates: Object.create(rates.base.bonuses),
-	progress: 0
+	activity: 0,
+	maxActivity: 1
 });
 
 module.exports = {
 	rates: rates,
 	moderouter: mod,
 	arcRouter: arc,
-	arcMultipliers: arcMultipliers
+	itemMultipliers: itemMultipliers
 };

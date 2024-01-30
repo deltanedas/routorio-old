@@ -1,6 +1,6 @@
 {
 	"health": 300,
-	"category": "distribution",
+	"category": "units"
 	"research": "payload-conveyor",
 	"requirements": [
 		"titanium/25",

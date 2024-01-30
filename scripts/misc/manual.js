@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ try {
 	module.exports = true;
 } catch (e) {
 	if (!Vars.headless) {
-		Log.warn("Please install [#00aaff]DeltaNedas/rtfm[] to view routorio's manual pages.");
+		Log.warn("Please install [#00aaff]deltanedas/rtfm[] to view routorio's manual pages.");
 	}
 	module.exports = false;
 }

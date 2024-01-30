@@ -1,7 +1,7 @@
 # Power generation
 Arc routers generate power only when items move, so a clogged arc router is dead.
 This means that they may take some time to fully shut down.
-[stat]Hint: you can control item flow with copper conveyors and electric routers.[]
+[stat]Hint: you can control item flow with conveyors and electric routers.[]
 
 # Fuel
 [sky]Arc Routers[] will only accept core-storable materials as fuel.
@@ -9,7 +9,7 @@ Item conductivity determines [red]lightning arc[] length and count.
 Arcs do a lot of damage so make sure to have lots of menders on-site.
 
 # Bars
-[sky]Arc routers[] display the current [red]Arcing[] and [coral]Fuel burnup[] chances.
+[sky]Arc Routers[] display the current [red]Arcing[] and [coral]Fuel burnup[] chances.
 
 # Affinity guide
 [red][[red][] = Arcing chance
@@ -34,21 +34,22 @@ The [sky]Arc Router[]'s stats change when adjacent to these blocks:
 	Surge Alloy: [red]x1.6[], [yellow]+200%[]
 
 # Item affinities
-These items modify arc amount and damage.
+These items modify arc length (2.5 tiles max each) and amount (by the square root)
+Metals have increased maximum power.
 
 [stat]These should only be used to kickstart fusion routers.[]
 Neutron Router: 100x :)
 Sand: 10x
 Coal: 8x
 
-[stat]These will do but aren't the best[]
-Lead: 2x
-Copper: 2x
-Scrap: 3x
+[stat]Metals will do, conductors have increased power.[]
+Lead: 2x, 1.5x
+Copper: 2x, 2x
+Scrap: 3x, 1.25x
 Beryllium: 2x
-Titanium: 3x
-Silicon: 3x
-Surge Alloy: 4x
+Titanium: 3x, 4x
+Silicon: 3x, 5x
+Surge Alloy: 4x, 8x
 
 [green]Plastanium: 0.5x (uses RNG to cancel arcs)[]
 

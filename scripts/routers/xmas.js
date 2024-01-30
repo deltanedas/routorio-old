@@ -33,8 +33,9 @@ const xmas = extend(Router, "xmas-router", {
 		}
 	},
 
-	icon(cicon) {
-		return this.variantRegions[0];
+	loadIcons() {
+		this.fullIcon = Core.atlas.find(this.name + "_1");
+		this.uiIcon = this.fullIcon;
 	},
 
 	icons() {

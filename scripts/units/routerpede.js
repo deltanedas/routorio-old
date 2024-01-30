@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -30,7 +30,11 @@ Object.assign(weapon, {
 	reload: 15,
 	alternate: false,
 	ejectEffect: Fx.coreLandDust,
-	bullet: Bullets.standardCopper
+	bullet: extend(BasicBulletType, 2.5, 9, {
+		width: 7,
+		height: 9,
+		lifetime: 60
+	})
 });
 
 const routerpede = extend(UnitType, "routerpede", {
@@ -67,14 +71,13 @@ routerpede.constructor = () => extend(MechUnit, {
 	},
 
 	draw() {
-		var n = 0;
+		this.drawSingle();
 
-		// Lerping segments isn't in update because why would the server care
-		if (this.segments.length == 0) return;
-
-		this.updateseg(0, this);
-		for (var i = 1; i < this.segments.length; i++) {
-			this.updateseg(i, this.segments[i - 1]);
+		if (this.segments.length > 0) {
+			this.updateseg(0, this);
+			for (var i = 1; i < this.segments.length; i++) {
+				this.updateseg(i, this.segments[i - 1]);
+			}
 		}
 
 		this.super$draw();
@@ -117,22 +120,25 @@ routerpede.constructor = () => extend(MechUnit, {
 		const nextAngle = Angles.angle(seg.x, seg.y, to.x, to.y);
 		const nextDist = Mathf.dst(seg.x, seg.y, to.x, to.y);
 
-		// Lerp angle if moving fast
+		// Lerp if moving too far away
 		if (nextDist > Vars.tilesize) {
 			seg.rotation = Mathf.slerp(seg.rotation, to.rotation, 0.07);
+			seg.x = Mathf.lerp(seg.x, to.x - Angles.trnsx(seg.rotation, Vars.tilesize), Time.delta / routerpede.speed);
+			seg.y = Mathf.lerp(seg.y, to.y - Angles.trnsy(seg.rotation, Vars.tilesize), Time.delta / routerpede.speed);
 		}
-		const dist = Math.min(Vars.tilesize, nextDist);
-		seg.x = to.x + Angles.trnsx(seg.rotation, dist);
-		seg.y = to.y + Angles.trnsy(seg.rotation, dist);
 
 		if (!onScreen(seg)) return;
 
 		const old = {x: this.x, y: this.y, rotation: this.rotation};
 		Object.assign(this, seg);
+		this.drawSingle();
+		Object.assign(this, old);
+	},
+
+	drawSingle() {
 		// Draw legs and router individually vs draw() to avoid recursion
 		routerpede.drawMech(this);
 		Draw.rect(routerpede.region, this.x, this.y, this.rotation);
-		Object.assign(this, old);
 	},
 
 	// Add a router to the chain

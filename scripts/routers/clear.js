@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ const clear = extend(Router, "clear-router", {
 		Draw.rect(this.topRegion, tile.drawx(), tile.drawy());
 		Draw.color();
 		if (building.items.total() != 0) {
-			Draw.rect(building.items.first().icon(Cicon.full), tile.drawx(), tile.drawy());
+			Draw.rect(building.items.first().fullIcon, tile.drawx(), tile.drawy());
 		}
 	}
 });

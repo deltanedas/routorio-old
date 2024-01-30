@@ -1,5 +1,5 @@
 /*
-	Copyright (c) DeltaNedas 2020
+	Copyright (c) deltanedas 2024
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -16,20 +16,27 @@
 */
 
 const inverted = extend(Conveyor, "inverted-router", {
-	drawBase(tile) {
-		const build = tile.build;
-		const rot = Time.time * this.speed * 8 * build.timeScale;
-		// Instead of an animated texture, it rotates when active
-		Draw.rect(this.region, tile.drawx(), tile.drawy(), rot);
+	load() {
+		this.super$load();
+
+		this.region = Core.atlas.find(this.name);
 	},
 
-	drawRequestRegion(req, list) {
-		const scl = Vars.tilesize * req.animScale;
-		Draw.rect(this.region, req.drawx(), req.drawy(), scl, scl);
+	drawPlanRegion(plan, list) {
+		const scl = Vars.tilesize * plan.animScale;
+		Draw.rect(this.region, plan.drawx(), plan.drawy(), scl, scl);
 	},
 
 	icons() {
-		return [Core.atlas.find(this.name)];
+		return [this.region]
+	}
+});
+
+inverted.buildType = () => extend(Conveyor.ConveyorBuild, inverted, {
+	draw(tile) {
+		const rot = Time.time * inverted.speed * 8 * this.timeScale;
+		// Instead of an animated texture, it rotates when active
+		Draw.rect(this.region, this.x, this.y, rot);
 	}
 });
 
